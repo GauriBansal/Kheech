@@ -16,6 +16,11 @@ namespace Kheech.Web.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -23,7 +28,19 @@ namespace Kheech.Web.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+            Configuration.LazyLoadingEnabled = false;
         }
+
+        public DbSet<KheechEvent> KheechEvents { get; set; }
+        public DbSet<KheechUser> KheechUsers { get; set; }
+        public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<FriendshipStatus> FriendshipStatuses { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<GroupUser> GroupUsers { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<Moment> Moments { get; set; }
+        public DbSet<KheechComment> KheechComments { get; set; }
+
 
         public static ApplicationDbContext Create()
         {
