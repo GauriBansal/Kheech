@@ -6,16 +6,18 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js")
+    @Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css") 
 
 </head>
 <body>
-    <div class="nav row">
-        <div class="nav-item col-sm-6 justify-content-start">
-            @Html.ActionLink("Kheech Logo", "Index", "Home", new { class="nav-link active"})
-        </div>
-        <div class="nav-item col-sm-6 justify-content-end">
-            @Html.ActionLink("Home", "Index", "Home", new { class="nav-link"})
-            @Html.ActionLink("Contact", "Contact", "Home", new { class="nav-link"})
+    <div class="row">
+        <ul class="nav col-sm-5 offset-1">
+            <li class="nav-item">
+                @Html.ActionLink("Kheech Logo", "Index", "Home", new { @class = "nav-link active" })
+            </li>
+        </ul>
+        <div class="col-sm-6">              
             @Html.Partial("_LoginPartial")
         </div>
     </div>
@@ -23,7 +25,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Kheech </p>
         </footer>
     </div>
 

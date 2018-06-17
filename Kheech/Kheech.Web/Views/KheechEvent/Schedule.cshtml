@@ -1,0 +1,39 @@
+﻿@model List<Kheech.Web.Models.Friendship>
+@{
+    ViewBag.Title = "Schedule";
+}
+
+<form action="@Url.RouteUrl("ScheduleMeetingPost")" , method="post">
+    <div class="form-group">
+        <label for="Description">What do you wanna do?</label>
+        <input type="text" class="form-control" id="Description" />
+    </div>
+    <div class="form-group">
+        <label for="WhenToMeet">When do you want to meet?</label>
+        <input type="datetime-local" class="form-control" id="WhenToMeet" />
+    </div>
+    <div class="form-group">
+        <label for="WhoToMeet">Who do you want to meet?</label>
+        <select class="form-control" id="WhoToMeet">
+            @*Add multiple after select keyword*@
+            @foreach (var friend in Model)
+            {
+                <option>@friend.ApplicationUser2.FirstName  @friend.ApplicationUser2.LastName</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="WhereToMeet">Where do you want to meet?</label>
+        <input type="text" class="form-control" id="WhereToMeet" />
+    </div>
+    @*<div class="form-group">
+        <label for="TypeOfMeet">What do you wanna do?</label>
+        <select class="form-control" id="TypeOfMeet">
+            <option>Any</option>
+            <option>Food</option>
+        </select>
+    </div>*@
+    <button type="submit" class="btn btn-primary">Send Schedule</button>
+</form>
+
+

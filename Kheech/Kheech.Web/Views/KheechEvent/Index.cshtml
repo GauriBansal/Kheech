@@ -1,0 +1,19 @@
+﻿@using Humanizer
+@model List<Kheech.Web.Models.KheechEvent>
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="jumbotron">
+    <ul class="row">
+        @foreach(var kheech in Model)
+        {
+            <li>@kheech.EventName "at" @kheech.Location "on" @kheech.StartDate.Humanize()</li>
+        }
+    </ul>
+</div>
+<div class="row">
+    <div class="col-sm-4 kheech-schedule">
+        <a href="@Url.RouteUrl("ScheduleMeeting")" class="btn btn-dark">Start Scheduling</a>
+    </div>
+</div>
