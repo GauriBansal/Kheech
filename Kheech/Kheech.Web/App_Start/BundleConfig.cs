@@ -26,6 +26,9 @@ namespace Kheech.Web
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+            
+            //set EnableOptimizations to false for debugging. 
+            BundleTable.EnableOptimizations = false;
         }
     }
 }
