@@ -12,6 +12,7 @@
     else
     {
     <ul class="row">
+        <small> You have a friend's meet to enjoy. </small> 
         @foreach(var kheech in Model)
         {
             <li>@kheech.EventName "at" @kheech.Location "on" @kheech.StartDate.Humanize()</li>
@@ -22,5 +23,11 @@
 <div class="row">
     <div class="col-sm-4 kheech-schedule">
         <a href="@Url.RouteUrl("ScheduleMeeting")" class="btn btn-dark">Start Scheduling</a>
+    </div>
+    <div class="col-sm-4 kheech-friend">
+        <a href="@Url.RouteUrl("ScheduleMeeting")" class="btn btn-dark">See your connection with friends</a>
+    </div>
+    <div class="col-sm-4 kheech-moments">
+        <a href="@Url.RouteUrl("ScheduleMeeting")" class="btn btn-dark">Let's enjoy some Kheech's Moments</a>
     </div>
 </div>
