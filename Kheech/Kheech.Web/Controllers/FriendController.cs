@@ -13,6 +13,13 @@ namespace Kheech.Web.Controllers
     [RoutePrefix("Friends")]
     public class FriendController : Controller
     {
+        protected readonly ApplicationDbContext _context;
+
+        public KheechEventController()
+        {
+            _context = new ApplicationDbContext();
+        }
+        
         // GET: Friend
         [Route("", Name = "InviteAFriend")]
         public ActionResult Index()
