@@ -40,7 +40,7 @@ namespace Kheech.Web.Controllers
         // GET: KheechEvents/Create
         public ActionResult Create()
         {
-            ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName");
+            //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName");
             ViewBag.GroupId = new SelectList(db.Groups, "Id", "Name");
             ViewBag.LocationId = new SelectList(db.Locations, "Id", "Name");
             return View();
@@ -60,7 +60,7 @@ namespace Kheech.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
+            //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
             ViewBag.GroupId = new SelectList(db.Groups, "Id", "Name", kheechEvent.GroupId);
             ViewBag.LocationId = new SelectList(db.Locations, "Id", "Name", kheechEvent.LocationId);
             return View(kheechEvent);
@@ -78,7 +78,7 @@ namespace Kheech.Web.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
+            //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
             ViewBag.GroupId = new SelectList(db.Groups, "Id", "Name", kheechEvent.GroupId);
             ViewBag.LocationId = new SelectList(db.Locations, "Id", "Name", kheechEvent.LocationId);
             return View(kheechEvent);
@@ -97,7 +97,7 @@ namespace Kheech.Web.Controllers
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
+            //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
             ViewBag.GroupId = new SelectList(db.Groups, "Id", "Name", kheechEvent.GroupId);
             ViewBag.LocationId = new SelectList(db.Locations, "Id", "Name", kheechEvent.LocationId);
             return View(kheechEvent);
