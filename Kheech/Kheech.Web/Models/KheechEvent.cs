@@ -13,7 +13,7 @@ namespace Kheech.Web.Models
         /// This is the User who creates the Kheech event and invite people over
         /// </summary>
         public string ApplicationUserId { get; set; }
-        public ApplicationUser ApplicationUser { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
 
         public string EventName { get; set; }
 

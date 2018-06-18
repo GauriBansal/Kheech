@@ -9,15 +9,16 @@ namespace Kheech.Web.Models
     {
         public int Id { get; set; }
 
-        public string ApplicationUserId1 { get; set; }
-        public ApplicationUser ApplicationUser1 { get; set; }
+        public string InitiatorId { get; set; }
+        public virtual ApplicationUser Initiator { get; set; }
 
-        public string ApplicationUserId2 { get; set; }
-        public ApplicationUser ApplicationUser2 { get; set; }
+        public string RecipientId { get; set; }
+        public virtual ApplicationUser Recipient { get; set; }
 
         public int FriendshipStatusId { get; set; }
         public FriendshipStatus FriendshipStatus { get; set; }
 
-        public DateTime InsertDate => DateTime.UtcNow;
+        //TODO: Set this to DateTime.UtcNow in SaveChanges() method on DbContext
+        //public DateTime InsertDate => DateTime.UtcNow;
     }
 }

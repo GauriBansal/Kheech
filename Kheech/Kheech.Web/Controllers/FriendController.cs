@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
+using Kheech.Web.Models;
 
 namespace Kheech.Web.Controllers
 {
@@ -15,7 +16,7 @@ namespace Kheech.Web.Controllers
     {
         protected readonly ApplicationDbContext _context;
 
-        public KheechEventController()
+        public FriendController()
         {
             _context = new ApplicationDbContext();
         }
