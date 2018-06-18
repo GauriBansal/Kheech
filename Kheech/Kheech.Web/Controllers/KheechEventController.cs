@@ -27,7 +27,11 @@ namespace Kheech.Web.Controllers
             var currentUserId = User.Identity.GetUserId();
 
             var kheechEvents = _context.KheechEvents.Where(k => k.ApplicationUserId == currentUserId).ToList();
-
+            
+            if (kheechEvents.Count == 0)
+            {
+                ViewBag.Message = "You do not have any Kheech at the moment. Would you like to create?";
+            }
             return View(kheechEvents);
         }
 
