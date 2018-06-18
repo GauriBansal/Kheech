@@ -23,9 +23,17 @@ textarea {
     max-width: 280px;
 }
 
+#start-page {
+    background-image: url("https://s-i.huffpost.com/gen/4327344/images/o-FRIENDSHIP-facebook.jpg");
+}
+
 .card {
     width: auto;
     height: 300px !important;
+}
+
+.card-img {
+    border-radius: 50%;
 }
 
 .kheech-schedule {
