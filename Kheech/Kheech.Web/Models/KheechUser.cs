@@ -10,10 +10,10 @@ namespace Kheech.Web.Models
         public int Id { get; set; }
 
         public int KheechEventId { get; set; }
-        public KheechEvent KheechEvent { get; set; }
+        public virtual KheechEvent KheechEvent { get; set; }
 
         public string ApplicationUserId { get; set; }
-        public ApplicationUser ApplicationUser { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
 
     }
 }
