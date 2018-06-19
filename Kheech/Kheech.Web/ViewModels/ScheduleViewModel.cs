@@ -7,6 +7,8 @@ namespace Kheech.Web.ViewModels
 {
     public class ScheduleViewModel
     {
+        public ICollection<Friendship> Friends {get; set;}
+        
         public string EventName { get; set; }
 
         public DateTime WhenToMeet { get; set; }
