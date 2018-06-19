@@ -1,4 +1,4 @@
-﻿@model List<Kheech.Web.Models.Friendship>
+﻿@model Kheech.Web.ViewModels.ScheduleViewModel
 @{
     ViewBag.Title = "Schedule";
 }
@@ -7,8 +7,8 @@
   <fieldset>
     <legend>Find a suitable time</legend>
     <div class="form-group">
-        <label for="Description">What do you wanna do?</label>
-        <input type="text" class="form-control" name="Description" value="@Request.Form["Description"]" />
+        <label for="EventName">What do you wanna do?</label>
+        <input type="text" class="form-control" name="EventName" value="@Request.Form["EventName"]" />
     </div>
     <div class="form-group">
         <label for="WhenToMeet">When do you want to meet?</label>
@@ -17,10 +17,16 @@
     <div class="form-group">
         <label for="WhoToMeet">Who do you want to meet?</label>
         <select class="form-control" name="WhoToMeet" value="@Request.Form["WhoToMeet"]" >
-            @*Add multiple after select keyword*@
-            @foreach (var friend in Model)
+            @if (Model.Count == 0)
             {
-                <option>@friend.ApplicationUser2.FirstName  @friend.ApplicationUser2.LastName</option>
+                <option> You do not have any friends yet.</option>
+            }
+            @else
+            {
+                foreach (var friend in Model)
+                {
+                    <option>@friend.ApplicationUser2.FirstName  @friend.ApplicationUser2.LastName</option>
+                }
             }
         </select>
     </div>
@@ -28,13 +34,6 @@
         <label for="WhereToMeet">Where do you want to meet?</label>
         <input type="text" class="form-control" name="WhereToMeet" value="@Request.Form["WhereToMeet"]" />
     </div>
-    @*<div class="form-group">
-        <label for="TypeOfMeet">What do you wanna do?</label>
-        <select class="form-control" name="TypeOfMeet">
-            <option>Any</option>
-            <option>Food</option>
-        </select>
-    </div>*@
     <button type="submit" class="btn btn-primary">Send Schedule</button>
  </fieldset>
 </form>
