@@ -2,20 +2,26 @@
 @{
     ViewBag.Title = "Schedule";
 }
+@Html.AntiForgeryToken()
 @Html.ValidationSummary()
 <form action="@Url.RouteUrl("ScheduleMeetingPost")" , method="post">
   <fieldset>
     <legend>Find a suitable time</legend>
     <div class="form-group">
-        <label for="EventName">What do you wanna do?</label>
-        <input type="text" class="form-control" name="EventName" value="@Request.Form["EventName"]" />
+        @Html.LabelFor(m => m.EventName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.EventName, new { @class = "form-control" })
+        </div>
     </div>
     <div class="form-group">
-        <label for="WhenToMeet">When do you want to meet?</label>
-        <input type="datetime-local" class="form-control" name="WhenToMeet" value="@Request.Form["WhenToMeet"]" />
+        @Html.LabelFor(m => m.WhenToMeet, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.WhenToMeet, new { @class = "form-control" })
+        </div>
+    </div>
     </div>
     <div class="form-group">
-        <label for="WhoToMeet">Who do you want to meet?</label>
+        @Html.LabelFor(m => m.WhoToMeet, new { @class = "col-md-2 control-label" })
         <select class="form-control" name="WhoToMeet" value="@Request.Form["WhoToMeet"]" >
             @if (Model.Count == 0)
             {
@@ -31,10 +37,16 @@
         </select>
     </div>
     <div class="form-group">
-        <label for="WhereToMeet">Where do you want to meet?</label>
-        <input type="text" class="form-control" name="WhereToMeet" value="@Request.Form["WhereToMeet"]" />
+        @Html.LabelFor(m => m.WhereToMeet, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.WhereToMeet, new { @class = "form-control" })
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Send Schedule</button>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-primary">Send Schedule</button>
+        </div>
+    </div>
  </fieldset>
 </form>
 
