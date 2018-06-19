@@ -18,7 +18,7 @@ namespace Kheech.Web.Models
         public string EventName { get; set; }
 
         public int LocationId { get; set; }
-        public Location Location { get; set; }
+        public virtual Location Location { get; set; }
 
         public DateTime StartDate { get; set; }
 
@@ -28,6 +28,9 @@ namespace Kheech.Web.Models
         public virtual Group Group { get; set; }
 
         public bool IsGroupEvent { get; set; }
+        
+        public int KheechCommentId {get; set;}
+        public virtual KheechComment KheechComment {get; set;}
 
     }
 }
