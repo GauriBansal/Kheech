@@ -40,9 +40,11 @@ namespace Kheech.Web.Controllers
         public ActionResult Schedule()
         {
             var currentUserId = User.Identity.GetUserId();
-            var friendUser = new ApplicationUser();
+            //var friendUser = new ApplicationUser();
 
-            var friends = Enumerable.Empty<Friendship>();
+            var scheduleViewModel = new ScheduleViewModel();
+            
+            scheduleViewModel.Friends = Enumerable.Empty<Friendship>();
             
             // _context.Friendships.Where(f => f.ApplicationUserId1 == currentUserId).ToList();
 
@@ -52,12 +54,12 @@ namespace Kheech.Web.Controllers
             //    friend.ApplicationUser2 = friendUser;
             //}
 
-            return View(friends);
+            return View(scheduleViewModel);
         }
 
         [HttpPost]
         [Route("schedule/{id}", Name = "ScheduleMeetingPost")]
-        public ActionResult Schedule(ScheduleViewModel model)
+        public ActionResult Schedule(int id, ScheduleViewModel model)
         {
             var currentUserId = User.Identity.GetUserId();
             var kheechEvent = new KheechEvent();
