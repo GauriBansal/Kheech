@@ -10,7 +10,9 @@
       @foreach (var comment in Model)
       {
         <div class="row">
-          <h3 class="col-sm-3">@comment.KheechEvent.ApplicationUser.FirstName</h3>
+          <div class="avatar-circle col-sm-3">
+              <span class="initials"> @comment.KheechEvent.ApplicationUser.FirstName </span>
+          </div>
           <p class="col-sm-9"> @comment.KheechEvent.ApplicationUser.FirstName added: <br>
             <small> @comment.Discussion </small>
           </p>
