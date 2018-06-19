@@ -1,3 +1,4 @@
+@using Humanizer
 @model IEnumerables<Kheech.Web.Models.Moment>
 
 <div class="container">
@@ -7,7 +8,11 @@
       <div class="col-sm-4 card">
         <img class="card-img-top" src="@moment.Capture" alt="@moment.KheechEvent.EventName">
         <div class="card-body">
-          <a href="#" class="card-title btn btn-primary">Relive the Kheech @moment.KheechEvent.EventName</a>
+          <p>Relive the Kheech 
+            <a href="#" class="card-title btn btn-primary">
+               @moment.KheechEvent.EventName at @moment.KheechEvent.Location.Name on @moment.KheechEvent.StartDate.Humanize()
+            </a>
+          </p>
         </div>
       </div>
     }
