@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 
 namespace Kheech.Web.Controllers
 {
@@ -26,7 +27,7 @@ namespace Kheech.Web.Controllers
         {
             var currentUserId = User.Identity.GetUserId();
 
-            var kheechEvents = _context.KheechEvents.Where(k => k.ApplicationUserId == currentUserId).ToList();
+            var kheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser).Where(k => k.ApplicationUserId == currentUserId).ToList();
             
             if (kheechEvents.Count == 0)
             {
@@ -41,7 +42,9 @@ namespace Kheech.Web.Controllers
             var currentUserId = User.Identity.GetUserId();
             var friendUser = new ApplicationUser();
 
-            var friends = Enumerable.Empty<Friendship>();// _context.Friendships.Where(f => f.ApplicationUserId1 == currentUserId).ToList();
+            var friends = Enumerable.Empty<Friendship>();
+            
+            // _context.Friendships.Where(f => f.ApplicationUserId1 == currentUserId).ToList();
 
             //foreach (var friend in friends)
             //{
