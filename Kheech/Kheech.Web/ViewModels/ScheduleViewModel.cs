@@ -9,14 +9,16 @@ namespace Kheech.Web.ViewModels
     {
         public ICollection<Friendship> Friends {get; set;}
         
+        [Display(Name = "What do you want to do?")]
         public string EventName { get; set; }
 
+        [Display(Name = "When do you want to meet?")]
         public DateTime WhenToMeet { get; set; }
 
+        [Display(Name = "Who do you want to meet?")]
         public string WhoToMeet { get; set; }
 
+        [Display(Name = "Where do you want to meet?")]
         public string WhereToMeet { get; set; }
-
-        //public string TypeOfMeet { get; set; }
     }
 }
