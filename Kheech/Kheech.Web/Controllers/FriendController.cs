@@ -7,12 +7,20 @@ using System.Net;
 using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
+using Kheech.Web.Models;
 
 namespace Kheech.Web.Controllers
 {
     [RoutePrefix("Friends")]
     public class FriendController : Controller
     {
+        protected readonly ApplicationDbContext _context;
+
+        public FriendController()
+        {
+            _context = new ApplicationDbContext();
+        }
+        
         // GET: Friend
         [Route("", Name = "InviteAFriend")]
         public ActionResult Index()

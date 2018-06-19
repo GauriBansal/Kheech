@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -18,8 +19,12 @@ namespace Kheech.Web.Models
         }
 
         public string FirstName { get; set; }
-
         public string LastName { get; set; }
+
+        public virtual ICollection<KheechEvent> KheechEvents { get; set; }
+
+        public virtual ICollection<Friendship> FriendshipsStarted { get; set; }
+        public virtual ICollection<Friendship> FriendshipsJoined { get; set; }
 
     }
 
@@ -41,6 +46,24 @@ namespace Kheech.Web.Models
         public DbSet<Moment> Moments { get; set; }
         public DbSet<KheechComment> KheechComments { get; set; }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany<Friendship>(u => u.FriendshipsStarted)
+                .WithRequired()
+
+
+                .HasForeignKey(f => f.RecipientId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany<Friendship>(u => u.FriendshipsJoined)
+                .WithRequired()
+                .HasForeignKey(f => f.InitiatorId)
+                .WillCascadeOnDelete(false);
+        }
 
         public static ApplicationDbContext Create()
         {

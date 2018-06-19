@@ -2,19 +2,21 @@
 @{
     ViewBag.Title = "Schedule";
 }
-
+@Html.ValidationSummary()
 <form action="@Url.RouteUrl("ScheduleMeetingPost")" , method="post">
+  <fieldset>
+    <legend>Find a suitable time</legend>
     <div class="form-group">
         <label for="Description">What do you wanna do?</label>
-        <input type="text" class="form-control" id="Description" />
+        <input type="text" class="form-control" name="Description" value="@Request.Form["Description"]" />
     </div>
     <div class="form-group">
         <label for="WhenToMeet">When do you want to meet?</label>
-        <input type="datetime-local" class="form-control" id="WhenToMeet" />
+        <input type="datetime-local" class="form-control" name="WhenToMeet" value="@Request.Form["WhenToMeet"]" />
     </div>
     <div class="form-group">
         <label for="WhoToMeet">Who do you want to meet?</label>
-        <select class="form-control" id="WhoToMeet">
+        <select class="form-control" name="WhoToMeet" value="@Request.Form["WhoToMeet"]" >
             @*Add multiple after select keyword*@
             @foreach (var friend in Model)
             {
@@ -24,16 +26,16 @@
     </div>
     <div class="form-group">
         <label for="WhereToMeet">Where do you want to meet?</label>
-        <input type="text" class="form-control" id="WhereToMeet" />
+        <input type="text" class="form-control" name="WhereToMeet" value="@Request.Form["WhereToMeet"]" />
     </div>
     @*<div class="form-group">
         <label for="TypeOfMeet">What do you wanna do?</label>
-        <select class="form-control" id="TypeOfMeet">
+        <select class="form-control" name="TypeOfMeet">
             <option>Any</option>
             <option>Food</option>
         </select>
     </div>*@
     <button type="submit" class="btn btn-primary">Send Schedule</button>
+ </fieldset>
 </form>
-
 

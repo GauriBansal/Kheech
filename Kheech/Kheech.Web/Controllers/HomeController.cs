@@ -7,9 +7,11 @@ using System.Web.Mvc;
 
 namespace Kheech.Web.Controllers
 {
+    [RoutePrefix("Home")]
+    [AllowAnonymous]
     public class HomeController : Controller
     {
-        
+        [Route("", Name = "IndexPage")]
         public ActionResult Index()
         {
             if (User.Identity.IsAuthenticated)

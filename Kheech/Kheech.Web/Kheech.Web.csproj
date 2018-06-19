@@ -208,6 +208,7 @@
     <Compile Include="Controllers\FriendController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KheechEventController.cs" />
+    <Compile Include="Controllers\KheechEventsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -215,6 +216,14 @@
     <Compile Include="Migrations\201806150130453_InitialSetUp.cs" />
     <Compile Include="Migrations\201806150130453_InitialSetUp.Designer.cs">
       <DependentUpon>201806150130453_InitialSetUp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806181553047_RemovingM2MRelationships.cs" />
+    <Compile Include="Migrations\201806181553047_RemovingM2MRelationships.Designer.cs">
+      <DependentUpon>201806181553047_RemovingM2MRelationships.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806181554392_AddingM2MExplicitRelationship.cs" />
+    <Compile Include="Migrations\201806181554392_AddingM2MExplicitRelationship.Designer.cs">
+      <DependentUpon>201806181554392_AddingM2MExplicitRelationship.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -338,6 +347,11 @@
     <Content Include="Views\KheechEvent\Index.cshtml" />
     <Content Include="Views\KheechEvent\Schedule.cshtml" />
     <Content Include="Views\Friend\Index.cshtml" />
+    <Content Include="Views\KheechEvents\Create.cshtml" />
+    <Content Include="Views\KheechEvents\Delete.cshtml" />
+    <Content Include="Views\KheechEvents\Details.cshtml" />
+    <Content Include="Views\KheechEvents\Edit.cshtml" />
+    <Content Include="Views\KheechEvents\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -354,6 +368,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201806150130453_InitialSetUp.resx">
       <DependentUpon>201806150130453_InitialSetUp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806181553047_RemovingM2MRelationships.resx">
+      <DependentUpon>201806181553047_RemovingM2MRelationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806181554392_AddingM2MExplicitRelationship.resx">
+      <DependentUpon>201806181554392_AddingM2MExplicitRelationship.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
