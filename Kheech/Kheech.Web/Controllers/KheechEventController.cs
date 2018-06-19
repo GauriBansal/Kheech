@@ -27,13 +27,15 @@ namespace Kheech.Web.Controllers
         {
             var currentUserId = User.Identity.GetUserId();
 
-            var kheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser).Where(k => k.ApplicationUserId == currentUserId).ToList();
+            var activeKheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                    .Where(k => k.ApplicationUserId == currentUserId && k.EndDate > DateTime.UtcNow)
+                                                    .ToList();
             
-            if (kheechEvents.Count == 0)
+            if (activeKheechEvents.Count == 0)
             {
                 ViewBag.Message = "You do not have any Kheech at the moment. Would you like to create?";
             }
-            return View(kheechEvents);
+            return View(activeKheechEvents);
         }
 
         [Route("schedule", Name = "ScheduleMeeting")]
