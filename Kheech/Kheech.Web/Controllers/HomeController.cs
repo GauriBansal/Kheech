@@ -12,6 +12,10 @@ namespace Kheech.Web.Controllers
         
         public ActionResult Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToRoute("HomePage");
+            }
             return View();
         }
 

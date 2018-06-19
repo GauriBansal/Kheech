@@ -28,6 +28,11 @@ namespace Kheech.Web.Controllers
 
             var kheechEvents = _context.KheechEvents.Where(k => k.ApplicationUserId == currentUserId).ToList();
 
+            if (kheechEvents.Count == 0)
+            {
+                ViewBag.Message = "You don't have any meetings at the moment. Do you want to schedule something?";
+            }
+
             return View(kheechEvents);
         }
 
