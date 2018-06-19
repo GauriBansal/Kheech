@@ -1,0 +1,15 @@
+@model IEnumerables<Kheech.Web.Models.Moment>
+
+<div class="container">
+  <div class="row">
+    @foreach (var moment in Model)
+    {
+      <div class="col-sm-4 card">
+        <img class="card-img-top" src="@moment.Capture" alt="@moment.KheechEvent.EventName">
+        <div class="card-body">
+          <a href="#" class="card-title btn btn-primary">Relive the Kheech @moment.KheechEvent.EventName</a>
+        </div>
+      </div>
+    }
+  </div>
+</div>
