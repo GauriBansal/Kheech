@@ -16,7 +16,13 @@
     <div class="form-group">
         @Html.LabelFor(m => m.WhenToMeet, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.WhenToMeet, new { @class = "form-control" })
+            <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+                <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+             </div>
+            @*@Html.EditorFor(m => m.WhenToMeet, new { @class = "form-control" })*@
         </div>
     </div>
     </div>
@@ -49,4 +55,11 @@
     </div>
  </fieldset>
 </form>
-
+@section 
+{
+    <script type="text/javascript">
+        $(function () {
+             $('#datetimepicker1').datetimepicker();
+        });
+    </script>
+}
