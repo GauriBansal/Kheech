@@ -1,34 +1,20 @@
 ﻿@model Kheech.Web.Models.Moment
+ @using Humanizer
 
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>Moment</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.KheechEvent.ApplicationUserId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.KheechEvent.ApplicationUserId)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Capture)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Capture)
-        </dd>
-
-    </dl>
+<div class="container">
+    <div class="row card">
+        <h4 class="card-title">@Model.KheechEvent.EventName at @Model.KheechEvent.Location.Name on @Model.KheechEvent.StartDate.Humanize</h4>
+        <img class="card-img" src="@Model.Capture" alt="Memory" />
+        <div class="card-body">
+            <p class="card-text">@Model.Description</p> <br>
+            <span class="text-center">
+                @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+                @Html.ActionLink("Back to List", "Index")
+            </span>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
