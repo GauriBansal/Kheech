@@ -1,9 +1,13 @@
 using Kheech.Web.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin.Security;
 using System;
-
+using System.Data.Entity;
+using System.Web;
 using Unity;
+using Unity.AspNet.Mvc;
+using Unity.Injection;
 
 namespace Kheech.Web
 {
@@ -45,6 +49,11 @@ namespace Kheech.Web
 
             // TODO: Register your type's mappings here.
             // container.RegisterType<IProductRepository, ProductRepository>();
+            container.RegisterType<DbContext, ApplicationDbContext>(new PerRequestLifetimeManager());
+            container.RegisterType<ApplicationDbContext>(new PerRequestLifetimeManager());
+            container.RegisterType<UserManager<ApplicationUser>>(new PerRequestLifetimeManager());
+            container.RegisterType<IAuthenticationManager>(new InjectionFactory(c => HttpContext.Current.GetOwinContext().Authentication));
+            container.RegisterType<IUserStore<ApplicationUser>, UserStore<ApplicationUser>>(new PerRequestLifetimeManager());
         }
     }
 }
