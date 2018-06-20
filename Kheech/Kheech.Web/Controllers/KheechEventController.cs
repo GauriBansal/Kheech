@@ -46,7 +46,7 @@ namespace Kheech.Web.Controllers
 
             var scheduleViewModel = new ScheduleViewModel();
             
-            scheduleViewModel.Friends = Enumerable.Empty<Friendship>();
+            //scheduleViewModel.Friends = Enumerable.Empty<Friendship>();
             
             // _context.Friendships.Where(f => f.ApplicationUserId1 == currentUserId).ToList();
 

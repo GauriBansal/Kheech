@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using Kheech.Web.Models;
 
 namespace Kheech.Web.ViewModels
 {
