@@ -10,25 +10,41 @@ using Kheech.Web.Models;
 
 namespace Kheech.Web.Controllers
 {
+    [RoutePrefix("Moments")]
     public class MomentsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        protected readonly ApplicationDbContext _context;
 
+        protected readonly ApplicationUserManager _userManager;
+
+        public HomeController(ApplicationDbContext context, ApplicationUserManager userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
+        
         // GET: Moments
+        [Route("", Name = "MomentsHome")]
         public ActionResult Index()
         {
-            var moments = db.Moments.Include(m => m.KheechEvent);
-            return View(moments.ToList());
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToRoute("IndexPage");
+            }
+            
+            var moments = _context.Moments.Include(m => m.KheechEvent).OrderByDescending((m => m.Id).ToList();
+            return View(moments);
         }
 
         // GET: Moments/Details/5
+        [Route("Details/{id}", Name = "MomentsDetail")]
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Moment moment = db.Moments.Find(id);
+            Moment moment = _context.Moments.Find(id).Include(m => m.KheechEvent);
             if (moment == null)
             {
                 return HttpNotFound();
