@@ -1,0 +1,23 @@
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="row">
+        
+      </div>
+    </div>
+    <div class="col-sm-4">
+      @foreach (var comment in Model)
+      {
+        <div class="row">
+          <div class="avatar-circle col-sm-3">
+              <span class="initials"> @comment.KheechEvent.ApplicationUser.FirstName </span>
+          </div>
+          <p class="col-sm-9"> @comment.KheechEvent.ApplicationUser.FirstName added: <br>
+            <small> @comment.Discussion </small>
+          </p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

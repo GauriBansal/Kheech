@@ -16,7 +16,7 @@ namespace Kheech.Web.Models
         public virtual ApplicationUser Recipient { get; set; }
 
         public int FriendshipStatusId { get; set; }
-        public FriendshipStatus FriendshipStatus { get; set; }
+        public virtual FriendshipStatus FriendshipStatus { get; set; }
 
         //TODO: Set this to DateTime.UtcNow in SaveChanges() method on DbContext
         //public DateTime InsertDate => DateTime.UtcNow;

@@ -10,9 +10,9 @@ namespace Kheech.Web.Models
         public int Id { get; set; }
 
         public int GroupId { get; set; }
-        public Group Group { get; set; }
+        public virtual Group Group { get; set; }
 
         public string ApplicationUserId { get; set; }
-        public ApplicationUser ApplicationUser { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
     }
 }

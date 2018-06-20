@@ -18,16 +18,18 @@ namespace Kheech.Web.Models
         public string EventName { get; set; }
 
         public int LocationId { get; set; }
-        public Location Location { get; set; }
+        public virtual Location Location { get; set; }
 
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }
 
         public int GroupId { get; set; }
-        public Group Group { get; set; }
+        public virtual Group Group { get; set; }
 
         public bool IsGroupEvent { get; set; }
+        
+        public virtual ICollection<KheechComment> KheechComments {get; set;}
 
     }
 }

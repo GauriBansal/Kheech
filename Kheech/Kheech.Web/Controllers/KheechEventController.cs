@@ -27,22 +27,26 @@ namespace Kheech.Web.Controllers
         {
             var currentUserId = User.Identity.GetUserId();
 
-            var kheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser).Where(k => k.ApplicationUserId == currentUserId).ToList();
+            var activeKheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                    .Where(k => k.ApplicationUserId == currentUserId && k.EndDate > DateTime.UtcNow)
+                                                    .ToList();
             
-            if (kheechEvents.Count == 0)
+            if (activeKheechEvents.Count == 0)
             {
                 ViewBag.Message = "You do not have any Kheech at the moment. Would you like to create?";
             }
-            return View(kheechEvents);
+            return View(activeKheechEvents);
         }
 
         [Route("schedule", Name = "ScheduleMeeting")]
         public ActionResult Schedule()
         {
             var currentUserId = User.Identity.GetUserId();
-            var friendUser = new ApplicationUser();
+            //var friendUser = new ApplicationUser();
 
-            var friends = Enumerable.Empty<Friendship>();
+            var scheduleViewModel = new ScheduleViewModel();
+            
+            //scheduleViewModel.Friends = Enumerable.Empty<Friendship>();
             
             // _context.Friendships.Where(f => f.ApplicationUserId1 == currentUserId).ToList();
 
@@ -52,12 +56,12 @@ namespace Kheech.Web.Controllers
             //    friend.ApplicationUser2 = friendUser;
             //}
 
-            return View(friends);
+            return View(scheduleViewModel);
         }
 
         [HttpPost]
         [Route("schedule/{id}", Name = "ScheduleMeetingPost")]
-        public ActionResult Schedule(ScheduleViewModel model)
+        public ActionResult Schedule(int id, ScheduleViewModel model)
         {
             var currentUserId = User.Identity.GetUserId();
             var kheechEvent = new KheechEvent();
