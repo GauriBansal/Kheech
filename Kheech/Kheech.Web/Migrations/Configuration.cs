@@ -1,5 +1,9 @@
+using Kheech.Web.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
+
 namespace Kheech.Web.Migrations
 {
+    using Microsoft.AspNet.Identity;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -14,18 +18,47 @@ namespace Kheech.Web.Migrations
 
         protected override void Seed(Kheech.Web.Models.ApplicationDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var role = new IdentityRole { Name = "AppAdmin" };
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+            var userStore = new UserStore<IdentityUser>(context);
+            var userManager = new UserManager<IdentityUser>(userStore);
+
+            var phil = context.Users.FirstOrDefault(u => u.Email == "phil.scholtes@gmail.com");
+            if (phil == null)
+            {
+                phil = new ApplicationUser
+                {
+                    FirstName = "Phil",
+                    LastName = "Scholtes",
+                    UserName = "phil.scholtes@gmail.com",
+                    Email = "phil.scholtes@gmail.com"
+                };
+
+                var result = userManager.Create(phil, "Admin123!");
+            }
+
+            var chris = context.Users.FirstOrDefault(u => u.Email == "chris@gmail.com");
+            if (chris == null)
+            {
+                chris = new ApplicationUser
+                {
+                    FirstName = "Chris",
+                    LastName = "Scholtes",
+                    UserName = "chris@gmail.com",
+                    Email = "chris@gmail.com"
+                };
+
+                var result = userManager.Create(chris, "Admin123!");
+            }
+
+            phil.FriendshipsStarted.Add(new Friendship()
+            {
+                //FriendshipStatus = FriendshipStatuses.
+            });
+
+
         }
     }
 }
