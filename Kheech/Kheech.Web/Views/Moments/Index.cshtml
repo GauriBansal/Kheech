@@ -1,39 +1,24 @@
 ﻿@model IEnumerable<Kheech.Web.Models.Moment>
+ @using Humanizer
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.KheechEvent.ApplicationUserId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Capture)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.KheechEvent.ApplicationUserId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Capture)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
-
-</table>
+<div class="container">
+  <div class="row">
+    @foreach (var moment in Model)
+    {
+      <div class="col-sm-4 card">
+        <img class="card-img-top" src="@moment.Capture" alt="@moment.KheechEvent.EventName">
+        <div class="card-body">
+          <p>Relive the Kheech 
+            <a href="#" class="card-title btn btn-primary">
+               @moment.KheechEvent.EventName at @moment.KheechEvent.Location.Name on @moment.KheechEvent.StartDate.Humanize()
+            </a>
+          </p>
+        </div>
+      </div>
+    }
+  </div>
+</div>
