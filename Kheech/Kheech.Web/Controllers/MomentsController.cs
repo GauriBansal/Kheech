@@ -53,9 +53,10 @@ namespace Kheech.Web.Controllers
         }
 
         // GET: Moments/Create
+        [Route("Create", Name = "MomentsCreate")]
         public ActionResult Create()
         {
-            ViewBag.KheechEventId = new SelectList(db.KheechEvents, "Id", "ApplicationUserId");
+            ViewBag.KheechEventId = new SelectList(_context.KheechEvents, "Id", "ApplicationUserId");
             return View();
         }
 
@@ -64,6 +65,7 @@ namespace Kheech.Web.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Create", Name = "MomentsCreatePost")]
         public ActionResult Create([Bind(Include = "Id,KheechEventId,Capture")] Moment moment)
         {
             if (ModelState.IsValid)
