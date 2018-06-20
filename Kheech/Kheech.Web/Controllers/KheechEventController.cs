@@ -47,7 +47,9 @@ namespace Kheech.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             
-            KheechEvent kheechEvent = _context.KheechEvents.Include(k => k.ApplicationUser).FirstOrDefault(k => k.Id == id);
+            KheechEvent kheechEvent = _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                           .Include(k => k.KheechComments)
+                                                           .FirstOrDefault(k => k.Id == id);
             if (kheechEvent == null)
             {
                 return HttpNotFound();
