@@ -38,6 +38,24 @@ namespace Kheech.Web.Controllers
             return View(activeKheechEvents);
         }
 
+       // GET: KheechEvents/Details/5
+       [Route("details/{id}", Name = "KheechDetails")]
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            
+            KheechEvent kheechEvent = _context.KheechEvents.Include(k => k.ApplicationUser).FirstOrDefault(k => k.Id == id);
+            if (kheechEvent == null)
+            {
+                return HttpNotFound();
+            }
+            
+            return View(kheechEvent);
+        }
+        
         [Route("schedule", Name = "ScheduleMeeting")]
         public ActionResult Schedule()
         {
