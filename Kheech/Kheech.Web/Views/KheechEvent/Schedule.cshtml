@@ -4,8 +4,7 @@
 }
 
 <form action="@Url.RouteUrl("ScheduleMeetingPost", new { id = 1})" method="post">
-
-        @Html.AntiForgeryToken()
+    @Html.AntiForgeryToken()
     @Html.ValidationSummary()
     <fieldset>
         <legend>Find a suitable time</legend>
@@ -29,16 +28,16 @@
         </div>
         <div class="form-group">
             @Html.LabelFor(m => m.WhoToMeet, new { @class = "col-md-2 control-label" })
-            <select class="form-control" name="WhoToMeet" value="@Request.Form["WhoToMeet"]">
-                @if (Model.Friends == null)
+            @if (Model.Friends == null)
                 {
-                    <option> You do not have any friends yet.</option>
+                   <p> You do not have any friends yet.</p>
                 }
-                else
+            else
                 {
                     foreach (var friend in Model.Friends)
                     {
-                        <option>@friend.Initiator.FirstName  @friend.Initiator.LastName</option>
+                        @Html.DropDownListFor(m => m.RecipientId,
+                                       new SelectList(Model.ApplicationUser.FirstName, "Key", "Value", Model.RecipientId))
                     }
                 }
             </select>
