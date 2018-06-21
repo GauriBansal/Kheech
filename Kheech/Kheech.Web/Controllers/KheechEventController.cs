@@ -81,6 +81,7 @@ namespace Kheech.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("schedule/{id}", Name = "ScheduleMeetingPost")]
         public ActionResult Schedule(int id, ScheduleViewModel model)
         {
@@ -92,13 +93,26 @@ namespace Kheech.Web.Controllers
             kheechEvent.StartDate = model.WhenToMeet;
             kheechEvent.IsGroupEvent = false;
 
-            var location = _context.Locations.Where(l => l.Name == model.WhereToMeet).Take(1).ToList();
-
-            kheechEvent.LocationId = location[0].Id;
+            var location = _context.Locations.FirstOrDefault(l => l.Name == model.WhereToMeet);
+            if (location == null)
+            {
+                location = new Location 
+                {   
+                    Name: model.WhereToMeet,
+                    Country: "USA",
+                    City: "Little Rock",
+                    State: "AR"
+                };
+                _context.Locations.Add(location);
+                _context.SaveChanges();
+            }
+            
+            kheechEvent.LocationId = location.Id;
 
             _context.KheechEvents.Add(kheechEvent);
             _context.SaveChanges();
 
+            TempData["ScheduleMessage"] = "Congratulations, you have successfully added a Kheech. Keep going!";
             return RedirectToRoute("HomePage");
         }
     }
