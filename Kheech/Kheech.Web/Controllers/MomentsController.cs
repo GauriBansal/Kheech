@@ -17,7 +17,7 @@ namespace Kheech.Web.Controllers
 
         protected readonly ApplicationUserManager _userManager;
 
-        public HomeController(ApplicationDbContext context, ApplicationUserManager userManager)
+        public MomentsController(ApplicationDbContext context, ApplicationUserManager userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -32,7 +32,7 @@ namespace Kheech.Web.Controllers
                 return RedirectToRoute("IndexPage");
             }
             
-            var moments = _context.Moments.Include(m => m.KheechEvent).OrderByDescending((m => m.Id).ToList();
+            var moments = _context.Moments.Include(m => m.KheechEvent).OrderByDescending(m => m.Id).ToList();
             return View(moments);
         }
 
@@ -44,7 +44,7 @@ namespace Kheech.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Moment moment = _context.Moments.Find(id).Include(m => m.KheechEvent);
+            Moment moment = _context.Moments.Include(m => m.KheechEvent).FirstOrDefault(m => m.Id == id);
             if (moment == null)
             {
                 return HttpNotFound();
@@ -70,12 +70,12 @@ namespace Kheech.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Moments.Add(moment);
-                db.SaveChanges();
+                _context.Moments.Add(moment);
+                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.KheechEventId = new SelectList(db.KheechEvents, "Id", "ApplicationUserId", moment.KheechEventId);
+            ViewBag.KheechEventId = new SelectList(_context.KheechEvents, "Id", "ApplicationUserId", moment.KheechEventId);
             return View(moment);
         }
 
@@ -86,12 +86,12 @@ namespace Kheech.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Moment moment = db.Moments.Find(id);
+            Moment moment = _context.Moments.Find(id);
             if (moment == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.KheechEventId = new SelectList(db.KheechEvents, "Id", "ApplicationUserId", moment.KheechEventId);
+            ViewBag.KheechEventId = new SelectList(_context.KheechEvents, "Id", "ApplicationUserId", moment.KheechEventId);
             return View(moment);
         }
 
@@ -104,11 +104,11 @@ namespace Kheech.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(moment).State = EntityState.Modified;
-                db.SaveChanges();
+                _context.Entry(moment).State = EntityState.Modified;
+                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.KheechEventId = new SelectList(db.KheechEvents, "Id", "ApplicationUserId", moment.KheechEventId);
+            ViewBag.KheechEventId = new SelectList(_context.KheechEvents, "Id", "ApplicationUserId", moment.KheechEventId);
             return View(moment);
         }
 
@@ -119,7 +119,7 @@ namespace Kheech.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Moment moment = db.Moments.Find(id);
+            Moment moment = _context.Moments.Find(id);
             if (moment == null)
             {
                 return HttpNotFound();
@@ -132,9 +132,9 @@ namespace Kheech.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Moment moment = db.Moments.Find(id);
-            db.Moments.Remove(moment);
-            db.SaveChanges();
+            Moment moment = _context.Moments.Find(id);
+            _context.Moments.Remove(moment);
+            _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -142,7 +142,7 @@ namespace Kheech.Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _context.Dispose();
             }
             base.Dispose(disposing);
         }
