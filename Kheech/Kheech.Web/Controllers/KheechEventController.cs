@@ -28,15 +28,32 @@ namespace Kheech.Web.Controllers
         {
             var currentUserId = User.Identity.GetUserId();
 
-            var activeKheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser)
+            var kheechIndexViewModel = new KheechIndexViewModel();
+            
+            kheechIndexViewModel.ActiveKheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser)
                                                     .Where(k => k.ApplicationUserId == currentUserId && k.EndDate > DateTime.UtcNow)
+                                                    .Take(5)
                                                     .ToList();
             
-            if (activeKheechEvents.Count == 0)
+            if (kheechIndexViewModel.ActiveKheechEvents.Count == 0)
             {
                 ViewBag.Message = "You do not have any Kheech at the moment. Would you like to create?";
             }
-            return View(activeKheechEvents);
+            
+            kheechIndexViewModel.RecentSchedules = _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                    .Where(k => k.ApplicationUserId == currentUserId && k.EndDate <= DateTime.UtcNow)
+                                                    .OrderByDescending(k => k.EndDate)
+                                                    .Take(3)
+                                                    .ToList();
+            
+            kheechIndexViewModel.RecentMoments = _context.Moments.Include(m => m.KheechEvent.Where(k => k.EndDate > DateTime.UtcNow)).Take(3).Tolist();
+            
+            kheechIndexViewModel.RecentFriends = _context.KheechUser.Include(k => k.ApplicationUser)
+                                                   .Include(k => k.KheechEvent.Where(m => m.ApplicationUserId == currentUserId).OrderByDescending(k => k.EndDate).Take(5)) 
+                                                   .Select(k => k.ApplicationUserId)
+                                                   .Distinct().Tolist();
+                                                   
+            return View(kheechIndexViewModel);
         }
 
        // GET: KheechEvents/Details/5
