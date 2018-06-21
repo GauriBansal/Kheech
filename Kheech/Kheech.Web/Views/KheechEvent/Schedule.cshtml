@@ -30,7 +30,7 @@
             @Html.LabelFor(m => m.WhoToMeet, new { @class = "col-md-2 control-label" })
             @if (Model.Friends == null)
                 {
-                   <p> You do not have any friends yet.</p>
+                    @Html.EditorFor(m => m.WhoToMeet, new { @readonly = "readonly", @class = "form-control", @placeholder="You do not have friends yet" })
                 }
             else
                 {
