@@ -6,8 +6,7 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js")
-    @Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css") 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
 
 </head>
 <body>
@@ -17,7 +16,7 @@
                 @Html.ActionLink("Kheech Logo", "Index", "Home", new { @class = "nav-link active" })
             </li>
         </ul>
-        <div class="col-sm-6">              
+        <div class="col-sm-6">
             @Html.Partial("_LoginPartial")
         </div>
     </div>
@@ -28,10 +27,11 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="footer-text"><strong> Gauri Bansal</strong> <br>
-                                    Kheech Network <br>
-                                    Little Rock, Ar<br>
-                                    Email: GauriBansal@Kheech.net
+                        <p class="footer-text">
+                            <strong> Gauri Bansal</strong> <br>
+                            Kheech Network <br>
+                            Little Rock, Ar<br>
+                            Email: GauriBansal@Kheech.net
                         </p>
                     </div>
                     <div class="col-md-4 offset-sm-4 justify-content-end">
@@ -47,6 +47,7 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

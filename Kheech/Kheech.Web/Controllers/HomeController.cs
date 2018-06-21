@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace Kheech.Web.Controllers
 {
-    [RoutePrefix("Home")]
+    [RoutePrefix("")]
     [AllowAnonymous]
     public class HomeController : Controller
     {

@@ -2,60 +2,62 @@
 @{
     ViewBag.Title = "Schedule";
 }
-@Html.AntiForgeryToken()
-@Html.ValidationSummary()
-<form action="@Url.RouteUrl("ScheduleMeetingPost")" , method="post">
-  <fieldset>
-    <legend>Find a suitable time</legend>
-    <div class="form-group">
-        @Html.LabelFor(m => m.EventName, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.EventName, new { @class = "form-control" })
+
+<form action="@Url.RouteUrl("ScheduleMeetingPost", new { id = 1})" method="post">
+
+        @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+    <fieldset>
+        <legend>Find a suitable time</legend>
+        <div class="form-group">
+            @Html.LabelFor(m => m.EventName, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.EventName, new { @class = "form-control" })
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.WhenToMeet, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
-                <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.WhenToMeet, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" />
+                    <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
                 </div>
-             </div>
-            @*@Html.EditorFor(m => m.WhenToMeet, new { @class = "form-control" })*@
+                @*@Html.EditorFor(m => m.WhenToMeet, new { @class = "form-control" })*@
+            </div>
         </div>
-    </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.WhoToMeet, new { @class = "col-md-2 control-label" })
-        <select class="form-control" name="WhoToMeet" value="@Request.Form["WhoToMeet"]" >
-            @if (Model.Count == 0)
-            {
-                <option> You do not have any friends yet.</option>
-            }
-            @else
-            {
-                foreach (var friend in Model)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.WhoToMeet, new { @class = "col-md-2 control-label" })
+            <select class="form-control" name="WhoToMeet" value="@Request.Form["WhoToMeet"]">
+                @if (Model.Friends == null)
                 {
-                    <option>@friend.ApplicationUser2.FirstName  @friend.ApplicationUser2.LastName</option>
+                    <option> You do not have any friends yet.</option>
                 }
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.WhereToMeet, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.WhereToMeet, new { @class = "form-control" })
+                else
+                {
+                    foreach (var friend in Model.Friends)
+                    {
+                        <option>@friend.Initiator.FirstName  @friend.Initiator.LastName</option>
+                    }
+                }
+            </select>
         </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-primary">Send Schedule</button>
+        <div class="form-group">
+            @Html.LabelFor(m => m.WhereToMeet, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.WhereToMeet, new { @class = "form-control" })
+            </div>
         </div>
-    </div>
- </fieldset>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-primary">Send Schedule</button>
+            </div>
+        </div>
+    </fieldset>
 </form>
-@section 
+@section scripts
 {
     <script type="text/javascript">
         $(function () {
