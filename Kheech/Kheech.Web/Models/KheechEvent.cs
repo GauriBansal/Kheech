@@ -29,6 +29,8 @@ namespace Kheech.Web.Models
 
         public bool IsGroupEvent { get; set; }
         
+        public virtual ICollection<KheechUser> KheechUsers {get; set;}
+        
         public virtual ICollection<KheechComment> KheechComments {get; set;}
 
     }
