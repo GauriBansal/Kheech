@@ -28,15 +28,32 @@ namespace Kheech.Web.Controllers
         {
             var currentUserId = User.Identity.GetUserId();
 
-            var activeKheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser)
+            var kheechIndexViewModel = new KheechIndexViewModel();
+            
+            kheechIndexViewModel.ActiveKheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser)
                                                     .Where(k => k.ApplicationUserId == currentUserId && k.EndDate > DateTime.UtcNow)
+                                                    .Take(5)
                                                     .ToList();
             
-            if (activeKheechEvents.Count == 0)
+            if (kheechIndexViewModel.ActiveKheechEvents.Count == 0)
             {
                 ViewBag.Message = "You do not have any Kheech at the moment. Would you like to create?";
             }
-            return View(activeKheechEvents);
+            
+            kheechIndexViewModel.RecentSchedules = _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                    .Where(k => k.ApplicationUserId == currentUserId && k.EndDate <= DateTime.UtcNow)
+                                                    .OrderByDescending(k => k.EndDate)
+                                                    .Take(3)
+                                                    .ToList();
+            
+            kheechIndexViewModel.RecentMoments = _context.Moments.Include(m => m.KheechEvent.Where(k => k.EndDate > DateTime.UtcNow)).Take(3).Tolist();
+            
+            kheechIndexViewModel.RecentFriends = _context.KheechUser.Include(k => k.ApplicationUser)
+                                                   .Include(k => k.KheechEvent.Where(m => m.ApplicationUserId == currentUserId).OrderByDescending(k => k.EndDate).Take(5)) 
+                                                   .Select(k => k.ApplicationUserId)
+                                                   .Distinct().Tolist();
+                                                   
+            return View(kheechIndexViewModel);
         }
 
        // GET: KheechEvents/Details/5
@@ -81,6 +98,7 @@ namespace Kheech.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("schedule/{id}", Name = "ScheduleMeetingPost")]
         public ActionResult Schedule(int id, ScheduleViewModel model)
         {
@@ -92,22 +110,27 @@ namespace Kheech.Web.Controllers
             kheechEvent.StartDate = model.WhenToMeet;
             kheechEvent.IsGroupEvent = false;
 
-            var location = _context.Locations.Where(l => l.Name == model.WhereToMeet).Take(1).ToList();
-
-            kheechEvent.LocationId = location[0].Id;
+            var location = _context.Locations.FirstOrDefault(l => l.Name == model.WhereToMeet);
+            if (location == null)
+            {
+                location = new Location 
+                {   
+                    Name: model.WhereToMeet,
+                    Country: "USA",
+                    City: "Little Rock",
+                    State: "AR"
+                };
+                _context.Locations.Add(location);
+                _context.SaveChanges();
+            }
+            
+            kheechEvent.LocationId = location.Id;
 
             _context.KheechEvents.Add(kheechEvent);
             _context.SaveChanges();
 
+            TempData["ScheduleMessage"] = "Congratulations, you have successfully added a Kheech. Keep going!";
             return RedirectToRoute("HomePage");
-        }
-
-        [Route("detail/{id}", Name = "KheechDetail")]
-        public ActionResult Detail(int id)
-        {
-            var kheechEvent = _context.KheechEvents.FirstOrDefault(k => k.Id == id);
-
-            return View(kheechEvent);
         }
     }
 }

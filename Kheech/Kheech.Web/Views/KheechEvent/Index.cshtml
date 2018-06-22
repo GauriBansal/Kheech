@@ -1,5 +1,5 @@
 ﻿@using Humanizer
-@model List<Kheech.Web.Models.KheechEvent>
+@model List<Kheech.Web.ViewModels.KheechIndexViewModel>
 @{
     ViewBag.Title = "Index";
 }
@@ -13,7 +13,7 @@
     {
     <ul class="row">
         <small> You have a friend's meet to enjoy. </small> 
-        @foreach(var kheech in Model)
+        @foreach(var kheech in Model.ActiveKheechEvents)
         {
             <li>@kheech.EventName "at" @kheech.Location "on" @kheech.StartDate.Humanize()</li>
         }
