@@ -12,12 +12,21 @@
                 @else
                 {
                 <div class="row">
-                    <div class="col-sm-4">
-                        //add the avatar here
+                    <div class="col-sm-4 avatar-circle">
+                        <span class="initials">@Model.ApplicationUser.FirstName.First()@Model.ApplicationUser.LastName.First()</span>
                     </div>
-                    <div class="col-md-8 text-center">
-                        @Model.StartDate.Humanize
+                    <div class="avatar-comment col-md-8 text-center">
+                        <h3> @Model.StartDate.DayOfWeek </h3>
+                        <h3> @Model.StartDate.Humanize </h3>
                     </div>
+                </div>
+                <div class="row">
+                    @foreach (var kheechUsers in Model.KheechUsers)
+                    {
+                        <div class="col-sm-12">
+                            
+                        </div>
+                     }
                 </div>
                 //include code to show who accepted and who dint
                 <div class="row">
