@@ -230,6 +230,10 @@
     <Compile Include="Migrations\201806181554392_AddingM2MExplicitRelationship.Designer.cs">
       <DependentUpon>201806181554392_AddingM2MExplicitRelationship.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806210050203_changeddatabase.cs" />
+    <Compile Include="Migrations\201806210050203_changeddatabase.Designer.cs">
+      <DependentUpon>201806210050203_changeddatabase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FriendshipStatus.cs" />
@@ -358,7 +362,7 @@
     <Content Include="Views\Friend\Index.cshtml" />
     <Content Include="Views\KheechEvents\Create.cshtml" />
     <Content Include="Views\KheechEvents\Delete.cshtml" />
-    <Content Include="Views\KheechEvents\Details.cshtml" />
+    <Content Include="Views\KheechEvent\Details.cshtml" />
     <Content Include="Views\KheechEvents\Edit.cshtml" />
     <Content Include="Views\KheechEvents\Index.cshtml" />
     <Content Include="Views\Moments\Create.cshtml" />
@@ -388,6 +392,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806181554392_AddingM2MExplicitRelationship.resx">
       <DependentUpon>201806181554392_AddingM2MExplicitRelationship.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806210050203_changeddatabase.resx">
+      <DependentUpon>201806210050203_changeddatabase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

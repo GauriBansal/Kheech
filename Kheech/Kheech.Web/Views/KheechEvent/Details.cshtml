@@ -1,0 +1,50 @@
+﻿@using Humanizer
+@using Kheech.Web.Models.KheechEvent
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="container">
+                @if (User.Identity.GetUserId() == @Model.ApplicationUserId)
+                {
+                    //if this is the user who created the kHEECH, show the kheech edit page here
+                }
+                @else
+                {
+                <div class="row">
+                    <div class="col-sm-4">
+                        //add the avatar here
+                    </div>
+                    <div class="col-md-8 text-center">
+                        @Model.StartDate.Humanize
+                    </div>
+                </div>
+                //include code to show who accepted and who dint
+                <div class="row">
+                    <div class="col-sm-6">
+                        //ACCEPT CHECKBOX HERE
+                    </div>
+                    <div class="col-md-6">
+                        //not accept checkbox here
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <p> Here is what going on: </p>
+            @foreach (var comment in Model)
+            {
+                <div class="row">
+                    <div class="avatar-circle col-sm-3">
+                        <span class="initials"> @comment.KheechEvent.ApplicationUser.FirstName </span>
+                    </div>
+                    <p class="col-sm-9">
+                        @comment.KheechEvent.ApplicationUser.FirstName added: <br>
+                        <small> @comment.Discussion </small>
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

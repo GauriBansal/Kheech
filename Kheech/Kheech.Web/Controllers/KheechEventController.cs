@@ -102,7 +102,7 @@ namespace Kheech.Web.Controllers
             return RedirectToRoute("HomePage");
         }
 
-        [Route("detail/{id}", Name = "KheechDetails")]
+        [Route("detail/{id}", Name = "KheechDetail")]
         public ActionResult Detail(int id)
         {
             var kheechEvent = _context.KheechEvents.FirstOrDefault(k => k.Id == id);

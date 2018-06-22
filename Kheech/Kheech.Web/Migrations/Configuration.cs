@@ -22,8 +22,8 @@ namespace Kheech.Web.Migrations
             var roleManager = new RoleManager<IdentityRole>(roleStore);
             var role = new IdentityRole { Name = "AppAdmin" };
 
-            var userStore = new UserStore<IdentityUser>(context);
-            var userManager = new UserManager<IdentityUser>(userStore);
+            var userStore = new UserStore<ApplicationUser>(context);
+            var userManager = new UserManager<ApplicationUser>(userStore);
 
             var phil = context.Users.FirstOrDefault(u => u.Email == "phil.scholtes@gmail.com");
             if (phil == null)
@@ -53,10 +53,10 @@ namespace Kheech.Web.Migrations
                 var result = userManager.Create(chris, "Admin123!");
             }
 
-            phil.FriendshipsStarted.Add(new Friendship()
-            {
-                //FriendshipStatus = FriendshipStatuses.
-            });
+            //phil.FriendshipsStarted.Add(new Friendship()
+            //{
+            //    //FriendshipStatus = FriendshipStatuses.
+            //});
 
 
         }
