@@ -35,7 +35,7 @@ namespace Kheech.Web.Controllers
                                                     .Take(5)
                                                     .ToList();
             
-            if (kheechIndexViewModel.ActiveKheechEvents.Count == 0)
+            if (kheechIndexViewModel.ActiveKheechEvents == null)
             {
                 ViewBag.Message = "You do not have any Kheech at the moment. Would you like to create?";
             }
@@ -46,12 +46,12 @@ namespace Kheech.Web.Controllers
                                                     .Take(3)
                                                     .ToList();
             
-            kheechIndexViewModel.RecentMoments = _context.Moments.Include(m => m.KheechEvent.Where(k => k.EndDate > DateTime.UtcNow)).Take(3).Tolist();
+            //kheechIndexViewModel.RecentMoments = _context.Moments.Include(m => m.KheechEvent.Where(k => k.EndDate > DateTime.UtcNow)).Take(3).Tolist();
             
-            kheechIndexViewModel.RecentFriends = _context.KheechUser.Include(k => k.ApplicationUser)
-                                                   .Include(k => k.KheechEvent.Where(m => m.ApplicationUserId == currentUserId).OrderByDescending(k => k.EndDate).Take(5)) 
-                                                   .Select(k => k.ApplicationUserId)
-                                                   .Distinct().Tolist();
+            //kheechIndexViewModel.RecentFriends = _context.KheechUsers.Include(k => k.ApplicationUser)
+            //                                       .Include(k => k.KheechEvent.Where(m => m.ApplicationUserId == currentUserId).OrderByDescending(k => k.EndDate).Take(5)) 
+            //                                       .Select(k => k.ApplicationUserId)
+            //                                       .Distinct().Tolist();
                                                    
             return View(kheechIndexViewModel);
         }
@@ -115,10 +115,10 @@ namespace Kheech.Web.Controllers
             {
                 location = new Location 
                 {   
-                    Name: model.WhereToMeet,
-                    Country: "USA",
-                    City: "Little Rock",
-                    State: "AR"
+                    Name = model.WhereToMeet,
+                    Country = "USA",
+                    City = "Little Rock",
+                    State = "AR"
                 };
                 _context.Locations.Add(location);
                 _context.SaveChanges();
