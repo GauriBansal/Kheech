@@ -1,11 +1,11 @@
 ﻿@using Humanizer
-@model List<Kheech.Web.ViewModels.KheechIndexViewModel>
+@model Kheech.Web.ViewModels.KheechIndexViewModel
 @{
     ViewBag.Title = "Index";
 }
 
 <div class="jumbotron">
-    @if (Model.Count == 0)
+    @if (Model.ActiveKheechEvents == null)
     {
         <p>@ViewBag.Message</p>
     }
