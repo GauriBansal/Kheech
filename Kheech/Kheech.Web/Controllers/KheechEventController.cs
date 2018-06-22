@@ -54,6 +54,7 @@ namespace Kheech.Web.Controllers
             //                                       .Distinct().Tolist();
                                                    
             return View(kheechIndexViewModel);
+
         }
 
        // GET: KheechEvents/Details/5
