@@ -72,20 +72,29 @@ textarea {
     /*background-image: url("https://hips.hearstapps.com/cos.h-cdn.co/assets/cm/14/25/53a0783383e88_-_cos-01-meeting-friends-xl.jpg");*/
 }
 
+.kheech-comments {
+    margin: 5px 5px 5px 5px;
+    border: 1px solid #2EC4B6;
+    border-radius: 3px 4px;
+    width: 90%;
+    height: 40%;
+
+}
+
 .avatar-circle {
-  width: 100px;
-  height: 100px;
-  background-color: #2EC4B6;
-  text-align: center;
-  border-radius: 50%;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
+    width: 10%;
+    height: 100%;
+    background-color: #2EC4B6;
+    text-align: center;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
 }
 
 .initials {
   position: relative;
-  top: 25px; /* 25% of parent */
-  font-size: 50px; /* 50% of parent */
+  top: 10%; /* 25% of parent */
+  font-size: xx-large; /* 50% of parent */
   line-height: 50px; /* 50% of parent */
   color: #E71D36;
   font-family: "Courier New", monospace;
@@ -93,7 +102,8 @@ textarea {
 }
 
 .avatar-comment {
-    position:absolute;
+    position: absolute;
+    color: #E71D36;
 }
 
 .followimage {

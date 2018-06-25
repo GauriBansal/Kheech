@@ -45,11 +45,11 @@
             <p> Here is what going on: </p>
             @foreach (var comment in Model.KheechComments)
             {
-                <div class="row table-bordered">
+                <div class="row kheech-comments">
                     <div class="avatar-circle col-sm-3">
                         <span class="initials">@comment.KheechEvent.ApplicationUser.FirstName.First()@comment.KheechEvent.ApplicationUser.LastName.First()</span>
                     </div>
-                    <p class="avatar-comment col-sm-offset-3 col-sm-6">
+                    <p class="avatar-comment offset-2 col-sm-9">
                         @comment.KheechEvent.ApplicationUser.FirstName added: <br>
                         <small> @comment.Discussion </small>
                     </p>
