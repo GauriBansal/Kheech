@@ -73,6 +73,9 @@ namespace Kheech.Web.Controllers
             
             KheechEvent kheechEvent = _context.KheechEvents.Include(k => k.ApplicationUser)
                                                            .Include(k => k.KheechComments)
+                                                           .Include(k => k.KheechUsers)
+                                                           .Include(k => k.Location)
+                                                           .Include(k => k.Group)
                                                            .FirstOrDefault(k => k.Id == id);
             if (kheechEvent == null)
             {
@@ -134,5 +137,50 @@ namespace Kheech.Web.Controllers
             TempData["ScheduleMessage"] = "Congratulations, you have successfully added a Kheech. Keep going!";
             return RedirectToRoute("HomePage");
         }
+
+        // GET: KheechEvents/Edit/5
+        [Route("Edit/{id}", Name = "KheechEdit")]
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            KheechEvent kheechEvent = _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                           .Include(k => k.KheechComments)
+                                                           .FirstOrDefault(k => k.Id == id);
+            if (kheechEvent == null)
+            {
+                return HttpNotFound();
+            }
+            //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
+            ViewBag.GroupId = new SelectList(_context.Groups, "Id", "Name", kheechEvent.GroupId);
+            ViewBag.LocationId = new SelectList(_context.Locations, "Id", "Name", kheechEvent.LocationId);
+            return View(kheechEvent);
+        }
+
+        // POST: KheechEvents/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("Edit/{id}", Name = "KheechEditPost")]
+        public ActionResult Edit(KheechEvent kheechEvent)
+        {
+            if (ModelState.IsValid)
+            {
+                kheechEvent.EndDate = kheechEvent.StartDate.AddHours(2);
+                kheechEvent.InsertDate = DateTime.UtcNow;
+                _context.Entry(kheechEvent).State = EntityState.Modified;
+                _context.SaveChanges();
+                return RedirectToRoute("KheechDetails", new { id = kheechEvent.Id});
+            }
+            //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
+            ViewBag.GroupId = new SelectList(_context.Groups, "Id", "Name", kheechEvent.GroupId);
+            ViewBag.LocationId = new SelectList(_context.Locations, "Id", "Name", kheechEvent.LocationId);
+            return View(kheechEvent);
+        }
+
+
     }
 }

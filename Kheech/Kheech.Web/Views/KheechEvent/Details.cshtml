@@ -8,7 +8,31 @@
             <div class="container">
                 @if (User.Identity.GetUserId() == @Model.ApplicationUserId)
                 {
-                    //if this is the user who created the kHEECH, show the kheech edit page here
+                <div class="row">
+                    <a class="btn btn-primary col-sm-3 offset-4 text-center" href="@Url.RouteUrl("KheechEdit", new { id = Model.Id })">Edit</a>
+                </div>
+                <div class="row">
+                    <ul class="col-sm-12"> Your friends are excited to meet you at @Model.Location.Name, @Model.StartDate.Humanize()
+                    @foreach(var kheechUser in Model.KheechUsers)
+                    {
+                        if (kheechUser.IsAccepted == true)
+                        {
+                            <li>@kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName</li>
+                        }
+                    }
+                    </ul>
+                </div>
+                @*<div class="row">
+                    <ul class="col-sm-12"> Some of your friends would like you to reconsider the time instead of @Model.StartDate.Humanize()
+                    @foreach(var kheechUser in Model.KheechUsers)
+                    {
+                        if (kheechUser.IsAccepted == false)
+                        {
+                            <li>@kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName</li>
+                        }
+                    }
+                    </ul>
+                </div>*@
                 }
                 else
                 {

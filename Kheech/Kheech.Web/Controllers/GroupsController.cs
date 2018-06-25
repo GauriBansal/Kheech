@@ -12,12 +12,17 @@ namespace Kheech.Web.Controllers
 {
     public class GroupsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        protected readonly ApplicationDbContext _context;
+
+        public GroupsController()
+        {
+            _context = new ApplicationDbContext();
+        }
 
         // GET: Groups
         public ActionResult Index()
         {
-            var groups = db.Groups.Include(g => g.ApplicationUser);
+            var groups = _context.Groups.Include(g => g.ApplicationUser);
             return View(groups.ToList());
         }
 
@@ -28,7 +33,7 @@ namespace Kheech.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Group group = db.Groups.Find(id);
+            Group group = _context.Groups.Find(id);
             if (group == null)
             {
                 return HttpNotFound();
@@ -39,7 +44,7 @@ namespace Kheech.Web.Controllers
         // GET: Groups/Create
         public ActionResult Create()
         {
-            ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName");
+            //ViewBag.ApplicationUserId = new SelectList(_context.ApplicationUsers, "Id", "FirstName");
             return View();
         }
 
@@ -52,12 +57,12 @@ namespace Kheech.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Groups.Add(group);
-                db.SaveChanges();
+                _context.Groups.Add(group);
+                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", group.ApplicationUserId);
+            //ViewBag.ApplicationUserId = new SelectList(_context.ApplicationUsers, "Id", "FirstName", group.ApplicationUserId);
             return View(group);
         }
 
@@ -68,12 +73,12 @@ namespace Kheech.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Group group = db.Groups.Find(id);
+            Group group = _context.Groups.Find(id);
             if (group == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", group.ApplicationUserId);
+            //ViewBag.ApplicationUserId = new SelectList(_context.ApplicationUsers, "Id", "FirstName", group.ApplicationUserId);
             return View(group);
         }
 
@@ -86,11 +91,11 @@ namespace Kheech.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(group).State = EntityState.Modified;
-                db.SaveChanges();
+                _context.Entry(group).State = EntityState.Modified;
+                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", group.ApplicationUserId);
+            //ViewBag.ApplicationUserId = new SelectList(_context.ApplicationUsers, "Id", "FirstName", group.ApplicationUserId);
             return View(group);
         }
 
@@ -101,7 +106,7 @@ namespace Kheech.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Group group = db.Groups.Find(id);
+            Group group = _context.Groups.Find(id);
             if (group == null)
             {
                 return HttpNotFound();
@@ -114,9 +119,9 @@ namespace Kheech.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Group group = db.Groups.Find(id);
-            db.Groups.Remove(group);
-            db.SaveChanges();
+            Group group = _context.Groups.Find(id);
+            _context.Groups.Remove(group);
+            _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -124,7 +129,7 @@ namespace Kheech.Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _context.Dispose();
             }
             base.Dispose(disposing);
         }
