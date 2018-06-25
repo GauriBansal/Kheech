@@ -20,5 +20,6 @@ namespace Kheech.Web.Models
 
         //TODO: Set this to DateTime.UtcNow in SaveChanges() method on DbContext
         //public DateTime InsertDate => DateTime.UtcNow;
+        public DateTime InsertDate { get; set; }
     }
 }

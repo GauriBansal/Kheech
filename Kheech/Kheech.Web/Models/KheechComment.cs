@@ -13,5 +13,7 @@ namespace Kheech.Web.Models
 
         public int KheechEventId { get; set; }
         public virtual KheechEvent KheechEvent { get; set; }
+
+        public DateTime InsertDate { get; set; }
     }
 }

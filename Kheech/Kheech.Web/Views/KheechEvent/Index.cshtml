@@ -4,30 +4,36 @@
     ViewBag.Title = "Index";
 }
 
-<div class="jumbotron">
-    @if (Model.ActiveKheechEvents == null)
-    {
-        <p>@ViewBag.Message</p>
-    }
-    else
-    {
-    <ul class="row">
-        <small> You have a friend's meet to enjoy. </small> 
-        @foreach(var kheech in Model.ActiveKheechEvents)
+<div class="container">
+    <div class="jumbotron">
+        @if (Model.ActiveKheechEvents.Count() == 0)
         {
-            <li>@kheech.EventName "at" @kheech.Location "on" @kheech.StartDate.Humanize()</li>
+            <p>@ViewBag.Message</p>
         }
-    </ul>
-    }
-</div>
-<div class="row">
-    <div class="col-sm-4 kheech-schedule">
-        <a href="@Url.RouteUrl("ScheduleMeeting")" class="btn btn-dark">Start Scheduling</a>
+        else
+        {
+            <ul class="row">
+                You have a friend's meet to enjoy.
+                @foreach (var kheech in Model.ActiveKheechEvents)
+                {
+                <li class="offset-sm-1 col-sm-10">
+                    <a href="@Url.RouteUrl("KheechDetails", new { id = kheech.Id})">
+                        @kheech.EventName.Humanize() at @kheech.Location.Name.Humanize() - @kheech.StartDate.Humanize()
+                    </a>
+                </li>
+                }
+            </ul>
+        }
     </div>
-    <div class="col-sm-4 kheech-friend">
-        <a href="@Url.RouteUrl("ScheduleMeeting")" class="btn btn-dark">See your connection with friends</a>
-    </div>
-    <div class="col-sm-4 kheech-moments">
-        <a href="@Url.RouteUrl("MomentsHome")" class="btn btn-dark">Let's enjoy some Kheech's Moments</a>
+    <div class="row">
+        <div class="col-sm-4 kheech-schedule">
+            <a href="@Url.RouteUrl("ScheduleMeeting")" class="btn btn-dark">Start Scheduling</a>
+        </div>
+        <div class="col-sm-4 kheech-friend">
+            <a href="@Url.RouteUrl("ScheduleMeeting")" class="btn btn-dark">See your connection with friends</a>
+        </div>
+        <div class="col-sm-4 kheech-moments">
+            <a href="@Url.RouteUrl("MomentsHome")" class="btn btn-dark">Let's enjoy some Kheech's Moments</a>
+        </div>
     </div>
 </div>

@@ -31,11 +31,13 @@ namespace Kheech.Web.Controllers
             var kheechIndexViewModel = new KheechIndexViewModel();
             
             kheechIndexViewModel.ActiveKheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                    .Include(k => k.Location)
+                                                    .Include(k => k.Group)
                                                     .Where(k => k.ApplicationUserId == currentUserId && k.EndDate > DateTime.UtcNow)
                                                     .Take(5)
                                                     .ToList();
             
-            if (kheechIndexViewModel.ActiveKheechEvents == null)
+            if (kheechIndexViewModel.ActiveKheechEvents.Count() == 0)
             {
                 ViewBag.Message = "You do not have any Kheech at the moment. Would you like to create?";
             }
@@ -46,13 +48,16 @@ namespace Kheech.Web.Controllers
                                                     .Take(3)
                                                     .ToList();
             
-            //kheechIndexViewModel.RecentMoments = _context.Moments.Include(m => m.KheechEvent.Where(k => k.EndDate > DateTime.UtcNow)).Take(3).Tolist();
-            
-            //kheechIndexViewModel.RecentFriends = _context.KheechUsers.Include(k => k.ApplicationUser)
-            //                                       .Include(k => k.KheechEvent.Where(m => m.ApplicationUserId == currentUserId).OrderByDescending(k => k.EndDate).Take(5)) 
-            //                                       .Select(k => k.ApplicationUserId)
-            //                                       .Distinct().Tolist();
-                                                   
+            kheechIndexViewModel.RecentMoments = _context.Moments.Include(m => m.KheechEvent)
+                                                                 .OrderByDescending(m => m.InsertDate)
+                                                                 .Take(3)
+                                                                 .ToList();
+
+            kheechIndexViewModel.RecentFriends = _context.KheechUsers.Include(k => k.ApplicationUser)
+                                                   .Include(k => k.KheechEvent)
+                                                   .Where(m => m.KheechEvent.ApplicationUserId == currentUserId && m.KheechEvent.EndDate > DateTime.UtcNow)
+                                                   .Distinct().Take(3).ToList();
+
             return View(kheechIndexViewModel);
 
         }
@@ -81,19 +86,12 @@ namespace Kheech.Web.Controllers
         public ActionResult Schedule()
         {
             var currentUserId = User.Identity.GetUserId();
-            //var friendUser = new ApplicationUser();
 
             var scheduleViewModel = new ScheduleViewModel();
             
             //scheduleViewModel.Friends = Enumerable.Empty<Friendship>();
             
-            // _context.Friendships.Where(f => f.ApplicationUserId1 == currentUserId).ToList();
-
-            //foreach (var friend in friends)
-            //{
-            //    friendUser = _context.Users.FirstOrDefault(x => x.Id == friend.ApplicationUserId2);
-            //    friend.ApplicationUser2 = friendUser;
-            //}
+            scheduleViewModel.Friends = _context.Friendships.Where(f => f.InitiatorId == currentUserId || f.RecipientId == currentUserId).Distinct().ToList();
 
             return View(scheduleViewModel);
         }
@@ -109,7 +107,9 @@ namespace Kheech.Web.Controllers
             kheechEvent.EventName = model.EventName;
             kheechEvent.ApplicationUserId = currentUserId;
             kheechEvent.StartDate = model.WhenToMeet;
+            kheechEvent.EndDate = kheechEvent.StartDate.AddHours(2);
             kheechEvent.IsGroupEvent = false;
+            kheechEvent.InsertDate = DateTime.UtcNow;
 
             var location = _context.Locations.FirstOrDefault(l => l.Name == model.WhereToMeet);
             if (location == null)
@@ -119,7 +119,8 @@ namespace Kheech.Web.Controllers
                     Name = model.WhereToMeet,
                     Country = "USA",
                     City = "Little Rock",
-                    State = "AR"
+                    State = "AR",
+                    InsertDate = DateTime.UtcNow
                 };
                 _context.Locations.Add(location);
                 _context.SaveChanges();

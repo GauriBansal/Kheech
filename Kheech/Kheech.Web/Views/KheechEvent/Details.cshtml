@@ -1,5 +1,6 @@
 ﻿@using Humanizer
-@using Kheech.Web.Models.KheechEvent
+@using Microsoft.AspNet.Identity
+@model Kheech.Web.Models.KheechEvent
 
 <div class="container">
     <div class="row">
@@ -9,7 +10,7 @@
                 {
                     //if this is the user who created the kHEECH, show the kheech edit page here
                 }
-                @else
+                else
                 {
                 <div class="row">
                     <div class="col-sm-4 avatar-circle">
@@ -17,7 +18,7 @@
                     </div>
                     <div class="avatar-comment col-md-8 text-center">
                         <h3> @Model.StartDate.DayOfWeek </h3>
-                        <h3> @Model.StartDate.Humanize </h3>
+                        <h3> @Model.StartDate.Humanize() </h3>
                     </div>
                 </div>
                 <div class="row">

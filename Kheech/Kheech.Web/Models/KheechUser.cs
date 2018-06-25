@@ -15,7 +15,7 @@ namespace Kheech.Web.Models
         public string ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
         
-        public bool IsAccepted {get; set;)
+        public bool IsAccepted { get; set; }
          
     }
 }

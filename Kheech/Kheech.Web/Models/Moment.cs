@@ -15,5 +15,7 @@ namespace Kheech.Web.Models
         public string Capture { get; set; }
         
         public string Description {get; set;}
+
+        public DateTime InsertDate { get; set; }
     }
 }

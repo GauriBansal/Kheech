@@ -1,4 +1,7 @@
 ﻿body {
+    background-image: url("https://images.unsplash.com/photo-1502758930693-b8fb0f909327?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=fcf0d50cb456e9902fc819fd55df8a52&auto=format&fit=crop&w=1050&q=80");
+    background-repeat: no-repeat;
+    background-size: cover;
     padding-top: 50px;
     padding-bottom: 20px;
     font-family: 'Lato', sans-serif;
@@ -29,27 +32,44 @@ textarea {
     max-width: 280px;
 }
 
+.navigation-style {
+    background-color: #FDFFFC;
+}
+
 #start-page {
-    background-image: url("https://images.unsplash.com/photo-1502758930693-b8fb0f909327?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=fcf0d50cb456e9902fc819fd55df8a52&auto=format&fit=crop&w=1050&q=80");
-    padding: 20px 20px 20px 20px;
+    margin-top: 70px;
     color: #E71D36;
     text-align: justify;
-    text-shadow: 1px 1px #EF233C;
 }
 
 .card {
     width: auto;
     height: 300px !important;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    color: #011627;
 }
 
 .card-img {
     border-radius: 50%;
 }
 
+.card-title {
+    position: relative;
+    top: 150px;
+    color: #011627;
+}
+
+.card-row {
+    margin-top: 50px;
+    margin-bottom: 100px;
+    padding-top: 20px;
+}
+
 .kheech-schedule {
     width: 300px;
     height: 300px;
-    background-image: url("https://hips.hearstapps.com/cos.h-cdn.co/assets/cm/14/25/53a0783383e88_-_cos-01-meeting-friends-xl.jpg");
+    /*background-image: url("https://hips.hearstapps.com/cos.h-cdn.co/assets/cm/14/25/53a0783383e88_-_cos-01-meeting-friends-xl.jpg");*/
 }
 
 .avatar-circle {

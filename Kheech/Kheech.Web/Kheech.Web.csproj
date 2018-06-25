@@ -234,6 +234,14 @@
     <Compile Include="Migrations\201806210050203_changeddatabase.Designer.cs">
       <DependentUpon>201806210050203_changeddatabase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806241836479_AddedInsertDateInAllModels.cs" />
+    <Compile Include="Migrations\201806241836479_AddedInsertDateInAllModels.Designer.cs">
+      <DependentUpon>201806241836479_AddedInsertDateInAllModels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806250339332_nullableGroupId.cs" />
+    <Compile Include="Migrations\201806250339332_nullableGroupId.Designer.cs">
+      <DependentUpon>201806250339332_nullableGroupId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FriendshipStatus.cs" />
@@ -396,6 +404,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806210050203_changeddatabase.resx">
       <DependentUpon>201806210050203_changeddatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806241836479_AddedInsertDateInAllModels.resx">
+      <DependentUpon>201806241836479_AddedInsertDateInAllModels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806250339332_nullableGroupId.resx">
+      <DependentUpon>201806250339332_nullableGroupId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

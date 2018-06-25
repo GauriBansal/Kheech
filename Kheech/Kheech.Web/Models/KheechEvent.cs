@@ -24,7 +24,7 @@ namespace Kheech.Web.Models
 
         public DateTime EndDate { get; set; }
 
-        public int GroupId { get; set; }
+        public int? GroupId { get; set; }
         public virtual Group Group { get; set; }
 
         public bool IsGroupEvent { get; set; }
@@ -33,5 +33,6 @@ namespace Kheech.Web.Models
         
         public virtual ICollection<KheechComment> KheechComments {get; set;}
 
+        public DateTime InsertDate { get; set; }
     }
 }
