@@ -33,6 +33,12 @@ namespace Kheech.Web.Controllers
             }
             
             var moments = _context.Moments.Include(m => m.KheechEvent).OrderByDescending(m => m.Id).ToList();
+            
+            foreach (var event in moments.KheechEvent)
+            {
+                var location = _context.Locations.FirstOrDefault(l => l.Id == event.LocationId);
+                event.Location = location;
+            }
             return View(moments);
         }
 
@@ -49,15 +55,21 @@ namespace Kheech.Web.Controllers
             {
                 return HttpNotFound();
             }
+            
+            moment.KheechEvent.Location = _context.Locations.FirstOrDefault(l => l.Id == moment.KheechEvent.LocationId);
+         
             return View(moment);
         }
 
         // GET: Moments/Create
-        [Route("Create", Name = "MomentsCreate")]
-        public ActionResult Create()
+        [Route("Create/{kheechId}", Name = "MomentsCreate")]
+        public ActionResult Create(int kheechId)
         {
-            ViewBag.KheechEventId = new SelectList(_context.KheechEvents, "Id", "ApplicationUserId");
-            return View();
+            var moment = new Moment();
+            moment.InsertDate = Datetime.UtcNow;
+            moment.KheechEventId = kheechId;
+            
+            return View(moment);
         }
 
         // POST: Moments/Create
@@ -65,33 +77,32 @@ namespace Kheech.Web.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Create", Name = "MomentsCreatePost")]
-        public ActionResult Create([Bind(Include = "Id,KheechEventId,Capture")] Moment moment)
+        [Route("Create/{kheechId}", Name = "MomentsCreatePost")]
+        public ActionResult Create(Moment moment)
         {
             if (ModelState.IsValid)
             {
                 _context.Moments.Add(moment);
                 _context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new { id = moment.Id});
             }
 
-            ViewBag.KheechEventId = new SelectList(_context.KheechEvents, "Id", "ApplicationUserId", moment.KheechEventId);
             return View(moment);
         }
 
         // GET: Moments/Edit/5
+        [Route("Edit/{id}", Name = "MomentsEdit")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Moment moment = _context.Moments.Find(id);
+            Moment moment = _context.Moments.Include(m => m.KheechEvent).FirstOrDefault(m => m.Id == id);
             if (moment == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.KheechEventId = new SelectList(_context.KheechEvents, "Id", "ApplicationUserId", moment.KheechEventId);
             return View(moment);
         }
 
@@ -100,15 +111,15 @@ namespace Kheech.Web.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,KheechEventId,Capture")] Moment moment)
+        [Route("Edit/{id}", Name = "MomentsEditPost")]
+        public ActionResult Edit(Moment moment)
         {
             if (ModelState.IsValid)
             {
                 _context.Entry(moment).State = EntityState.Modified;
                 _context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new { id = moment.Id});
             }
-            ViewBag.KheechEventId = new SelectList(_context.KheechEvents, "Id", "ApplicationUserId", moment.KheechEventId);
             return View(moment);
         }
 
@@ -136,15 +147,6 @@ namespace Kheech.Web.Controllers
             _context.Moments.Remove(moment);
             _context.SaveChanges();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _context.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }
