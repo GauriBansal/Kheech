@@ -32,13 +32,22 @@ namespace Kheech.Web.Controllers
                 return RedirectToRoute("IndexPage");
             }
             
-            var moments = _context.Moments.Include(m => m.KheechEvent).OrderByDescending(m => m.Id).ToList();
-            
-            foreach (var event in moments.KheechEvent)
+            //select *
+            //from Moments m
+            //inner join KheechEvents e on e.Id = m.KheechEventId
+            //inner join Locations l on l.Id = e.LocationId
+            //order by m.Id desc
+
+            var moments = _context.Moments
+                .Include(m => m.KheechEvent.Location)
+                .OrderByDescending(m => m.Id)
+                .ToList();
+
+            foreach (var m in moments)
             {
-                var location = _context.Locations.FirstOrDefault(l => l.Id == event.LocationId);
-                event.Location = location;
+                //access m.KheechEvent and m.KheechEvent.Location from the .Inlcude()
             }
+
             return View(moments);
         }
 
@@ -66,7 +75,7 @@ namespace Kheech.Web.Controllers
         public ActionResult Create(int kheechId)
         {
             var moment = new Moment();
-            moment.InsertDate = Datetime.UtcNow;
+            moment.InsertDate = DateTime.UtcNow;
             moment.KheechEventId = kheechId;
             
             return View(moment);
