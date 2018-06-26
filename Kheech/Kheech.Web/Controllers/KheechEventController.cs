@@ -77,11 +77,23 @@ namespace Kheech.Web.Controllers
                                                            .Include(k => k.Location)
                                                            .Include(k => k.Group)
                                                            .FirstOrDefault(k => k.Id == id);
+
             if (kheechEvent == null)
             {
                 return HttpNotFound();
             }
-            
+
+            foreach (var user in kheechEvent.KheechUsers)
+            {
+                var applicationUser = _context.Users.FirstOrDefault(u => u.Id == user.ApplicationUserId);
+                if (applicationUser == null)
+                {
+                    return HttpNotFound();
+                }
+
+                user.ApplicationUser = applicationUser;
+            }
+           
             return View(kheechEvent);
         }
         
