@@ -40,13 +40,9 @@ namespace Kheech.Web.Controllers
 
             var moments = _context.Moments
                 .Include(m => m.KheechEvent.Location)
+                .Include(m => m.ApplicationUser)
                 .OrderByDescending(m => m.Id)
                 .ToList();
-
-            foreach (var m in moments)
-            {
-                //access m.KheechEvent and m.KheechEvent.Location from the .Inlcude()
-            }
 
             return View(moments);
         }
@@ -59,7 +55,8 @@ namespace Kheech.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Moment moment = _context.Moments.Include(m => m.KheechEvent).FirstOrDefault(m => m.Id == id);
+            Moment moment = _context.Moments.Include(m => m.KheechEvent.Location)
+                                            .FirstOrDefault(m => m.Id == id);
             if (moment == null)
             {
                 return HttpNotFound();

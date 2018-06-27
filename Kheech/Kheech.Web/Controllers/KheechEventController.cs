@@ -43,18 +43,20 @@ namespace Kheech.Web.Controllers
             }
             
             kheechIndexViewModel.RecentSchedules = _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                    .Include(k => k.Location)
+                                                    .Include(k => k.Group)
                                                     .Where(k => k.ApplicationUserId == currentUserId && k.EndDate <= DateTime.UtcNow)
                                                     .OrderByDescending(k => k.EndDate)
                                                     .Take(3)
                                                     .ToList();
             
-            kheechIndexViewModel.RecentMoments = _context.Moments.Include(m => m.KheechEvent)
+            kheechIndexViewModel.RecentMoments = _context.Moments.Include(m => m.KheechEvent.Location)
                                                                  .OrderByDescending(m => m.InsertDate)
                                                                  .Take(3)
                                                                  .ToList();
 
             kheechIndexViewModel.RecentFriends = _context.KheechUsers.Include(k => k.ApplicationUser)
-                                                   .Include(k => k.KheechEvent)
+                                                   .Include(k => k.KheechEvent.Location)
                                                    .Where(m => m.KheechEvent.ApplicationUserId == currentUserId && m.KheechEvent.EndDate > DateTime.UtcNow)
                                                    .Distinct().Take(3).ToList();
 
@@ -106,7 +108,33 @@ namespace Kheech.Web.Controllers
             
             //scheduleViewModel.Friends = Enumerable.Empty<Friendship>();
             
-            scheduleViewModel.Friends = _context.Friendships.Where(f => f.InitiatorId == currentUserId || f.RecipientId == currentUserId).Distinct().ToList();
+            var friends = _context.Friendships
+                        .Include(f => f.Initiator)
+                        .Include(f => f.Recipient)
+                        .Include(f => f.FriendshipStatus)
+                        .Where(f => f.InitiatorId == currentUserId || f.RecipientId == currentUserId).Distinct().ToList();
+
+            foreach (var item in friends)
+            {
+                if (item.RecipientId == currentUserId)
+                {
+                    var friendViewModel1 = new FriendViewModel
+                    {
+                        Id = item.InitiatorId,
+                        Name = item.Initiator.FirstName
+                    };
+                    scheduleViewModel.Friends.Add(friendViewModel1);
+                }
+                else
+                {
+                    var friendViewModel = new FriendViewModel
+                    {
+                        Id = item.RecipientId,
+                        Name = item.Recipient.FirstName
+                    };
+                    scheduleViewModel.Friends.Add(friendViewModel);
+                }
+            }
 
             return View(scheduleViewModel);
         }
@@ -191,6 +219,24 @@ namespace Kheech.Web.Controllers
             ViewBag.GroupId = new SelectList(_context.Groups, "Id", "Name", kheechEvent.GroupId);
             ViewBag.LocationId = new SelectList(_context.Locations, "Id", "Name", kheechEvent.LocationId);
             return View(kheechEvent);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("AddDiscussion/{id}", Name = "AddDiscussion")]
+        public ActionResult AddDiscussion(int id, string newMessage)
+        {
+            var kheechComment = new KheechComment
+            {
+                Discussion = newMessage,
+                InsertDate = DateTime.UtcNow,
+                KheechEventId = id
+            };
+
+            _context.KheechComments.Add(kheechComment);
+            _context.SaveChanges();
+
+            return RedirectToRoute("KheechDetails", new { id = id });
         }
 
 

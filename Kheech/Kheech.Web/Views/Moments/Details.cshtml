@@ -6,8 +6,8 @@
 }
 
 <div class="container">
-    <div class="row card">
-        <h4 class="card-title">@Model.KheechEvent.EventName at @Model.KheechEvent.Location.Name on @Model.KheechEvent.StartDate.Humanize</h4>
+    <div class="row card text-center">
+        <h4 class="card-title">@Model.KheechEvent.EventName.Humanize() at @Model.KheechEvent.Location.Name.Humanize() on @Model.KheechEvent.StartDate.ToString("dddd, dd MMMM yyyy")</h4>
         <img class="card-img" src="@Model.Capture" alt="Memory" />
         <div class="card-body">
             <p class="card-text">@Model.Description</p> <br>

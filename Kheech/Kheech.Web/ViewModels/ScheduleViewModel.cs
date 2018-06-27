@@ -9,7 +9,12 @@ namespace Kheech.Web.ViewModels
 {
     public class ScheduleViewModel
     {
-        public ICollection<Friendship> Friends {get; set;}
+        public ScheduleViewModel()
+        {
+            Friends = new List<FriendViewModel>();
+        }
+
+        public List<FriendViewModel> Friends {get; set;}
         
         [Display(Name = "What do you want to do?")]
         public string EventName { get; set; }
@@ -22,5 +27,12 @@ namespace Kheech.Web.ViewModels
 
         [Display(Name = "Where do you want to meet?")]
         public string WhereToMeet { get; set; }
+    }
+
+    public class FriendViewModel
+    {
+        public string Id { get; set; }
+
+        public string Name { get; set; }
     }
 }

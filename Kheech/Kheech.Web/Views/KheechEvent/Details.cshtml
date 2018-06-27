@@ -12,44 +12,35 @@
                     <a class="btn btn-primary col-sm-3 offset-4 text-center" href="@Url.RouteUrl("KheechEdit", new { id = Model.Id })">Edit</a>
                 </div>
                 <div class="row">
-                    <ul class="col-sm-12"> Your friends are excited to meet you at @Model.Location.Name, @Model.StartDate.Humanize()
-                    @foreach(var kheechUser in Model.KheechUsers)
-                    {
-                        if (kheechUser.IsAccepted == true)
+                    <ul class="list-unstyled col-sm-12"> 
+                        These friends have accepted your Kheech to meet you at @Model.Location.Name on @Model.StartDate.ToString("dddd, dd MMMM").
+                        @foreach(var kheechUser in Model.KheechUsers)
                         {
-                           <li>@kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName</li>
+                            if (kheechUser.IsAccepted == true)
+                            {
+                                <li >@kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName</li>
+                            }
                         }
-                    }
                     </ul>
                 </div>
-                @*<div class="row">
-                    <ul class="col-sm-12"> Some of your friends would like you to reconsider the time instead of @Model.StartDate.Humanize()
-                    @foreach(var kheechUser in Model.KheechUsers)
-                    {
-                        if (kheechUser.IsAccepted == false)
-                        {
-                            <li>@kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName</li>
-                        }
-                    }
-                    </ul>
-                </div>*@
                 }
                 else
                 {
                 <div class="row">
-                    <div class="col-sm-4 avatar-circle">
-                        <span class="initials">@Model.ApplicationUser.FirstName.First()@Model.ApplicationUser.LastName.First()</span>
+                    <div class="col-sm-8">
+                        @Model.ApplicationUser.FirstName.Humanize() @Model.ApplicationUser.LastName.Humanize() has created a Kheech
+                        @Model.EventName.Humanize() at @Model.Location.Name.Humanize() for <br />
                     </div>
-                    <div class="avatar-comment col-md-8 text-center">
-                        <h3> @Model.StartDate.DayOfWeek </h3>
-                        <h3> @Model.StartDate.Humanize() </h3>
+                    <div class="col-sm-4 text-center">
+                        <h3> @Model.StartDate.ToString("dddd") </h3>
+                        <h3> @Model.StartDate.ToString("dd MMMM ") </h3>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row"> 
                     @foreach (var kheechUsers in Model.KheechUsers)
                     {
                         <div class="col-sm-12">
-                            
+                            @kheechUsers.ApplicationUser.FirstName @kheechUsers.ApplicationUser.LastName
                         </div>
                      }
                 </div>
@@ -66,19 +57,23 @@
             </div>
         </div>
         <div class="col-sm-4">
-            <p> Here is what going on: </p>
+            <p> <small>Here is what going on: </small></p>
             @foreach (var comment in Model.KheechComments)
             {
-                <div class="row kheech-comments">
-                    <div class="avatar-circle col-sm-3">
-                        <span class="initials">@comment.KheechEvent.ApplicationUser.FirstName.First()@comment.KheechEvent.ApplicationUser.LastName.First()</span>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <span >@comment.KheechEvent.ApplicationUser.FirstName.First()@comment.KheechEvent.ApplicationUser.LastName.First(): </span>
                     </div>
-                    <p class="avatar-comment offset-2 col-sm-9">
-                        @comment.KheechEvent.ApplicationUser.FirstName added: <br>
+                    <p class="col-sm-7">
                         <small> @comment.Discussion </small>
                     </p>
                 </div>
             }
+                <form method="post" action="@Url.RouteUrl("AddDiscussion", new { id = Model.Id})">
+                    @Html.AntiForgeryToken()
+                    <textarea id="newMessage" name="newMessage"></textarea>
+                    <button type="submit">Add</button>
+                </form>
         </div>
     </div>
 </div>

@@ -14,6 +14,9 @@ namespace Kheech.Web.Models
         public int KheechEventId { get; set; }
         public virtual KheechEvent KheechEvent { get; set; }
 
+        public string CreatorId { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
+
         public DateTime InsertDate { get; set; }
     }
 }

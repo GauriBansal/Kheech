@@ -244,6 +244,14 @@
     <Compile Include="Migrations\201806250339332_nullableGroupId.Designer.cs">
       <DependentUpon>201806250339332_nullableGroupId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806270358387_addedCreatorIdInMomentsandComments.cs" />
+    <Compile Include="Migrations\201806270358387_addedCreatorIdInMomentsandComments.Designer.cs">
+      <DependentUpon>201806270358387_addedCreatorIdInMomentsandComments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806270415308_addedCreatorIdInMomentsandComments1.cs" />
+    <Compile Include="Migrations\201806270415308_addedCreatorIdInMomentsandComments1.Designer.cs">
+      <DependentUpon>201806270415308_addedCreatorIdInMomentsandComments1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FriendshipStatus.cs" />
@@ -336,7 +344,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
@@ -392,6 +399,7 @@
     <Content Include="Views\KheechComments\Details.cshtml" />
     <Content Include="Views\KheechComments\Edit.cshtml" />
     <Content Include="Views\KheechComments\Index.cshtml" />
+    <Content Include="Views\Home\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -423,6 +431,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806250339332_nullableGroupId.resx">
       <DependentUpon>201806250339332_nullableGroupId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806270358387_addedCreatorIdInMomentsandComments.resx">
+      <DependentUpon>201806270358387_addedCreatorIdInMomentsandComments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806270415308_addedCreatorIdInMomentsandComments1.resx">
+      <DependentUpon>201806270415308_addedCreatorIdInMomentsandComments1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

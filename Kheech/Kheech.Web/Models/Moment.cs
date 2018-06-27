@@ -16,6 +16,9 @@ namespace Kheech.Web.Models
         
         public string Description {get; set;}
 
+        public string ApplicationUserId { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
+
         public DateTime InsertDate { get; set; }
     }
 }
