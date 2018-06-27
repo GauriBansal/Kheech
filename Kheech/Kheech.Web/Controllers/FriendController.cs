@@ -62,6 +62,55 @@ namespace Kheech.Web.Controllers
             return View(friendsIndexViewModel);
         }
 
+        [Route("Details/{friendId}", Name = "FriendsDetail")]
+        public ActionResult Details(string friendId)
+        {
+            var currentUserId = User.Identity.GetUserId();
+            if (friendId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            
+            var friend = _context.Friendships.Include(f => f.Initiator)
+                                             .Include(f => f.Recipient)
+                                             .FirstOrDefault(f => ((f.InitiatorId == currentUserId && f.RecipientId == friendId) ||
+                                                                   (f.InitiatorId == friendId && f.RecipientId == currentUserId)) &&
+                                                                   (f.FriendshipStatusId == 1));            
+            if (friend == null)
+            {
+                return HttpNotFound();
+            }
+            
+            var friendinformation = _context.Users.FirstOrDefault(u => u.Id == friendId);
+            var friendActivity = _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                      .Include(k => k.KheechComments)
+                                                      .Include(k => k.KheechUsers)
+                                                      .Include(k => k.Location)
+                                                      .Include(k => k.Group)
+                                                      .Where(k => k.ApplicationUserId == friendId)
+                                                      .ToList();
+            var commonActivity = _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                      .Include(k => k.KheechComments)
+                                                      .Include(k => k.KheechUsers)
+                                                      .Include(k => k.Location)
+                                                      .Include(k => k.Group)
+                                                      .Where(k => k.ApplicationUserId == currentUserId && k.KheechUsers.ApplicationUserId == friendId)
+                                                      .ToList();
+                                                      
+            var friendsDetailViewModel = new FriendsDetailViewModel
+            {
+                FriendInformation = new FriendViewModel
+                {
+                    Id = friendId,
+                    Name = friendinformation.FirstName + " " + friendinformation.LastName
+                },
+                FriendActivity = friendActivity,
+                CommonActivity = commonActivity
+             };
+            
+            return View(friendsDetailViewModel);
+        }
+        
         [Route("Create", Name = "InviteAFriend")]
         public ActionResult Create()
         {
