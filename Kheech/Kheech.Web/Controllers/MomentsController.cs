@@ -34,7 +34,7 @@ namespace Kheech.Web.Controllers
             
             var moments = _context.Moments.Include(m => m.KheechEvent).OrderByDescending(m => m.Id).ToList();
             
-            foreach (var event in moments.KheechEvent)
+            foreach (var kheechEvent in moments.KheechEvent)
             {
                 var location = _context.Locations.FirstOrDefault(l => l.Id == event.LocationId);
                 event.Location = location;
