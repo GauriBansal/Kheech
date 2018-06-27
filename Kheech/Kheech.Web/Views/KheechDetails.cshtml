@@ -1,49 +1,25 @@
-@using Humanizer
-@using Kheech.Web.Models.KheechEvent
+//FriendsIndexViewModel class
 
-<div class="container">
-  <div class="row">
-    <div class="col-sm-8">
-      <div class="container">
-        @if (User.Identity.GetUserId() == @Model.ApplicationUserId)
-        {
-          //if this is the user who created the kHEECH, show the kheech edit page here
-        }
-        @else
-        {
-          <div class="row">
-            <div class="col-sm-4">
-              //add the avatar here
-            </div>
-            <div class="col-md-8 text-center">
-              @Model.StartDate.Humanize
-            </div>
-          </div>
-              //include code to show who accepted and who dint
-          <div class="row">
-             <div class="col-sm-6">
-              //ACCEPT CHECKBOX HERE
-            </div>
-            <div class="col-md-6">
-              //not accept checkbox here
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-    <div class="col-sm-4">
-      <p> Here is what going on: </p>
-      @foreach (var comment in Model)
+public int FriendsCount {get; set;}
+
+public IEnumerable<FriendViewModel> FriendViewModels {get; set;}
+
+//Friends Index View:
+@model Kheech.Web.ViewModels.FriendsIndexViewModel
+
+<div class="jumbotron">
+  <div class="row"
+    <ul class="list-group list-unstyled col-sm-12">Get to know about your friends
+      <small>@Model.FriendsCount friends</small>
+      @foreach(var friend in Model.FriendViewModels)
       {
-        <div class="row">
-          <div class="avatar-circle col-sm-3">
-              <span class="initials"> @comment.KheechEvent.ApplicationUser.FirstName </span>
-          </div>
-          <p class="col-sm-9"> @comment.KheechEvent.ApplicationUser.FirstName added: <br>
-            <small> @comment.Discussion </small>
-          </p>
-        </div>
+        <li class="list-group-item">@friend.Name</li>
       }
-    </div>
-  </div>
+    </ul>
+</div>
+<form class="form-group row" method="post" action="@Url.RouteUrl("InviteAFriendPost", new { id = Model.Id})">
+  @Html.AntiForgeryToken()
+  <input type="email" class="form-control col-sm-12" id="friendEmail" name="friendEmail" placeholder="name@example.com">
+  <button class="offset-sm-5 col-sm-2" type="submit">Add a friend</button>
+  </form>
 </div>
