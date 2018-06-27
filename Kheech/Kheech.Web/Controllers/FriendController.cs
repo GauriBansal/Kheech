@@ -22,14 +22,54 @@ namespace Kheech.Web.Controllers
         }
         
         // GET: Friend
-        [Route("", Name = "InviteAFriend")]
+        [Route("", Name = "FriendsHome")]
         public ActionResult Index()
+        {
+            var currentUserId = User.Identity.GetUserId();
+            
+            var friends = _context.Friendships
+                        .Include(f => f.Initiator)
+                        .Include(f => f.Recipient)
+                        .Include(f => f.FriendshipStatus)
+                        .Where(f => f.InitiatorId == currentUserId || f.RecipientId == currentUserId).Distinct().ToList();
+
+            var friendsIndexViewModel = new FriendsIndexViewModel
+            {
+                FriendsCount = friends.Count,               
+            };
+            
+             foreach (var item in friends)
+            {
+                if (item.RecipientId == currentUserId)
+                {
+                var friendViewModel1 = new FriendViewModel
+                    {
+                        Id = item.InitiatorId,
+                        Name = item.Initiator.FirstName + " " + item.Initiator.LastName
+                    };
+                    friendsIndexViewModel.FriendViewModel.Add(friendViewModel1);
+                }
+                else
+                {
+                    var friendViewModel = new FriendViewModel
+                    {
+                        Id = item.RecipientId,
+                        Name = item.Recipient.FirstName + " " + item.Recipient.LastName
+                    };
+                    friendsIndexViewModel.FriendViewModel.Add(friendViewModel);
+                }
+            }        
+            return View(friendsIndexViewModel);
+        }
+
+        [Route("Create", Name = "InviteAFriend")]
+        public ActionResult Create()
         {
             return View();
         }
-
-        [Route("", Name = "InviteAFriendPost")]
-        public ActionResult Index(Invitation model)
+        
+        [Route("Create", Name = "InviteAFriendPost")]
+        public ActionResult Create(Invitation model)
         {
             using (MailMessage mm = new MailMessage(model.Email, model.To))
             {
