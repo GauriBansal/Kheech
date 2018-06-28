@@ -8,12 +8,12 @@ namespace Kheech.Web.ViewModels
 {
     public class KheechIndexViewModel
     {
-        public IEnumerable<KheechUser> ActiveKheechEvents { get; set; }
+        public List<KheechEvent> ActiveKheechEvents { get; set; }
 
-        public IEnumerable<KheechEvent> RecentSchedules { get; set; }
+        public List<KheechEvent> RecentSchedules { get; set; }
 
-        public IEnumerable<Moment> RecentMoments { get; set; }
+        public List<Moment> RecentMoments { get; set; }
 
-        public IEnumerable<KheechUser> RecentFriends { get; set; }
+        public List<KheechUser> RecentFriends { get; set; }
     }
 }

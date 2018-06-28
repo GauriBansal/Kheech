@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using System.Net;
+using Microsoft.Ajax.Utilities;
 
 namespace Kheech.Web.Controllers
 {
@@ -30,23 +31,29 @@ namespace Kheech.Web.Controllers
 
             var kheechIndexViewModel = new KheechIndexViewModel();
             
-            kheechIndexViewModel.ActiveKheechEvents = _context.KheechUsers.Include(k => k.ApplicationUser)
-                                                   .Include(k => k.KheechEvent.Location)
-                                                   .Where(m => m.KheechEvent.ApplicationUserId == currentUserId && m.KheechEvent.EndDate > DateTime.UtcNow)
-                                                   .Distinct().Take(3).ToList();
-
-            //_context.KheechEvents.Include(k => k.ApplicationUser)
-            //                                        .Include(k => k.Location)
-            //                                        .Include(k => k.Group)
-            //                                        .Where(k => k.ApplicationUserId == currentUserId && k.EndDate > DateTime.UtcNow)
-            //                                        .Take(5)
-            //                                        .ToList();
-            
+            kheechIndexViewModel.ActiveKheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                   .Include(k => k.Location)
+                                                   .Include(k => k.Group)
+                                                   .Where(m => (m.ApplicationUserId == currentUserId) && (m.EndDate > DateTime.UtcNow))
+                                                   .Distinct().Take(5).ToList();
+   
             if (kheechIndexViewModel.ActiveKheechEvents.Count() == 0)
             {
                 ViewBag.Message = "You do not have any Kheech at the moment. Would you like to create?";
             }
-            
+
+            while (kheechIndexViewModel.ActiveKheechEvents.Count() != 5)
+            {
+                var kheechUsers = _context.KheechUsers.Include(k => k.KheechEvent.Location)
+                                                      .Where(k => k.ApplicationUserId == currentUserId)
+                                                      .Distinct().Take(5).ToList();
+                foreach (var kuser in kheechUsers)
+                {
+                    kheechIndexViewModel.ActiveKheechEvents.Add(kuser.KheechEvent);
+                    kheechIndexViewModel.ActiveKheechEvents.Distinct();
+                }
+            }
+
             kheechIndexViewModel.RecentSchedules = _context.KheechEvents.Include(k => k.ApplicationUser)
                                                     .Include(k => k.Location)
                                                     .Include(k => k.Group)
@@ -254,6 +261,15 @@ namespace Kheech.Web.Controllers
             return RedirectToRoute("KheechDetails", new { id = id });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("AcceptedKheech/{id}", Name = "AcceptedKheechPost")]
+        public ActionResult AcceptedKheech(int id, bool isAccepted)
+        {
+
+            var flag = isAccepted;
+            return RedirectToRoute("KheechDetails", new { id = id });
+        }
 
     }
 }
