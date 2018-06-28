@@ -210,6 +210,8 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\FriendController.cs" />
+    <Compile Include="ViewModels\FriendsIndexViewModel.cs" />
+    <Compile Include="ViewModels\FriendsDetailViewModel.cs" />
     <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KheechCommentsController.cs" />
@@ -269,6 +271,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\Invitation.cs" />
     <Compile Include="ViewModels\KheechIndexViewModel.cs" />
+    <Compile Include="ViewModels\MomentsUploadViewModel.cs" />
     <Compile Include="ViewModels\ScheduleViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -377,7 +380,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\KheechEvent\Index.cshtml" />
     <Content Include="Views\KheechEvent\Schedule.cshtml" />
-    <Content Include="Views\Friend\Index.cshtml" />
+    <Content Include="Views\Friend\Create.cshtml" />
     <Content Include="Views\KheechEvents\Create.cshtml" />
     <Content Include="Views\KheechEvents\Delete.cshtml" />
     <Content Include="Views\KheechEvent\Details.cshtml" />
@@ -400,6 +403,8 @@
     <Content Include="Views\KheechComments\Edit.cshtml" />
     <Content Include="Views\KheechComments\Index.cshtml" />
     <Content Include="Views\Home\_Layout.cshtml" />
+    <Content Include="Views\Friend\Index.cshtml" />
+    <Content Include="Views\Friend\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

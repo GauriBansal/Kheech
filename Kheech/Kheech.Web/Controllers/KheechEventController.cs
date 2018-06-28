@@ -30,12 +30,17 @@ namespace Kheech.Web.Controllers
 
             var kheechIndexViewModel = new KheechIndexViewModel();
             
-            kheechIndexViewModel.ActiveKheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser)
-                                                    .Include(k => k.Location)
-                                                    .Include(k => k.Group)
-                                                    .Where(k => k.ApplicationUserId == currentUserId && k.EndDate > DateTime.UtcNow)
-                                                    .Take(5)
-                                                    .ToList();
+            kheechIndexViewModel.ActiveKheechEvents = _context.KheechUsers.Include(k => k.ApplicationUser)
+                                                   .Include(k => k.KheechEvent.Location)
+                                                   .Where(m => m.KheechEvent.ApplicationUserId == currentUserId && m.KheechEvent.EndDate > DateTime.UtcNow)
+                                                   .Distinct().Take(3).ToList();
+
+            //_context.KheechEvents.Include(k => k.ApplicationUser)
+            //                                        .Include(k => k.Location)
+            //                                        .Include(k => k.Group)
+            //                                        .Where(k => k.ApplicationUserId == currentUserId && k.EndDate > DateTime.UtcNow)
+            //                                        .Take(5)
+            //                                        .ToList();
             
             if (kheechIndexViewModel.ActiveKheechEvents.Count() == 0)
             {
@@ -166,12 +171,22 @@ namespace Kheech.Web.Controllers
                     InsertDate = DateTime.UtcNow
                 };
                 _context.Locations.Add(location);
-                _context.SaveChanges();
+                //_context.SaveChanges();
             }
             
             kheechEvent.LocationId = location.Id;
 
             _context.KheechEvents.Add(kheechEvent);
+            //_context.SaveChanges();
+
+            var kheechUser = new KheechUser
+            {
+                KheechEventId = kheechEvent.Id,
+                ApplicationUserId = model.WhoToMeet,
+                IsAccepted = false
+            };
+
+            _context.KheechUsers.Add(kheechUser);
             _context.SaveChanges();
 
             TempData["ScheduleMessage"] = "Congratulations, you have successfully added a Kheech. Keep going!";

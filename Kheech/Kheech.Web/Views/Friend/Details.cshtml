@@ -1,0 +1,29 @@
+﻿@using Humanizer
+@model Kheech.Web.ViewModels.FriendsDetailViewModel
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
+            <h3> @Model.FriendInformation.Name's activities </h3><hr />
+            <p>
+                @foreach (var kactivity in Model.FriendActivity)
+                {
+                    <span> @kactivity.EventName.Humanize() at @kactivity.Location.Name.Humanize() on @kactivity.StartDate.Humanize() </span><br />
+                }
+            </p>
+        </div>
+        <div class="col-sm-4">
+            <h3> You and @Model.FriendInformation.Name </h3> <hr />
+            <p>
+                @foreach (var kactivity in Model.CommonActivity)
+                {
+                <span> @kactivity.KheechEvent.EventName.Humanize() at @kactivity.KheechEvent.Location.Name.Humanize() on @kactivity.KheechEvent.StartDate.Humanize() </span><br />
+                }
+            </p>
+        </div>
+    </div>
+</div>
+

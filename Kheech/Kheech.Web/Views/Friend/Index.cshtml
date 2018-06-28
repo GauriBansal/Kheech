@@ -1,61 +1,24 @@
-﻿@model Kheech.Web.ViewModels.Invitation
-
+﻿@model Kheech.Web.ViewModels.FriendsIndexViewModel
 @{
     ViewBag.Title = "Index";
 }
 
-<div>
-    @using (Html.BeginForm("Index", "Friend", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        <table border="0" cellpadding="0" cellspacing="0">
-            <tr>
-                <td style="width: 80px">
-                    To:
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.To)
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Subject:
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Subject)
-                </td>
-            </tr>
-            <tr>
-                <td valign="top">
-                    Body:
-                </td>
-                <td>
-                    @Html.TextAreaFor(model => model.Body, new { rows = "3", cols = "20" })
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Gmail Email:
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Email)
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Gmail Password:
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Password, new { type = "password" })
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <input type="submit" value="Send" />
-                </td>
-            </tr>
-        </table>
-        <br />
-        <span style="color:green">@ViewBag.Message</span>
+<div class="container">
+    <div class="row">
+        <h3>Get to know about your friends</h3><br />
+        <small>@Model.FriendsCount friends</small>
+        <ul class="list-group list-unstyled col-sm-12">
+            @foreach (var friend in Model.FriendViewModels)
+        {
+            <li class="list-group-item">@friend.Name</li>
     }
+        </ul>
+    </div>
+    <form class="form-group row" method="post" action="@Url.RouteUrl("InviteAFriendPost")">
+        @Html.AntiForgeryToken()
+        <input type="email" class="form-control col-sm-12" id="friendEmail" name="friendEmail" placeholder="name@example.com">
+        <button class="offset-sm-5 col-sm-2" type="submit">Add a friend</button>
+    </form>
 </div>
+
+

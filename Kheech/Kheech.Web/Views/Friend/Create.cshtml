@@ -1,0 +1,61 @@
+﻿@model Kheech.Web.ViewModels.Invitation
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<div>
+    @using (Html.BeginForm("Create", "Friend", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="width: 80px">
+                    To:
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.To)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Subject:
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Subject)
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    Body:
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Body, new { rows = "3", cols = "20" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Gmail Email:
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Email)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Gmail Password:
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Password, new { type = "password" })
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="Send" />
+                </td>
+            </tr>
+        </table>
+        <br />
+        <span style="color:green">@ViewBag.Message</span>
+    }
+</div>

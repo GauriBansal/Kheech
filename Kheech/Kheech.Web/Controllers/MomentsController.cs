@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Kheech.Web.Models;
+using Kheech.Web.ViewModels;
 
 namespace Kheech.Web.Controllers
 {
@@ -71,9 +73,11 @@ namespace Kheech.Web.Controllers
         [Route("Create/{kheechId}", Name = "MomentsCreate")]
         public ActionResult Create(int kheechId)
         {
-            var moment = new Moment();
-            moment.InsertDate = DateTime.UtcNow;
-            moment.KheechEventId = kheechId;
+            var moment = new MomentsUploadViewModel
+            {
+                KheechId = kheechId
+            };
+            //moment.InsertDate = DateTime.UtcNow;
             
             return View(moment);
         }
@@ -84,16 +88,37 @@ namespace Kheech.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create/{kheechId}", Name = "MomentsCreatePost")]
-        public ActionResult Create(Moment moment)
+        public ActionResult Create(MomentsUploadViewModel moment)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
+            //{
+            //    _context.Moments.Add(moment);
+            //    _context.SaveChanges();
+            //    return RedirectToAction("Details", new { id = moment.Id});
+            //}
+
+            var allowedExtensions = new[] { ".png", ".jpg", ".gif" };
+            var fileExtension = Path.GetExtension(moment.File.FileName).ToLower();
+            if (!allowedExtensions.Contains(fileExtension))
             {
-                _context.Moments.Add(moment);
-                _context.SaveChanges();
-                return RedirectToAction("Details", new { id = moment.Id});
+                //File type not allowed
             }
 
-            return View(moment);
+            var reader = new BinaryReader(moment.File.InputStream);
+            var dat = reader.ReadBytes(moment.File.ContentLength);
+
+            //var momentToBeAdded = new Moment
+            //{
+            //    FileName = moment.File.FileName,
+            //    ContentType = moment.File.ContentType,
+            //ContentLength = moment.File.ContentLength,
+            //Data = data
+            ////}
+
+            //_context.Moments.Add(momentToBeAdded);
+            //_context.SaveChanges();
+            return View();
+            //return RedirectToRoute("MomentsDetail", new { id = momentToBeAdded.Id });
         }
 
         // GET: Moments/Edit/5

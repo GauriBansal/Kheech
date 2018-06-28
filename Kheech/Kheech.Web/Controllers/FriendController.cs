@@ -8,6 +8,8 @@ using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 using Kheech.Web.Models;
+using Microsoft.AspNet.Identity;
+using System.Data.Entity;
 
 namespace Kheech.Web.Controllers
 {
@@ -47,7 +49,7 @@ namespace Kheech.Web.Controllers
                         Id = item.InitiatorId,
                         Name = item.Initiator.FirstName + " " + item.Initiator.LastName
                     };
-                    friendsIndexViewModel.FriendViewModel.Add(friendViewModel1);
+                    friendsIndexViewModel.FriendViewModels.Add(friendViewModel1);
                 }
                 else
                 {
@@ -56,7 +58,7 @@ namespace Kheech.Web.Controllers
                         Id = item.RecipientId,
                         Name = item.Recipient.FirstName + " " + item.Recipient.LastName
                     };
-                    friendsIndexViewModel.FriendViewModel.Add(friendViewModel);
+                    friendsIndexViewModel.FriendViewModels.Add(friendViewModel);
                 }
             }        
             return View(friendsIndexViewModel);
@@ -89,14 +91,12 @@ namespace Kheech.Web.Controllers
                                                       .Include(k => k.Group)
                                                       .Where(k => k.ApplicationUserId == friendId)
                                                       .ToList();
-            var commonActivity = _context.KheechEvents.Include(k => k.ApplicationUser)
-                                                      .Include(k => k.KheechComments)
-                                                      .Include(k => k.KheechUsers)
-                                                      .Include(k => k.Location)
-                                                      .Include(k => k.Group)
-                                                      .Where(k => k.ApplicationUserId == currentUserId && k.KheechUsers.ApplicationUserId == friendId)
-                                                      .ToList();
-                                                      
+         
+            var commonActivity = _context.KheechUsers.Include(k => k.ApplicationUser)
+                                         .Include(k => k.KheechEvent)
+                                         .Where(k => k.ApplicationUserId == friendId && k.IsAccepted == true && k.KheechEvent.ApplicationUserId == currentUserId)
+                                         .ToList();
+
             var friendsDetailViewModel = new FriendsDetailViewModel
             {
                 FriendInformation = new FriendViewModel
