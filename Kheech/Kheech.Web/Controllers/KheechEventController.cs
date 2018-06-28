@@ -70,7 +70,7 @@ namespace Kheech.Web.Controllers
 
             kheechIndexViewModel.RecentFriends = _context.KheechUsers.Include(k => k.ApplicationUser)
                                                    .Include(k => k.KheechEvent.Location)
-                                                   .Where(m => m.KheechEvent.ApplicationUserId == currentUserId && m.KheechEvent.EndDate > DateTime.UtcNow)
+                                                   .Where(m => m.KheechEvent.ApplicationUserId == currentUserId)
                                                    .Distinct().Take(3).ToList();
 
             return View(kheechIndexViewModel);
@@ -215,21 +215,59 @@ namespace Kheech.Web.Controllers
         [Route("Edit/{id}", Name = "KheechEdit")]
         public ActionResult Edit(int? id)
         {
+            var currentUserId = User.Identity.GetUserId();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            KheechEvent kheechEvent = _context.KheechEvents.Include(k => k.ApplicationUser)
+
+            var kheechEditViewModels = new KheechEditViewModels();
+
+            kheechEditViewModels.KheechEvent = _context.KheechEvents.Include(k => k.ApplicationUser)
                                                            .Include(k => k.KheechComments)
+                                                           .Include(k => k.KheechUsers)
+                                                           .Include(k => k.Location)
                                                            .FirstOrDefault(k => k.Id == id);
-            if (kheechEvent == null)
+            if (kheechEditViewModels.KheechEvent == null)
             {
                 return HttpNotFound();
             }
+
+            var friends = _context.Friendships
+                                  .Include(f => f.Initiator)
+                                  .Include(f => f.Recipient)
+                                  .Include(f => f.FriendshipStatus)
+                                  .Where(f => f.InitiatorId == currentUserId || f.RecipientId == currentUserId).Distinct().ToList();
+
+            foreach (var item in friends)
+            {
+                if (item.RecipientId == currentUserId)
+                {
+                    var friendViewModel1 = new FriendViewModel
+                    {
+                        Id = item.InitiatorId,
+                        Name = item.Initiator.FirstName
+                    };
+                    kheechEditViewModels.Friends.Add(friendViewModel1);
+                }
+                else
+                {
+                    var friendViewModel = new FriendViewModel
+                    {
+                        Id = item.RecipientId,
+                        Name = item.Recipient.FirstName
+                    };
+                    kheechEditViewModels.Friends.Add(friendViewModel);
+                }
+            }
+
+            kheechEditViewModels.WhereToMeet = kheechEditViewModels.KheechEvent.Location.Name;
             //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
-            ViewBag.GroupId = new SelectList(_context.Groups, "Id", "Name", kheechEvent.GroupId);
-            ViewBag.LocationId = new SelectList(_context.Locations, "Id", "Name", kheechEvent.LocationId);
-            return View(kheechEvent);
+            ViewBag.GroupId = new SelectList(_context.Groups, "Id", "Name", kheechEditViewModels.KheechEvent.GroupId);
+            //ViewBag.LocationId = new SelectList(_context.Locations, "Id", "Name", kheechEditViewModels.KheechEvent.LocationId);
+
+            return View(kheechEditViewModels);
         }
 
         // POST: KheechEvents/Edit/5
@@ -238,20 +276,40 @@ namespace Kheech.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit/{id}", Name = "KheechEditPost")]
-        public ActionResult Edit(KheechEvent kheechEvent)
+        public ActionResult Edit(int id, KheechEditViewModels kheechEditViewModels)
         {
             if (ModelState.IsValid)
             {
-                kheechEvent.EndDate = kheechEvent.StartDate.AddHours(2);
-                kheechEvent.InsertDate = DateTime.UtcNow;
-                _context.Entry(kheechEvent).State = EntityState.Modified;
+                var existingKheechUser = _context.KheechUsers.FirstOrDefault(k => k.KheechEventId == id && k.ApplicationUserId == kheechEditViewModels.WhoToMeet);
+
+                if (existingKheechUser == null)
+                {
+                    var kheechUser = new KheechUser
+                    {
+                        KheechEventId = kheechEditViewModels.KheechEvent.Id,
+                        ApplicationUserId = kheechEditViewModels.WhoToMeet,
+                        IsAccepted = false
+                    };
+
+                    _context.KheechUsers.Add(kheechUser);
+                }
+                else
+                {
+                    existingKheechUser.IsAccepted = false;
+                    _context.Entry(existingKheechUser).State = EntityState.Modified;
+                }
+
+                kheechEditViewModels.KheechEvent.EndDate = kheechEditViewModels.KheechEvent.StartDate.AddHours(2);
+                kheechEditViewModels.KheechEvent.InsertDate = DateTime.UtcNow;
+                kheechEditViewModels.KheechEvent.Location = _context.Locations.FirstOrDefault(l => l.Name == kheechEditViewModels.WhereToMeet);
+                _context.Entry(kheechEditViewModels.KheechEvent).State = EntityState.Modified;
                 _context.SaveChanges();
-                return RedirectToRoute("KheechDetails", new { id = kheechEvent.Id});
+                return RedirectToRoute("KheechDetails", new { id = kheechEditViewModels.KheechEvent.Id});
             }
             //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
-            ViewBag.GroupId = new SelectList(_context.Groups, "Id", "Name", kheechEvent.GroupId);
-            ViewBag.LocationId = new SelectList(_context.Locations, "Id", "Name", kheechEvent.LocationId);
-            return View(kheechEvent);
+            ViewBag.GroupId = new SelectList(_context.Groups, "Id", "Name", kheechEditViewModels.KheechEvent.GroupId);
+            ViewBag.LocationId = new SelectList(_context.Locations, "Id", "Name", kheechEditViewModels.KheechEvent.LocationId);
+            return View(kheechEditViewModels.KheechEvent);
         }
 
         [HttpPost]

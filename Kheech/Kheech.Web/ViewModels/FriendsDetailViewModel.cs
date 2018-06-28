@@ -8,7 +8,7 @@ namespace Kheech.Web.ViewModels
     {
         public FriendViewModel FriendInformation { get; set; }
 
-        public List<KheechEvent> FriendActivity { get; set; }
+        public List<KheechUser> FriendActivity { get; set; }
 
         public List<KheechUser> CommonActivity { get; set; }
     }

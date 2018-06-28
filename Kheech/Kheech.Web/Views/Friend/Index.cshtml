@@ -5,20 +5,24 @@
 
 <div class="container">
     <div class="row">
-        <h3>Get to know about your friends</h3><br />
-        <small>@Model.FriendsCount friends</small>
-        <ul class="list-group list-unstyled col-sm-12">
-            @foreach (var friend in Model.FriendViewModels)
-        {
-            <li class="list-group-item">@friend.Name</li>
-    }
-        </ul>
+        <div class="col-8 table-bordered">
+            <h4 class="m-3">Get to know about your friends<sup><small>@Model.FriendsCount friends</small></sup></h4>
+            
+            <ul class="list-group list-unstyled list-group-flush col-sm-12">
+                @foreach (var friend in Model.FriendViewModels)
+                {
+                    <li class="list-group-item">
+                        <a href="@Url.RouteUrl("FriendsDetail", new { friendId = friend.Id})">@friend.Name</a> 
+                    </li>
+                }
+            </ul>
+        </div>
+        <form class="form-group table-bordered col-4" method="post" action="@Url.RouteUrl("InviteAFriendPost")">
+            @Html.AntiForgeryToken()
+            <input type="email" class="form-control mt-3 col-sm-12" id="friendEmail" name="friendEmail" placeholder="name@example.com">
+            <button class="offset-sm-6 col-sm-6" type="submit">Add a friend</button>
+        </form>
     </div>
-    <form class="form-group row" method="post" action="@Url.RouteUrl("InviteAFriendPost")">
-        @Html.AntiForgeryToken()
-        <input type="email" class="form-control col-sm-12" id="friendEmail" name="friendEmail" placeholder="name@example.com">
-        <button class="offset-sm-5 col-sm-2" type="submit">Add a friend</button>
-    </form>
 </div>
 
 

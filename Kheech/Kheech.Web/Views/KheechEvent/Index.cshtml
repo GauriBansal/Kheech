@@ -47,8 +47,8 @@
                 <p>
                     @foreach (var friend in Model.RecentFriends)
                     {
-                    <a href="@Url.RouteUrl("KheechDetails", new { id = friend.KheechEvent.Id})">
-                        <small>@friend.KheechEvent.EventName.Humanize() at @friend.KheechEvent.Location.Name.Humanize()</small>
+                    <a href="@Url.RouteUrl("FriendsDetail", new { friendid = friend.ApplicationUserId})">
+                        <small>@friend.ApplicationUser.FirstName.Humanize() @friend.ApplicationUser.LastName.Humanize()</small>
                     </a><br />
                     }
                 </p>

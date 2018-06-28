@@ -13,7 +13,7 @@
     <div class="row navigation-style">
         <ul class="nav col-sm-5 offset-1">
             <li class="nav-item">
-                @Html.ActionLink("Kheech Logo", "Index", "Home", new { @class = "nav-link active" })
+                <a href="@Url.RouteUrl("IndexPage", new { @class = "nav-link active" })">Kheech Logo</a>
             </li>
         </ul>
         <div class="col-sm-6">

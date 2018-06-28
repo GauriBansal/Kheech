@@ -33,7 +33,7 @@ namespace Kheech.Web.Controllers
                         .Include(f => f.Initiator)
                         .Include(f => f.Recipient)
                         .Include(f => f.FriendshipStatus)
-                        .Where(f => f.InitiatorId == currentUserId || f.RecipientId == currentUserId).Distinct().ToList();
+                        .Where(f => (f.InitiatorId == currentUserId || f.RecipientId == currentUserId) && f.FriendshipStatusId == 1).Distinct().ToList();
 
             var friendsIndexViewModel = new FriendsIndexViewModel
             {
@@ -85,16 +85,17 @@ namespace Kheech.Web.Controllers
             }
             
             var friendinformation = _context.Users.FirstOrDefault(u => u.Id == friendId);
-            var friendActivity = _context.KheechEvents.Include(k => k.ApplicationUser)
-                                                      .Include(k => k.KheechComments)
-                                                      .Include(k => k.KheechUsers)
-                                                      .Include(k => k.Location)
-                                                      .Include(k => k.Group)
-                                                      .Where(k => k.ApplicationUserId == friendId)
+            var friendActivity = _context.KheechUsers.Include(k => k.ApplicationUser)
+                                                      .Include(k => k.KheechEvent.Location)
+                                                      .Include(k => k.KheechEvent.Group)
+                                                      .Include(k => k.KheechEvent.ApplicationUser)
+                                                      .Where(k => k.ApplicationUserId == friendId && k.KheechEvent.ApplicationUserId != currentUserId)
                                                       .ToList();
          
             var commonActivity = _context.KheechUsers.Include(k => k.ApplicationUser)
-                                         .Include(k => k.KheechEvent)
+                                         .Include(k => k.KheechEvent.Location)
+                                         .Include(k => k.KheechEvent.Group)
+                                         .Include(k => k.KheechEvent.ApplicationUser)
                                          .Where(k => k.ApplicationUserId == friendId && k.IsAccepted == true && k.KheechEvent.ApplicationUserId == currentUserId)
                                          .ToList();
 
