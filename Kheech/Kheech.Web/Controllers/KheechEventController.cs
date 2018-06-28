@@ -27,6 +27,7 @@ namespace Kheech.Web.Controllers
         [Route("", Name = "HomePage")]
         public ActionResult Index()
         {
+
             var currentUserId = User.Identity.GetUserId();
 
             var kheechIndexViewModel = new KheechIndexViewModel();
@@ -42,7 +43,7 @@ namespace Kheech.Web.Controllers
                 ViewBag.Message = "You do not have any Kheech at the moment. Would you like to create?";
             }
 
-            while (kheechIndexViewModel.ActiveKheechEvents.Count() != 5)
+            while (kheechIndexViewModel.ActiveKheechEvents.Count() < 5)
             {
                 var kheechUsers = _context.KheechUsers.Include(k => k.KheechEvent.Location)
                                                       .Where(k => k.ApplicationUserId == currentUserId)
@@ -99,15 +100,25 @@ namespace Kheech.Web.Controllers
 
             foreach (var user in kheechEvent.KheechUsers)
             {
-                var applicationUser = _context.Users.FirstOrDefault(u => u.Id == user.ApplicationUserId);
-                if (applicationUser == null)
+                var kheechUser = _context.Users.FirstOrDefault(u => u.Id == user.ApplicationUserId);
+                if (kheechUser == null)
                 {
                     return HttpNotFound();
                 }
 
-                user.ApplicationUser = applicationUser;
+                user.ApplicationUser = kheechUser;
             }
-           
+
+            foreach (var comment in kheechEvent.KheechComments)
+            {
+                var commentUser = _context.Users.FirstOrDefault(u => u.Id == comment.CreatorId);
+                if (commentUser == null)
+                {
+                    return HttpNotFound();
+                }
+
+                comment.ApplicationUser = commentUser;
+            }
             return View(kheechEvent);
         }
         
@@ -248,11 +259,13 @@ namespace Kheech.Web.Controllers
         [Route("AddDiscussion/{id}", Name = "AddDiscussion")]
         public ActionResult AddDiscussion(int id, string newMessage)
         {
+            var currentUserId = User.Identity.GetUserId();
             var kheechComment = new KheechComment
             {
                 Discussion = newMessage,
                 InsertDate = DateTime.UtcNow,
-                KheechEventId = id
+                KheechEventId = id,
+                CreatorId = currentUserId
             };
 
             _context.KheechComments.Add(kheechComment);
@@ -266,8 +279,17 @@ namespace Kheech.Web.Controllers
         [Route("AcceptedKheech/{id}", Name = "AcceptedKheechPost")]
         public ActionResult AcceptedKheech(int id, bool isAccepted)
         {
+            var currentUserId = User.Identity.GetUserId();
+            var kheechUser = _context.KheechUsers.FirstOrDefault(k => k.KheechEventId == id && k.ApplicationUserId == currentUserId);
 
-            var flag = isAccepted;
+            if (kheechUser == null)
+            {
+                return HttpNotFound();
+            }
+
+            kheechUser.IsAccepted = isAccepted;
+            _context.SaveChanges();
+          
             return RedirectToRoute("KheechDetails", new { id = id });
         }
 

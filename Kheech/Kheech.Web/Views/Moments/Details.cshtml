@@ -13,7 +13,9 @@
             <p class="card-text">@Model.Description</p> <br>
             <span class="text-center">
                 @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-                @Html.ActionLink("Back to List", "Index")
+                <a href="@Url.RouteUrl("FileDownload", new { id = upload.Id })">Download</a> |
+                @Html.ActionLink("Back to List", "Index") 
+                
             </span>
         </div>
     </div>

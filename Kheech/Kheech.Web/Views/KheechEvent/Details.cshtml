@@ -10,12 +10,15 @@
                 {
                 <div class="row">
                     <a class="col-sm-6 text-left" href="@Url.RouteUrl("KheechEdit", new { id = Model.Id })">Edit</a>
-                    <a class="col-6 text-right" href="@Url.RouteUrl("MomentsCreate", new { kheechId = Model.Id})">Create a moment</a>
+                    @if (Model.EndDate < DateTime.UtcNow)
+                    {
+                        <a class="col-6 text-right" href="@Url.RouteUrl("MomentsCreate", new { kheechId = Model.Id })">Create a moment</a>
+                    }
                 </div>
                 <div class="row">
                     <h5 class="col-sm-12 text-center"><em><u>@Model.EventName.Humanize() at @Model.Location.Name.Humanize()</u></em></h5>
                     <ul class="list-unstyled col-sm-12"> 
-                        These friends have accepted your Kheech to meet you at @Model.Location.Name on @Model.StartDate.ToString("dddd, dd MMMM").
+                        These friends accepted your Kheech to meet on @Model.StartDate.ToString("dddd, dd MMMM").
                         @foreach(var kheechUser in Model.KheechUsers)
                         {
                             <li class="offset-1">
@@ -28,29 +31,32 @@
                 }
                 else
                 {
-                <div class="row">
-                    <div class="col-sm-8">
-                        <em>@Model.ApplicationUser.FirstName.Humanize() @Model.ApplicationUser.LastName.Humanize()</em> has invited you to a Kheech
-                        @Model.EventName.Humanize() at @Model.Location.Name.Humanize() for <br />
+                <div class="row p-5">
+                    <div class="col-sm-6">
+                        <h3><em>@Model.ApplicationUser.FirstName.Humanize() @Model.ApplicationUser.LastName.Humanize()</em></h3> 
                     </div>
-                    <div class="col-sm-4 text-center">
-                        <h3><strong> @Model.StartDate.ToString("dddd") </strong></h3>
-                        <h3> @Model.StartDate.ToString("dd MMMM ") </h3>
+                    <div class="col-sm-6 text-right">
+                        <h5>@Model.EventName.Humanize() at @Model.Location.Name.Humanize() </h5>
+                        <h6> @Model.StartDate.ToString("dddd, dd MMMM") </h6>
                     </div>
                 </div>
-                <div class="row"> 
-                    @foreach (var kheechUsers in Model.KheechUsers)
+                <div class="row pl-5 pr-5 pb-5"> 
+                    @foreach (var kheechUser in Model.KheechUsers)
                     {
-                        <div class="col-sm-12">
-                            @kheechUsers.ApplicationUser.FirstName @kheechUsers.ApplicationUser.LastName
-                        </div>
+                    <div class="col-sm-12">
+                        @Html.CheckBoxFor(m => kheechUser.IsAccepted, new { @disabled = "disabled" })
+                        @kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName
+                    </div>
                      }
                 </div>
-                //include code to show who accepted and who dint
-                <form class="row" method="post" action="@Url.RouteUrl("AcceptedKheechPost", new { id = Model.Id})">
-                    <button class="col-sm-2 offset-3 btn" id="isAccepted" name="isAccepted" value="true">Yes</button>
-                    <button class="col-sm-2 offset-3 btn" name="isAccepted" value="false">No</button>
-                </form>
+                if (Model.EndDate > DateTime.UtcNow)
+                    {
+                    <form class="row pb-3" method="post" action="@Url.RouteUrl("AcceptedKheechPost", new { id = Model.Id })">
+                        @Html.AntiForgeryToken()
+                        <button class="col-sm-2 offset-3 btn" id="isAccepted" name="isAccepted" value="true">Yes</button>
+                        <button class="col-sm-2 offset-2 btn" name="isAccepted" value="false">No</button>
+                    </form>
+                    }
                 }
             </div>
         </div>
@@ -60,18 +66,18 @@
             {
                 <div class="row">
                     <div class="col-sm-2">
-                        <span >@comment.KheechEvent.ApplicationUser.FirstName.First()@comment.KheechEvent.ApplicationUser.LastName.First(): </span>
+                        <span >@comment.ApplicationUser.FirstName.First()@comment.ApplicationUser.LastName.First(): </span>
                     </div>
                     <p class="col-sm-7">
                         <small> @comment.Discussion </small>
                     </p>
                 </div>
             }
-                <form method="post" action="@Url.RouteUrl("AddDiscussion", new { id = Model.Id})">
-                    @Html.AntiForgeryToken()
-                    <textarea id="newMessage" name="newMessage"></textarea>
-                    <button type="submit">Add</button>
-                </form>
+            <form method="post" action="@Url.RouteUrl("AddDiscussion", new { id = Model.Id})">
+                 @Html.AntiForgeryToken()
+                 <textarea id="newMessage" name="newMessage"></textarea>
+                 <button type="submit">Add</button>
+            </form>
         </div>
     </div>
 </div>

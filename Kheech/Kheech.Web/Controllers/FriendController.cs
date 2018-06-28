@@ -37,7 +37,8 @@ namespace Kheech.Web.Controllers
 
             var friendsIndexViewModel = new FriendsIndexViewModel
             {
-                FriendsCount = friends.Count,               
+                FriendsCount = friends.Count,
+                FriendViewModels = new List<FriendViewModel>()
             };
             
              foreach (var item in friends)

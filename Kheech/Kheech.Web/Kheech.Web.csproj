@@ -216,7 +216,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KheechCommentsController.cs" />
     <Compile Include="Controllers\KheechEventController.cs" />
-    <Compile Include="Controllers\KheechEventsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MomentsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -381,11 +380,7 @@
     <Content Include="Views\KheechEvent\Index.cshtml" />
     <Content Include="Views\KheechEvent\Schedule.cshtml" />
     <Content Include="Views\Friend\Create.cshtml" />
-    <Content Include="Views\KheechEvents\Create.cshtml" />
-    <Content Include="Views\KheechEvents\Delete.cshtml" />
     <Content Include="Views\KheechEvent\Details.cshtml" />
-    <Content Include="Views\KheechEvents\Edit.cshtml" />
-    <Content Include="Views\KheechEvents\Index.cshtml" />
     <Content Include="Views\Moments\Create.cshtml" />
     <Content Include="Views\Moments\Delete.cshtml" />
     <Content Include="Views\Moments\Details.cshtml" />
@@ -408,6 +403,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\KheechUser\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
