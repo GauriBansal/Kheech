@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Kheech.Web.Models;
 using Kheech.Web.Clients;
+using Kheech.Web.Clients.Interfaces;
 
 namespace Kheech.Web.Controllers
 {
@@ -18,15 +19,17 @@ namespace Kheech.Web.Controllers
     {
         protected readonly ApplicationSignInManager _signInManager;
         protected readonly ApplicationUserManager _userManager;
+        protected readonly IEmailClient _emailClient;
 
         //public AccountController()
         //{
         //}
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, IEmailClient emailClient)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailClient = emailClient;
         }
 
         //public ApplicationSignInManager SignInManager
@@ -211,19 +214,27 @@ namespace Kheech.Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(model.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user.Id)))
+                if (user == null)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
                 }
+               
+                // TODO: Setup email confirmation during acconut registration
+                //if (user.EmailConfirmed)
+                //{
+                //    // Don't reveal that the user does not exist or is not confirmed
+                //    return View("ForgotPasswordConfirmation");
+                //}
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                //string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                var emailBody = "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>";
-                var sendGridClient = new SendGridEmailClient();
-                await sendGridClient.SendEmailAsync(user.Email, "Reset your Password", "hello world");
+                var emailMessage = "We received a request to change the password to your account. Click below to create a new password.";
+                await _emailClient.SendActionEmailAsync(user.Email, user.FirstName, "Reset your password", emailMessage, callbackUrl, "Reset your password");
                 //await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
