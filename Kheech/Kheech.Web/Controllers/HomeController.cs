@@ -1,7 +1,9 @@
-﻿using Kheech.Web.Models;
+﻿using Kheech.Web.Clients;
+using Kheech.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -22,8 +24,12 @@ namespace Kheech.Web.Controllers
         }
 
         [Route("", Name = "IndexPage")]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
+            var sendGridClient = new SendGridEmailClient();
+            await sendGridClient.SendEmailAsync("reach2gauri@gmail.com", "invitation", "hello world");
+
+
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToRoute("HomePage");
