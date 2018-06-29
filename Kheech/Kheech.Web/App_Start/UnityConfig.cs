@@ -8,6 +8,9 @@ using System.Web;
 using Unity;
 using Unity.AspNet.Mvc;
 using Unity.Injection;
+using Kheech.Web.Clients;
+using Kheech.Web.Clients.Interfaces;
+using System.Configuration;
 
 namespace Kheech.Web
 {
@@ -46,6 +49,7 @@ namespace Kheech.Web
             // NOTE: To load from web.config uncomment the line below.
             // Make sure to add a Unity.Configuration to the using statements.
             // container.LoadConfiguration();
+            var sendGridApiKey = ConfigurationManager.AppSettings["SendGridApiKey"];
 
             // TODO: Register your type's mappings here.
             // container.RegisterType<IProductRepository, ProductRepository>();
@@ -54,6 +58,7 @@ namespace Kheech.Web
             container.RegisterType<UserManager<ApplicationUser>>(new PerRequestLifetimeManager());
             container.RegisterType<IAuthenticationManager>(new InjectionFactory(c => HttpContext.Current.GetOwinContext().Authentication));
             container.RegisterType<IUserStore<ApplicationUser>, UserStore<ApplicationUser>>(new PerRequestLifetimeManager());
+            container.RegisterType<IEmailClient, SendGridEmailClient>(new InjectionConstructor(sendGridApiKey));
         }
     }
 }
