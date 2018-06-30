@@ -286,6 +286,7 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Emails\ActionEmail.html" />
     <Content Include="Content\Emails\GenericEmail.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
