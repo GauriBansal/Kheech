@@ -13,6 +13,8 @@
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model.KheechEvent.Id)
+    @Html.HiddenFor(model => model.KheechEvent.ApplicationUserId)
+    @Html.HiddenFor(model => model.KheechEvent.LocationId)
 
     <div class="form-group">
         @Html.LabelFor(model => model.KheechEvent.EventName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -54,7 +56,7 @@
         else
         {
             @Html.DropDownListFor(m => m.WhoToMeet,
-                                     new SelectList(Model.Friends, "Id", "Name"), new { @class = "form-control" })
+                                                         new SelectList(Model.Friends, "Id", "Name"), new { @class = "form-control" })
         }
     </div>
 

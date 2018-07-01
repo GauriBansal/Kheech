@@ -27,7 +27,6 @@ namespace Kheech.Web.Controllers
         [Route("", Name = "HomePage")]
         public ActionResult Index()
         {
-
             var currentUserId = User.Identity.GetUserId();
 
             var kheechIndexViewModel = new KheechIndexViewModel();
@@ -43,10 +42,10 @@ namespace Kheech.Web.Controllers
                 ViewBag.Message = "You do not have any Kheech at the moment. Would you like to create?";
             }
 
-            while (kheechIndexViewModel.ActiveKheechEvents.Count() < 5)
+            if ((kheechIndexViewModel.ActiveKheechEvents.Count() > 0) && (kheechIndexViewModel.ActiveKheechEvents.Count() < 5))
             {
                 var kheechUsers = _context.KheechUsers.Include(k => k.KheechEvent.Location)
-                                                      .Where(k => k.ApplicationUserId == currentUserId)
+                                                      .Where(k => (k.ApplicationUserId == currentUserId) && (k.KheechEvent.EndDate > DateTime.UtcNow))
                                                       .Distinct().Take(5).ToList();
                 foreach (var kuser in kheechUsers)
                 {
@@ -64,6 +63,7 @@ namespace Kheech.Web.Controllers
                                                     .ToList();
             
             kheechIndexViewModel.RecentMoments = _context.Moments.Include(m => m.KheechEvent.Location)
+                                                                 .Where(m => m.ApplicationUserId == currentUserId)
                                                                  .OrderByDescending(m => m.InsertDate)
                                                                  .Take(3)
                                                                  .ToList();
@@ -280,6 +280,18 @@ namespace Kheech.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                var kheechEventOld = _context.KheechEvents.Include(k => k.Location).FirstOrDefault(k => k.Id == kheechEditViewModels.KheechEvent.Id);
+                bool isKheechChanged = false;
+
+                if ((kheechEventOld.StartDate != kheechEditViewModels.KheechEvent.StartDate) || (kheechEventOld.Location.Name != kheechEditViewModels.WhereToMeet))
+                {
+                    kheechEventOld.StartDate = kheechEditViewModels.KheechEvent.StartDate;
+                    kheechEventOld.EndDate = kheechEditViewModels.KheechEvent.StartDate.AddHours(2);
+                    kheechEventOld.InsertDate = DateTime.UtcNow;
+                    kheechEventOld.LocationId = _context.Locations.Where(l => l.Name == kheechEditViewModels.WhereToMeet).Select(l => l.Id).FirstOrDefault();
+                    isKheechChanged = true;
+                }
+
                 var existingKheechUser = _context.KheechUsers.FirstOrDefault(k => k.KheechEventId == id && k.ApplicationUserId == kheechEditViewModels.WhoToMeet);
 
                 if (existingKheechUser == null)
@@ -293,23 +305,27 @@ namespace Kheech.Web.Controllers
 
                     _context.KheechUsers.Add(kheechUser);
                 }
-                else
+
+                if (isKheechChanged)
                 {
-                    existingKheechUser.IsAccepted = false;
-                    _context.Entry(existingKheechUser).State = EntityState.Modified;
+                    var oldKheechUsers = _context.KheechUsers.Where(k => k.KheechEventId == kheechEditViewModels.KheechEvent.Id).ToList();
+
+                    foreach (var kuser in oldKheechUsers)
+                    {
+                        kuser.IsAccepted = false;
+                        _context.Entry(kuser).State = EntityState.Modified;
+                    }
                 }
 
-                kheechEditViewModels.KheechEvent.EndDate = kheechEditViewModels.KheechEvent.StartDate.AddHours(2);
-                kheechEditViewModels.KheechEvent.InsertDate = DateTime.UtcNow;
-                kheechEditViewModels.KheechEvent.Location = _context.Locations.FirstOrDefault(l => l.Name == kheechEditViewModels.WhereToMeet);
-                _context.Entry(kheechEditViewModels.KheechEvent).State = EntityState.Modified;
+                kheechEventOld.EventName = kheechEditViewModels.KheechEvent.EventName;
+                _context.Entry(kheechEventOld).State = EntityState.Modified;
                 _context.SaveChanges();
-                return RedirectToRoute("KheechDetails", new { id = kheechEditViewModels.KheechEvent.Id});
+                return RedirectToRoute("KheechDetails", new { id = kheechEventOld.Id});
             }
             //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
             ViewBag.GroupId = new SelectList(_context.Groups, "Id", "Name", kheechEditViewModels.KheechEvent.GroupId);
             ViewBag.LocationId = new SelectList(_context.Locations, "Id", "Name", kheechEditViewModels.KheechEvent.LocationId);
-            return View(kheechEditViewModels.KheechEvent);
+            return View(kheechEditViewModels);
         }
 
         [HttpPost]

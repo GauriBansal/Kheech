@@ -8,6 +8,10 @@
 <div class="container mt-3 mb-3">
     <h4 class="text-center"><em>Recent Memories</em></h4>
   <div class="row">
+    @if (Model.Count() == 0)
+    {
+        <p>You do not have any memory yet.</p>
+    }
     @foreach (var moment in Model)
     {
       <div class="col-sm-4 card">

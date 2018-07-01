@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using Kheech.Web.Models;
 using Kheech.Web.ViewModels;
+using Microsoft.AspNet.Identity;
 
 namespace Kheech.Web.Controllers
 {
@@ -33,16 +34,13 @@ namespace Kheech.Web.Controllers
             {
                 return RedirectToRoute("IndexPage");
             }
-            
-            //select *
-            //from Moments m
-            //inner join KheechEvents e on e.Id = m.KheechEventId
-            //inner join Locations l on l.Id = e.LocationId
-            //order by m.Id desc
+
+            var currentUserId = User.Identity.GetUserId();
 
             var moments = _context.Moments
                 .Include(m => m.KheechEvent.Location)
                 .Include(m => m.ApplicationUser)
+                .Where(m => m.ApplicationUserId == currentUserId)
                 .OrderByDescending(m => m.Id)
                 .ToList();
 
@@ -88,24 +86,39 @@ namespace Kheech.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create/{kheechId}", Name = "MomentsCreatePost")]
-        public ActionResult Create(MomentsUploadViewModel moment)
+        public ActionResult Create(MomentsUploadViewModel momentupload)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Moments.Add(moment);
-            //    _context.SaveChanges();
-            //    return RedirectToAction("Details", new { id = moment.Id});
-            //}
+            var currentUserId = User.Identity.GetUserId();
 
             var allowedExtensions = new[] { ".png", ".jpg", ".gif" };
-            var fileExtension = Path.GetExtension(moment.File.FileName).ToLower();
+            var fileExtension = Path.GetExtension(momentupload.File.FileName).ToLower();
             if (!allowedExtensions.Contains(fileExtension))
             {
-                //File type not allowed
+                ViewBag.Message = "This FileType is not supported by our site.";
+                return View(momentupload);
             }
 
-            var reader = new BinaryReader(moment.File.InputStream);
-            var dat = reader.ReadBytes(moment.File.ContentLength);
+            string fileName = Path.GetFileNameWithoutExtension(momentupload.File.FileName);
+            string extension = Path.GetExtension(momentupload.File.FileName);
+            fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+
+            var path = Server.MapPath("~/uploads/");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            momentupload.ImagePath = "~/uploads/" + fileName;
+            momentupload.File.SaveAs(Path.Combine(path, fileName));
+
+            var momentToBeCreated = new Moment
+            {
+                KheechEventId = momentupload.KheechId,
+                Description = momentupload.Description,
+                ApplicationUserId = currentUserId,
+                Capture = momentupload.ImagePath,
+                InsertDate = DateTime.UtcNow
+            };
 
             //var momentToBeAdded = new Moment
             //{
@@ -115,10 +128,18 @@ namespace Kheech.Web.Controllers
             //Data = data
             ////}
 
-            //_context.Moments.Add(momentToBeAdded);
-            //_context.SaveChanges();
-            return View();
-            //return RedirectToRoute("MomentsDetail", new { id = momentToBeAdded.Id });
+            _context.Moments.Add(momentToBeCreated);
+            _context.SaveChanges();
+            return RedirectToRoute("MomentsDetail", new { id = momentToBeCreated.Id });
+        }
+
+        [Route("Download/{id}", Name = "FileDownload")]
+        public FileResult Download(int id)
+        {
+            var file = _context.Moments.FirstOrDefault(f => f.Id == id);
+            var fileName = Path.GetFileName(file.Capture);
+
+            return File(file.Capture, fileName);
         }
 
         // GET: Moments/Edit/5

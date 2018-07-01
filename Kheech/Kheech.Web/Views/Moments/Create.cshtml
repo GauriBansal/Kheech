@@ -4,48 +4,28 @@
     ViewBag.Title = "Create";
 }
 
-<form action="@Url.RouteUrl("MomentsCreatePost", new { id = Model.KheechId})" method="post">
-    
+<form action="@Url.RouteUrl("MomentsCreatePost", new { id = Model.KheechId})" method="post" enctype="multipart/form-data">
+
     @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.KheechId)
+    <h4>Create a Moment</h4>
+    <hr />
 
-    <div class="form-horizontal">
-        <h4>Create a Moment</h4>
-        <hr />
+    <div>@ViewBag.Message</div>
 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.KheechId)
-        @*@Html.HiddenFor(model => model.InsertDate)*@
-        <div>
-            @Html.LabelFor(m => m.File)
-            @Html.TextBox("file", "", new { type = "file" }) <br />
-            <input type="submit" name="Submit" id="Submit" value="Upload" />
-            @ViewBag.Message
-        </div>
-
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.Capture, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Capture, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Capture, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>*@
+    <div class="form-group">
+        @Html.LabelFor(a => a.File, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.TextBoxFor(a => a.File, new { @class = "form-control", type = "file", accept = "*" })
+        @Html.ValidationMessageFor(a => a.File, "", new { @class = "text-danger" })
     </div>
-    </form>
 
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-    }
+    <div class="form-group">
+        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Save</button>
+</form>

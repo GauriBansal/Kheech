@@ -8,12 +8,12 @@
 <div class="container">
     <div class="row card text-center">
         <h4 class="card-title">@Model.KheechEvent.EventName.Humanize() at @Model.KheechEvent.Location.Name.Humanize() on @Model.KheechEvent.StartDate.ToString("dddd, dd MMMM yyyy")</h4>
-        <img class="card-img" src="@Model.Capture" alt="Memory" />
+        <img class="card-img img-responsive" src="@Url.Content(Model.Capture)" alt="Memory" />
         <div class="card-body">
             <p class="card-text">@Model.Description</p> <br>
             <span class="text-center">
                 @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-                <a href="@Url.RouteUrl("FileDownload", new { id = upload.Id })">Download</a> |
+                <a href="@Url.RouteUrl("FileDownload", new { id = Model.Id})">Download</a> |
                 @Html.ActionLink("Back to List", "Index") 
                 
             </span>
