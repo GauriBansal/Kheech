@@ -26,8 +26,12 @@ namespace Kheech.Web
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
+                      "~/Content/toastr.css",
                       "~/Content/site.css"));
-            
+
+            bundles.Add(new ScriptBundle("~/bundles/vendor").Include(
+                     "~/Scripts/toastr.js"));
+
             //set EnableOptimizations to false for debugging. 
             BundleTable.EnableOptimizations = false;
         }

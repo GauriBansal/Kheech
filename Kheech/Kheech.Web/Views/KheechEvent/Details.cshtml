@@ -1,4 +1,5 @@
 ﻿@using Humanizer
+@using Newtonsoft.Json
 @using Microsoft.AspNet.Identity
 @model Kheech.Web.Models.KheechEvent
 
@@ -8,54 +9,54 @@
             <div class="container">
                 @if (User.Identity.GetUserId() == @Model.ApplicationUserId)
                 {
-                <div class="row">
-                    <a class="col-sm-6 text-left" href="@Url.RouteUrl("KheechEdit", new { id = Model.Id })">Edit</a>
-                    @if (Model.EndDate < DateTime.UtcNow)
-                    {
-                        <a class="col-6 text-right" href="@Url.RouteUrl("MomentsCreate", new { kheechId = Model.Id })">Create a moment</a>
-                    }
-                </div>
-                <div class="row">
-                    <h5 class="col-sm-12 text-center"><em><u>@Model.EventName.Humanize() at @Model.Location.Name.Humanize()</u></em></h5>
-                    <ul class="list-unstyled col-sm-12"> 
-                        These friends accepted your Kheech to meet on @Model.StartDate.ToString("dddd, dd MMMM").
-                        @foreach(var kheechUser in Model.KheechUsers)
+                    <div class="row">
+                        <a class="col-sm-6 text-left" href="@Url.RouteUrl("KheechEdit", new { id = Model.Id })">Edit</a>
+                        @if (Model.EndDate < DateTime.UtcNow)
                         {
-                            <li class="offset-1">
-                                 @Html.CheckBoxFor(m => kheechUser.IsAccepted, new { @disabled = "disabled" })
-                                 @kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName
-                            </li>
+                            <a class="col-6 text-right" href="@Url.RouteUrl("MomentsCreate", new { kheechId = Model.Id })">Create a moment</a>
                         }
-                    </ul>
-                </div>
+                    </div>
+                    <div class="row">
+                        <h5 class="col-sm-12 text-center"><em><u>@Model.EventName.Humanize() at @Model.Location.Name.Humanize()</u></em></h5>
+                        <ul class="list-unstyled col-sm-12">
+                            These friends accepted your Kheech to meet on @Model.StartDate.ToString("dddd, dd MMMM").
+                            @foreach (var kheechUser in Model.KheechUsers)
+                            {
+                                <li class="offset-1">
+                                    @Html.CheckBoxFor(m => kheechUser.IsAccepted, new { @disabled = "disabled" })
+                                    @kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 }
                 else
                 {
-                <div class="row p-5">
-                    <div class="col-sm-6">
-                        <h3><em>@Model.ApplicationUser.FirstName.Humanize() @Model.ApplicationUser.LastName.Humanize()</em></h3> 
+                    <div class="row p-5">
+                        <div class="col-sm-6">
+                            <h3><em>@Model.ApplicationUser.FirstName.Humanize() @Model.ApplicationUser.LastName.Humanize()</em></h3>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <h5>@Model.EventName.Humanize() at @Model.Location.Name.Humanize() </h5>
+                            <h6> @Model.StartDate.ToString("dddd, dd MMMM") </h6>
+                        </div>
                     </div>
-                    <div class="col-sm-6 text-right">
-                        <h5>@Model.EventName.Humanize() at @Model.Location.Name.Humanize() </h5>
-                        <h6> @Model.StartDate.ToString("dddd, dd MMMM") </h6>
+                    <div class="row pl-5 pr-5 pb-5">
+                        @foreach (var kheechUser in Model.KheechUsers)
+                        {
+                            <div class="col-sm-12">
+                                @Html.CheckBoxFor(m => kheechUser.IsAccepted, new { @disabled = "disabled" })
+                                @kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName
+                            </div>
+                        }
                     </div>
-                </div>
-                <div class="row pl-5 pr-5 pb-5"> 
-                    @foreach (var kheechUser in Model.KheechUsers)
+                    if (Model.EndDate > DateTime.UtcNow)
                     {
-                    <div class="col-sm-12">
-                        @Html.CheckBoxFor(m => kheechUser.IsAccepted, new { @disabled = "disabled" })
-                        @kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName
-                    </div>
-                     }
-                </div>
-                if (Model.EndDate > DateTime.UtcNow)
-                    {
-                    <form class="row pb-3" method="post" action="@Url.RouteUrl("AcceptedKheechPost", new { id = Model.Id })">
-                        @Html.AntiForgeryToken()
-                        <button class="col-sm-2 offset-3 btn" id="isAccepted" name="isAccepted" value="true">Yes</button>
-                        <button class="col-sm-2 offset-2 btn" name="isAccepted" value="false">No</button>
-                    </form>
+                        <form class="row pb-3" method="post" action="@Url.RouteUrl("AcceptedKheechPost", new { id = Model.Id })">
+                            @Html.AntiForgeryToken()
+                            <button class="col-sm-2 offset-3 btn" id="isAccepted" name="isAccepted" value="true">Yes</button>
+                            <button class="col-sm-2 offset-2 btn" name="isAccepted" value="false">No</button>
+                        </form>
                     }
                 }
             </div>
@@ -66,18 +67,47 @@
             {
                 <div class="row">
                     <div class="col-sm-2">
-                        <span >@comment.ApplicationUser.FirstName.First()@comment.ApplicationUser.LastName.First(): </span>
+                        <span>@comment.ApplicationUser.FirstName.First()@comment.ApplicationUser.LastName.First(): </span>
                     </div>
                     <p class="col-sm-7">
                         <small> @comment.Discussion </small>
                     </p>
+                    @if (comment.CreatorId == User.Identity.GetUserId())
+                    {
+                        <a class="col-sm-1" href="@Url.RouteUrl("EditDiscussion", new { id = comment.Id, discussion = comment.Discussion})">Edit</a>
+                        <a class="col-sm-1 delete-comment" href="#" data-comment-id="@comment.Id"> Delete</a>
+                        @*<a class="col-sm-1 delete-comment" href="@Url.RouteUrl("DeleteDiscussion", new { id = comment.Id})"> Delete</a>*@
+                    }
                 </div>
             }
             <form method="post" action="@Url.RouteUrl("AddDiscussion", new { id = Model.Id})">
-                 @Html.AntiForgeryToken()
-                 <textarea id="newMessage" name="newMessage"></textarea>
-                 <button type="submit">Add</button>
+                @Html.AntiForgeryToken()
+                <textarea id="newMessage" name="newMessage"></textarea>
+                <button type="submit">Add</button>
             </form>
         </div>
     </div>
 </div>
+
+
+@section scripts{
+    <script>
+        $(".delete-comment").click(function () {
+            var id = $(this).data("comment-id");
+            $.ajax({
+                method: 'post',
+                url: '@Url.RouteUrl("DeleteDiscussion")',
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                toastr.success("Thanks for deleting comment. Refresh page to show changes on the page.");
+                console.log(data);
+                },
+                error: function () {
+                console.warn('Unable to delete comment');
+                }
+            });
+         });
+    </script>
+}
