@@ -10,6 +10,8 @@ using System.Web.Mvc;
 using Kheech.Web.Models;
 using Microsoft.AspNet.Identity;
 using System.Data.Entity;
+using Kheech.Web.Clients;
+using System.Threading.Tasks;
 
 namespace Kheech.Web.Controllers
 {
@@ -119,27 +121,32 @@ namespace Kheech.Web.Controllers
             return View();
         }
         
+        [HttpPost]
         [Route("Create", Name = "InviteAFriendPost")]
-        public ActionResult Create(Invitation model)
+        public async Task<ActionResult> CreateAsync(Invitation model)
         {
-            using (MailMessage mm = new MailMessage(model.Email, model.To))
-            {
-                mm.Subject = model.Subject;
-                mm.Body = model.Body;
-                mm.IsBodyHtml = false;
-                using (SmtpClient smtp = new SmtpClient())
-                {
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.EnableSsl = true;
-                    NetworkCredential NetworkCred = new NetworkCredential(model.Email, model.Password);
-                    smtp.UseDefaultCredentials = true;
-                    smtp.Credentials = NetworkCred;
-                    smtp.Port = 587;
-                    smtp.Send(mm);
-                    ViewBag.Message = "Email sent.";
-                }
-            }
-            return View();
+            var sendGridClient = new SendGridEmailClient("SendGridApiKey");
+            await sendGridClient.SendEmailAsync("reach2gauri@gmail.com", "invitation", "hello world");
+
+            return RedirectToRoute("FriendsHome");
+            //using (MailMessage mm = new MailMessage(model.Email, model.To))
+            //{
+            //    mm.Subject = model.Subject;
+            //    mm.Body = model.Body;
+            //    mm.IsBodyHtml = false;
+            //    using (SmtpClient smtp = new SmtpClient())
+            //    {
+            //        smtp.Host = "smtp.gmail.com";
+            //        smtp.EnableSsl = true;
+            //        NetworkCredential NetworkCred = new NetworkCredential(model.Email, model.Password);
+            //        smtp.UseDefaultCredentials = true;
+            //        smtp.Credentials = NetworkCred;
+            //        smtp.Port = 587;
+            //        smtp.Send(mm);
+            //        ViewBag.Message = "Email sent.";
+            //    }
+            //}
+            //return View();
         }
 
     }

@@ -1,8 +1,19 @@
 ﻿@model Kheech.Web.Models.Moment
 
-@{
-    ViewBag.Title = "Edit";
-}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.RouteUrl("HomePage")">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="@Url.RouteUrl("KheechDetails", new { id = Model.KheechEventId})">Kheech @Model.KheechEventId</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="@Url.RouteUrl("MomentsDetail", new { id = Model.Id})">Moment @Model.Id</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">EditMoment</li>
+    </ol>
+</nav>
 
 @using (Html.BeginForm())
 {

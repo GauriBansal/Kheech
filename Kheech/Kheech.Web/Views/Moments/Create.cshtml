@@ -1,8 +1,16 @@
 ﻿@model Kheech.Web.ViewModels.MomentsUploadViewModel
 
-@{
-    ViewBag.Title = "Create";
-}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.RouteUrl("HomePage")">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="@Url.RouteUrl("KheechDetails", new { id = Model.KheechId})">Kheech @Model.KheechId</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">CreateMoment</li>
+    </ol>
+</nav>
 
 <form action="@Url.RouteUrl("MomentsCreatePost", new { id = Model.KheechId})" method="post" enctype="multipart/form-data">
 

@@ -3,6 +3,15 @@
 @using Microsoft.AspNet.Identity
 @model Kheech.Web.Models.KheechEvent
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.RouteUrl("HomePage")">Home</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.EventName at @Model.Location.Name</li>
+    </ol>
+</nav>
+
 <div class="container">
     <div class="row">
         <div class="col-sm-8 table-bordered">

@@ -1,8 +1,16 @@
 ﻿@using Humanizer
 @model Kheech.Web.ViewModels.FriendsDetailViewModel
-@{
-    ViewBag.Title = "Details";
-}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.RouteUrl("HomePage")">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="@Url.RouteUrl("FriendsHome")">Friends</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.FriendInformation.Name details</li>
+    </ol>
+</nav>
 
 <div class="container">
     <div class="row">

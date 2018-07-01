@@ -1,9 +1,14 @@
 ﻿@model IEnumerable<Kheech.Web.Models.Moment>
- @using Humanizer
+@using Humanizer
 
-@{
-    ViewBag.Title = "Index";
-}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.RouteUrl("HomePage")">Home</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Memories</li>
+    </ol>
+</nav>
 
 <div class="container mt-3 mb-3">
     <h4 class="text-center"><em>Recent Memories</em></h4>

@@ -1,7 +1,4 @@
 ﻿@model Kheech.Web.ViewModels.ScheduleViewModel
-@{
-    ViewBag.Title = "Schedule";
-}
 
 <form action="@Url.RouteUrl("ScheduleMeetingPost", new { id = 1})" method="post">
     @Html.AntiForgeryToken()
@@ -19,7 +16,7 @@
             <div class="col-sm-12">
                 <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
                     @*@Html.TextBoxFor(m => m.WhenToMeet, new { @class = "form-control datetimepicker-input", data_target = "#datetimepicker1" })*@
-                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"  name="WhenToMeet" />
+                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" name="WhenToMeet" />
                     <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
@@ -29,14 +26,14 @@
         <div class="form-group">
             @Html.LabelFor(m => m.WhoToMeet, new { @class = "col-sm-12 control-label" })
             @if (Model.Friends.Count == 0)
-                {
-                    @Html.TextBoxFor(m => m.WhoToMeet, new { @readonly = "readonly", @class = "form-control", @placeholder="You do not have friends yet" })
-                }
+            {
+                @Html.TextBoxFor(m => m.WhoToMeet, new { @readonly = "readonly", @class = "form-control", @placeholder = "You do not have friends yet" })
+            }
             else
-                {
-                    @Html.DropDownListFor(m => m.WhoToMeet,
-                                   new SelectList(Model.Friends, "Id", "Name"), new { @class = "col-sm-12 form-control" })
-                    }
+            {
+                @Html.DropDownListFor(m => m.WhoToMeet,
+                                    new SelectList(Model.Friends, "Id", "Name"), new { @class = "col-sm-12 form-control" })
+            }
         </div>
         <div class="form-group">
             @Html.LabelFor(m => m.WhereToMeet, new { @class = "col-sm-12 control-label" })
@@ -55,7 +52,7 @@
 {
     <script type="text/javascript">
         $(function () {
-             $('#datetimepicker1').datetimepicker();
+            $('#datetimepicker1').datetimepicker();
         });
     </script>
 }
