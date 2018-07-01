@@ -70,11 +70,10 @@
                         <span>@comment.ApplicationUser.FirstName.First()@comment.ApplicationUser.LastName.First(): </span>
                     </div>
                     <p class="col-sm-7">
-                        <small> @comment.Discussion </small>
+                        <small id="comment-discussion"> @comment.Discussion </small>
                     </p>
                     @if (comment.CreatorId == User.Identity.GetUserId())
                     {
-                        <a class="col-sm-1" href="@Url.RouteUrl("EditDiscussion", new { id = comment.Id, discussion = comment.Discussion})">Edit</a>
                         <a class="col-sm-1 delete-comment" href="#" data-comment-id="@comment.Id"> Delete</a>
                         @*<a class="col-sm-1 delete-comment" href="@Url.RouteUrl("DeleteDiscussion", new { id = comment.Id})"> Delete</a>*@
                     }
@@ -108,6 +107,9 @@
                 console.warn('Unable to delete comment');
                 }
             });
-         });
+        });
+
     </script>
+
+
 }

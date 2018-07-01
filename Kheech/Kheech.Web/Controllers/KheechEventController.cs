@@ -348,24 +348,6 @@ namespace Kheech.Web.Controllers
             return RedirectToRoute("KheechDetails", new { id = id });
         }
 
-        [Route("EditDiscussion/{id}", Name = "EditDiscussion")]
-        public ActionResult EditDiscussion(int id, string discussion)
-        {
-            var commentToBeUpdated = _context.KheechComments.FirstOrDefault(c => c.Id == id);
-            var kheechId = commentToBeUpdated.KheechEventId;
-            if (commentToBeUpdated == null)
-            {
-                return HttpNotFound();
-            }
-
-            commentToBeUpdated.Discussion = discussion;
-            commentToBeUpdated.InsertDate = DateTime.UtcNow;
-
-            _context.SaveChanges();
-
-            return RedirectToRoute("KheechDetails", new { id = kheechId });
-        }
-
         [HttpPost]
         [Route("DeleteDiscussion", Name = "DeleteDiscussion")]
         public ActionResult DeleteDiscussion(int id)
@@ -381,7 +363,6 @@ namespace Kheech.Web.Controllers
             _context.SaveChanges();
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
-            //return RedirectToRoute("KheechDetails", new { id = kheechId});
         }
 
         [HttpPost]
