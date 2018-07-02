@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using System.Net;
 using Microsoft.Ajax.Utilities;
+using System.Threading.Tasks;
 
 namespace Kheech.Web.Controllers
 {
@@ -25,17 +26,17 @@ namespace Kheech.Web.Controllers
 
         // GET: KheechEvent
         [Route("", Name = "HomePage")]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var currentUserId = User.Identity.GetUserId();
 
             var kheechIndexViewModel = new KheechIndexViewModel();
             
-            kheechIndexViewModel.ActiveKheechEvents = _context.KheechEvents.Include(k => k.ApplicationUser)
+            kheechIndexViewModel.ActiveKheechEvents = await _context.KheechEvents.Include(k => k.ApplicationUser)
                                                    .Include(k => k.Location)
                                                    .Include(k => k.Group)
                                                    .Where(m => (m.ApplicationUserId == currentUserId) && (m.EndDate > DateTime.UtcNow))
-                                                   .Distinct().Take(5).ToList();
+                                                   .Distinct().Take(5).ToListAsync();
    
             if (kheechIndexViewModel.ActiveKheechEvents.Count() == 0)
             {
@@ -44,9 +45,9 @@ namespace Kheech.Web.Controllers
 
             if ((kheechIndexViewModel.ActiveKheechEvents.Count() > 0) && (kheechIndexViewModel.ActiveKheechEvents.Count() < 5))
             {
-                var kheechUsers = _context.KheechUsers.Include(k => k.KheechEvent.Location)
+                var kheechUsers = await _context.KheechUsers.Include(k => k.KheechEvent.Location)
                                                       .Where(k => (k.ApplicationUserId == currentUserId) && (k.KheechEvent.EndDate > DateTime.UtcNow))
-                                                      .Distinct().Take(5).ToList();
+                                                      .Distinct().Take(5).ToListAsync();
                 foreach (var kuser in kheechUsers)
                 {
                     kheechIndexViewModel.ActiveKheechEvents.Add(kuser.KheechEvent);
@@ -54,24 +55,24 @@ namespace Kheech.Web.Controllers
                 }
             }
 
-            kheechIndexViewModel.RecentSchedules = _context.KheechEvents.Include(k => k.ApplicationUser)
+            kheechIndexViewModel.RecentSchedules = await _context.KheechEvents.Include(k => k.ApplicationUser)
                                                     .Include(k => k.Location)
                                                     .Include(k => k.Group)
                                                     .Where(k => k.ApplicationUserId == currentUserId && k.EndDate <= DateTime.UtcNow)
                                                     .OrderByDescending(k => k.EndDate)
                                                     .Take(3)
-                                                    .ToList();
+                                                    .ToListAsync();
             
-            kheechIndexViewModel.RecentMoments = _context.Moments.Include(m => m.KheechEvent.Location)
+            kheechIndexViewModel.RecentMoments = await _context.Moments.Include(m => m.KheechEvent.Location)
                                                                  .Where(m => m.ApplicationUserId == currentUserId)
                                                                  .OrderByDescending(m => m.InsertDate)
                                                                  .Take(3)
-                                                                 .ToList();
+                                                                 .ToListAsync();
 
-            kheechIndexViewModel.RecentFriends = _context.KheechUsers.Include(k => k.ApplicationUser)
+            kheechIndexViewModel.RecentFriends = await _context.KheechUsers.Include(k => k.ApplicationUser)
                                                    .Include(k => k.KheechEvent.Location)
                                                    .Where(m => m.KheechEvent.ApplicationUserId == currentUserId)
-                                                   .Distinct().Take(3).ToList();
+                                                   .Distinct().Take(3).ToListAsync();
 
             return View(kheechIndexViewModel);
 
@@ -79,19 +80,19 @@ namespace Kheech.Web.Controllers
 
        // GET: KheechEvents/Details/5
        [Route("details/{id}", Name = "KheechDetails")]
-        public ActionResult Details(int? id)
+        public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             
-            KheechEvent kheechEvent = _context.KheechEvents.Include(k => k.ApplicationUser)
+            KheechEvent kheechEvent = await _context.KheechEvents.Include(k => k.ApplicationUser)
                                                            .Include(k => k.KheechComments)
                                                            .Include(k => k.KheechUsers)
                                                            .Include(k => k.Location)
                                                            .Include(k => k.Group)
-                                                           .FirstOrDefault(k => k.Id == id);
+                                                           .FirstOrDefaultAsync(k => k.Id == id);
 
             if (kheechEvent == null)
             {
@@ -100,7 +101,7 @@ namespace Kheech.Web.Controllers
 
             foreach (var user in kheechEvent.KheechUsers)
             {
-                var kheechUser = _context.Users.FirstOrDefault(u => u.Id == user.ApplicationUserId);
+                var kheechUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.ApplicationUserId);
                 if (kheechUser == null)
                 {
                     return HttpNotFound();
@@ -111,7 +112,7 @@ namespace Kheech.Web.Controllers
 
             foreach (var comment in kheechEvent.KheechComments)
             {
-                var commentUser = _context.Users.FirstOrDefault(u => u.Id == comment.CreatorId);
+                var commentUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == comment.CreatorId);
                 if (commentUser == null)
                 {
                     return HttpNotFound();
@@ -123,7 +124,7 @@ namespace Kheech.Web.Controllers
         }
         
         [Route("schedule", Name = "ScheduleMeeting")]
-        public ActionResult Schedule()
+        public async Task<ActionResult> Schedule()
         {
             var currentUserId = User.Identity.GetUserId();
 
@@ -131,11 +132,11 @@ namespace Kheech.Web.Controllers
             
             //scheduleViewModel.Friends = Enumerable.Empty<Friendship>();
             
-            var friends = _context.Friendships
+            var friends = await _context.Friendships
                         .Include(f => f.Initiator)
                         .Include(f => f.Recipient)
                         .Include(f => f.FriendshipStatus)
-                        .Where(f => f.InitiatorId == currentUserId || f.RecipientId == currentUserId).Distinct().ToList();
+                        .Where(f => f.InitiatorId == currentUserId || f.RecipientId == currentUserId).Distinct().ToListAsync();
 
             foreach (var item in friends)
             {
@@ -165,7 +166,7 @@ namespace Kheech.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("schedule/{id}", Name = "ScheduleMeetingPost")]
-        public ActionResult Schedule(int id, ScheduleViewModel model)
+        public async Task<ActionResult> Schedule(int id, ScheduleViewModel model)
         {
             var currentUserId = User.Identity.GetUserId();
             var kheechEvent = new KheechEvent();
@@ -177,7 +178,7 @@ namespace Kheech.Web.Controllers
             kheechEvent.IsGroupEvent = false;
             kheechEvent.InsertDate = DateTime.UtcNow;
 
-            var location = _context.Locations.FirstOrDefault(l => l.Name == model.WhereToMeet);
+            var location = await _context.Locations.FirstOrDefaultAsync(l => l.Name == model.WhereToMeet);
             if (location == null)
             {
                 location = new Location 
@@ -205,7 +206,7 @@ namespace Kheech.Web.Controllers
             };
 
             _context.KheechUsers.Add(kheechUser);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             TempData["ScheduleMessage"] = "Congratulations, you have successfully added a Kheech. Keep going!";
             return RedirectToRoute("HomePage");
@@ -213,7 +214,7 @@ namespace Kheech.Web.Controllers
 
         // GET: KheechEvents/Edit/5
         [Route("Edit/{id}", Name = "KheechEdit")]
-        public ActionResult Edit(int? id)
+        public async Task<ActionResult> Edit(int? id)
         {
             var currentUserId = User.Identity.GetUserId();
 
@@ -224,21 +225,21 @@ namespace Kheech.Web.Controllers
 
             var kheechEditViewModels = new KheechEditViewModels();
 
-            kheechEditViewModels.KheechEvent = _context.KheechEvents.Include(k => k.ApplicationUser)
+            kheechEditViewModels.KheechEvent =await _context.KheechEvents.Include(k => k.ApplicationUser)
                                                            .Include(k => k.KheechComments)
                                                            .Include(k => k.KheechUsers)
                                                            .Include(k => k.Location)
-                                                           .FirstOrDefault(k => k.Id == id);
+                                                           .FirstOrDefaultAsync(k => k.Id == id);
             if (kheechEditViewModels.KheechEvent == null)
             {
                 return HttpNotFound();
             }
 
-            var friends = _context.Friendships
+            var friends = await _context.Friendships
                                   .Include(f => f.Initiator)
                                   .Include(f => f.Recipient)
                                   .Include(f => f.FriendshipStatus)
-                                  .Where(f => f.InitiatorId == currentUserId || f.RecipientId == currentUserId).Distinct().ToList();
+                                  .Where(f => f.InitiatorId == currentUserId || f.RecipientId == currentUserId).Distinct().ToListAsync();
 
             foreach (var item in friends)
             {
@@ -276,11 +277,11 @@ namespace Kheech.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit/{id}", Name = "KheechEditPost")]
-        public ActionResult Edit(int id, KheechEditViewModels kheechEditViewModels)
+        public async Task<ActionResult> Edit(int id, KheechEditViewModels kheechEditViewModels)
         {
             if (ModelState.IsValid)
             {
-                var kheechEventOld = _context.KheechEvents.Include(k => k.Location).FirstOrDefault(k => k.Id == kheechEditViewModels.KheechEvent.Id);
+                var kheechEventOld = await _context.KheechEvents.Include(k => k.Location).FirstOrDefaultAsync(k => k.Id == kheechEditViewModels.KheechEvent.Id);
                 bool isKheechChanged = false;
 
                 if ((kheechEventOld.StartDate != kheechEditViewModels.KheechEvent.StartDate) || (kheechEventOld.Location.Name != kheechEditViewModels.WhereToMeet))
@@ -288,11 +289,11 @@ namespace Kheech.Web.Controllers
                     kheechEventOld.StartDate = kheechEditViewModels.KheechEvent.StartDate;
                     kheechEventOld.EndDate = kheechEditViewModels.KheechEvent.StartDate.AddHours(2);
                     kheechEventOld.InsertDate = DateTime.UtcNow;
-                    kheechEventOld.LocationId = _context.Locations.Where(l => l.Name == kheechEditViewModels.WhereToMeet).Select(l => l.Id).FirstOrDefault();
+                    kheechEventOld.LocationId = await _context.Locations.Where(l => l.Name == kheechEditViewModels.WhereToMeet).Select(l => l.Id).FirstOrDefaultAsync();
                     isKheechChanged = true;
                 }
 
-                var existingKheechUser = _context.KheechUsers.FirstOrDefault(k => k.KheechEventId == id && k.ApplicationUserId == kheechEditViewModels.WhoToMeet);
+                var existingKheechUser = await _context.KheechUsers.FirstOrDefaultAsync(k => k.KheechEventId == id && k.ApplicationUserId == kheechEditViewModels.WhoToMeet);
 
                 if (existingKheechUser == null)
                 {
@@ -308,7 +309,7 @@ namespace Kheech.Web.Controllers
 
                 if (isKheechChanged)
                 {
-                    var oldKheechUsers = _context.KheechUsers.Where(k => k.KheechEventId == kheechEditViewModels.KheechEvent.Id).ToList();
+                    var oldKheechUsers = await _context.KheechUsers.Where(k => k.KheechEventId == kheechEditViewModels.KheechEvent.Id).ToListAsync();
 
                     foreach (var kuser in oldKheechUsers)
                     {
@@ -319,7 +320,7 @@ namespace Kheech.Web.Controllers
 
                 kheechEventOld.EventName = kheechEditViewModels.KheechEvent.EventName;
                 _context.Entry(kheechEventOld).State = EntityState.Modified;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return RedirectToRoute("KheechDetails", new { id = kheechEventOld.Id});
             }
             //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
@@ -331,7 +332,7 @@ namespace Kheech.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("AddDiscussion/{id}", Name = "AddDiscussion")]
-        public ActionResult AddDiscussion(int id, string newMessage)
+        public async Task<ActionResult> AddDiscussion(int id, string newMessage)
         {
             var currentUserId = User.Identity.GetUserId();
             var kheechComment = new KheechComment
@@ -343,16 +344,16 @@ namespace Kheech.Web.Controllers
             };
 
             _context.KheechComments.Add(kheechComment);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToRoute("KheechDetails", new { id = id });
         }
 
         [HttpPost]
         [Route("DeleteDiscussion", Name = "DeleteDiscussion")]
-        public ActionResult DeleteDiscussion(int id)
+        public async Task<ActionResult> DeleteDiscussion(int id)
         {
-            var commentToBeDeleted = _context.KheechComments.FirstOrDefault(c => c.Id == id);
+            var commentToBeDeleted = await _context.KheechComments.FirstOrDefaultAsync(c => c.Id == id);
             var kheechId = commentToBeDeleted.KheechEventId;
             if (commentToBeDeleted == null)
             {
@@ -360,7 +361,7 @@ namespace Kheech.Web.Controllers
             }
 
             _context.KheechComments.Remove(commentToBeDeleted);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
@@ -368,10 +369,10 @@ namespace Kheech.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("AcceptedKheech/{id}", Name = "AcceptedKheechPost")]
-        public ActionResult AcceptedKheech(int id, bool isAccepted)
+        public async Task<ActionResult> AcceptedKheech(int id, bool isAccepted)
         {
             var currentUserId = User.Identity.GetUserId();
-            var kheechUser = _context.KheechUsers.FirstOrDefault(k => k.KheechEventId == id && k.ApplicationUserId == currentUserId);
+            var kheechUser = await _context.KheechUsers.FirstOrDefaultAsync(k => k.KheechEventId == id && k.ApplicationUserId == currentUserId);
 
             if (kheechUser == null)
             {
@@ -379,8 +380,8 @@ namespace Kheech.Web.Controllers
             }
 
             kheechUser.IsAccepted = isAccepted;
-            _context.SaveChanges();
-          
+            await _context.SaveChangesAsync();
+
             return RedirectToRoute("KheechDetails", new { id = id });
         }
 

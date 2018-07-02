@@ -27,15 +27,15 @@ namespace Kheech.Web.Controllers
         
         // GET: Friend
         [Route("", Name = "FriendsHome")]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var currentUserId = User.Identity.GetUserId();
             
-            var friends = _context.Friendships
-                        .Include(f => f.Initiator)
-                        .Include(f => f.Recipient)
-                        .Include(f => f.FriendshipStatus)
-                        .Where(f => (f.InitiatorId == currentUserId || f.RecipientId == currentUserId) && f.FriendshipStatusId == 1).Distinct().ToList();
+            var friends = await _context.Friendships
+                                        .Include(f => f.Initiator)
+                                        .Include(f => f.Recipient)
+                                        .Include(f => f.FriendshipStatus)
+                                        .Where(f => (f.InitiatorId == currentUserId || f.RecipientId == currentUserId) && f.FriendshipStatusId == 1).Distinct().ToListAsync();
 
             var friendsIndexViewModel = new FriendsIndexViewModel
             {
@@ -68,7 +68,7 @@ namespace Kheech.Web.Controllers
         }
 
         [Route("Details/{friendId}", Name = "FriendsDetail")]
-        public ActionResult Details(string friendId)
+        public async Task<ActionResult> Details(string friendId)
         {
             var currentUserId = User.Identity.GetUserId();
             if (friendId == null)
@@ -76,9 +76,9 @@ namespace Kheech.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             
-            var friend = _context.Friendships.Include(f => f.Initiator)
+            var friend = await _context.Friendships.Include(f => f.Initiator)
                                              .Include(f => f.Recipient)
-                                             .FirstOrDefault(f => ((f.InitiatorId == currentUserId && f.RecipientId == friendId) ||
+                                             .FirstOrDefaultAsync(f => ((f.InitiatorId == currentUserId && f.RecipientId == friendId) ||
                                                                    (f.InitiatorId == friendId && f.RecipientId == currentUserId)) &&
                                                                    (f.FriendshipStatusId == 1));            
             if (friend == null)
@@ -86,20 +86,20 @@ namespace Kheech.Web.Controllers
                 return HttpNotFound();
             }
             
-            var friendinformation = _context.Users.FirstOrDefault(u => u.Id == friendId);
-            var friendActivity = _context.KheechUsers.Include(k => k.ApplicationUser)
+            var friendinformation = await _context.Users.FirstOrDefaultAsync(u => u.Id == friendId);
+            var friendActivity = await _context.KheechUsers.Include(k => k.ApplicationUser)
                                                       .Include(k => k.KheechEvent.Location)
                                                       .Include(k => k.KheechEvent.Group)
                                                       .Include(k => k.KheechEvent.ApplicationUser)
                                                       .Where(k => k.ApplicationUserId == friendId && k.KheechEvent.ApplicationUserId != currentUserId)
-                                                      .ToList();
+                                                      .ToListAsync();
          
-            var commonActivity = _context.KheechUsers.Include(k => k.ApplicationUser)
+            var commonActivity = await _context.KheechUsers.Include(k => k.ApplicationUser)
                                          .Include(k => k.KheechEvent.Location)
                                          .Include(k => k.KheechEvent.Group)
                                          .Include(k => k.KheechEvent.ApplicationUser)
                                          .Where(k => k.ApplicationUserId == friendId && k.IsAccepted == true && k.KheechEvent.ApplicationUserId == currentUserId)
-                                         .ToList();
+                                         .ToListAsync();
 
             var friendsDetailViewModel = new FriendsDetailViewModel
             {
@@ -116,7 +116,7 @@ namespace Kheech.Web.Controllers
         }
         
         [Route("Create", Name = "InviteAFriend")]
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
             return View();
         }

@@ -36,7 +36,7 @@ namespace Kheech.Web.Controllers
             return View();
         }
 
-        public ActionResult Contact()
+        public async Task<ActionResult> Contact()
         {
             return View();
         }

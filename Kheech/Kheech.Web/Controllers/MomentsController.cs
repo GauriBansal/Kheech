@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Kheech.Web.Models;
@@ -28,7 +29,7 @@ namespace Kheech.Web.Controllers
         
         // GET: Moments
         [Route("", Name = "MomentsHome")]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             if (!User.Identity.IsAuthenticated)
             {
@@ -37,39 +38,39 @@ namespace Kheech.Web.Controllers
 
             var currentUserId = User.Identity.GetUserId();
 
-            var moments = _context.Moments
+            var moments = await _context.Moments
                 .Include(m => m.KheechEvent.Location)
                 .Include(m => m.ApplicationUser)
                 .Where(m => m.ApplicationUserId == currentUserId)
                 .OrderByDescending(m => m.Id)
-                .ToList();
+                .ToListAsync();
 
             return View(moments);
         }
 
         // GET: Moments/Details/5
         [Route("Details/{id}", Name = "MomentsDetail")]
-        public ActionResult Details(int? id)
+        public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Moment moment = _context.Moments.Include(m => m.KheechEvent.Location)
-                                            .FirstOrDefault(m => m.Id == id);
+            Moment moment = await _context.Moments.Include(m => m.KheechEvent.Location)
+                                            .FirstOrDefaultAsync(m => m.Id == id);
             if (moment == null)
             {
                 return HttpNotFound();
             }
             
-            moment.KheechEvent.Location = _context.Locations.FirstOrDefault(l => l.Id == moment.KheechEvent.LocationId);
+            moment.KheechEvent.Location = await _context.Locations.FirstOrDefaultAsync(l => l.Id == moment.KheechEvent.LocationId);
          
             return View(moment);
         }
 
         // GET: Moments/Create
         [Route("Create/{kheechId}", Name = "MomentsCreate")]
-        public ActionResult Create(int kheechId)
+        public async Task<ActionResult> Create(int kheechId)
         {
             var moment = new MomentsUploadViewModel
             {
@@ -86,7 +87,7 @@ namespace Kheech.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create/{kheechId}", Name = "MomentsCreatePost")]
-        public ActionResult Create(MomentsUploadViewModel momentupload)
+        public async Task<ActionResult> Create(MomentsUploadViewModel momentupload)
         {
             var currentUserId = User.Identity.GetUserId();
 
@@ -129,14 +130,14 @@ namespace Kheech.Web.Controllers
             ////}
 
             _context.Moments.Add(momentToBeCreated);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return RedirectToRoute("MomentsDetail", new { id = momentToBeCreated.Id });
         }
 
         [Route("Download/{id}", Name = "FileDownload")]
-        public FileResult Download(int id)
+        public async Task<FileResult> Download(int id)
         {
-            var file = _context.Moments.FirstOrDefault(f => f.Id == id);
+            var file = await _context.Moments.FirstOrDefaultAsync(f => f.Id == id);
             var fileName = Path.GetFileName(file.Capture);
 
             return File(file.Capture, fileName);
@@ -144,13 +145,13 @@ namespace Kheech.Web.Controllers
 
         // GET: Moments/Edit/5
         [Route("Edit/{id}", Name = "MomentsEdit")]
-        public ActionResult Edit(int? id)
+        public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Moment moment = _context.Moments.Include(m => m.KheechEvent).FirstOrDefault(m => m.Id == id);
+            Moment moment = await _context.Moments.Include(m => m.KheechEvent).FirstOrDefaultAsync(m => m.Id == id);
             if (moment == null)
             {
                 return HttpNotFound();
@@ -164,25 +165,25 @@ namespace Kheech.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit/{id}", Name = "MomentsEditPost")]
-        public ActionResult Edit(Moment moment)
+        public async Task<ActionResult> Edit(Moment moment)
         {
             if (ModelState.IsValid)
             {
                 _context.Entry(moment).State = EntityState.Modified;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Details", new { id = moment.Id});
             }
             return View(moment);
         }
 
         // GET: Moments/Delete/5
-        public ActionResult Delete(int? id)
+        public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Moment moment = _context.Moments.Find(id);
+            Moment moment = await _context.Moments.FirstOrDefaultAsync(m => m.Id == id);
             if (moment == null)
             {
                 return HttpNotFound();
@@ -193,11 +194,11 @@ namespace Kheech.Web.Controllers
         // POST: Moments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Moment moment = _context.Moments.Find(id);
+            Moment moment = await _context.Moments.FirstOrDefaultAsync(m => m.Id == id);
             _context.Moments.Remove(moment);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
     }

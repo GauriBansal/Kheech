@@ -219,7 +219,6 @@
     <Compile Include="ViewModels\FriendsDetailViewModel.cs" />
     <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\KheechCommentsController.cs" />
     <Compile Include="Controllers\KheechEventController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MomentsController.cs" />
@@ -416,11 +415,6 @@
     <Content Include="Views\Groups\Details.cshtml" />
     <Content Include="Views\Groups\Edit.cshtml" />
     <Content Include="Views\Groups\Index.cshtml" />
-    <Content Include="Views\KheechComments\Create.cshtml" />
-    <Content Include="Views\KheechComments\Delete.cshtml" />
-    <Content Include="Views\KheechComments\Details.cshtml" />
-    <Content Include="Views\KheechComments\Edit.cshtml" />
-    <Content Include="Views\KheechComments\Index.cshtml" />
     <Content Include="Views\Home\_Layout.cshtml" />
     <Content Include="Views\Friend\Index.cshtml" />
     <Content Include="Views\Friend\Details.cshtml" />
