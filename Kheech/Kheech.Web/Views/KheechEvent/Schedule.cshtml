@@ -15,7 +15,6 @@
             @Html.LabelFor(m => m.WhenToMeet, new { @class = "col-sm-12 control-label" })
             <div class="col-sm-12">
                 <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                    @*@Html.TextBoxFor(m => m.WhenToMeet, new { @class = "form-control datetimepicker-input", data_target = "#datetimepicker1" })*@
                     <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" name="WhenToMeet" />
                     <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -51,8 +50,23 @@
 @section scripts
 {
     <script type="text/javascript">
+        $.extend($.fn.datetimepicker.Constructor.Default, {
+            icons: {
+                time: 'far fa-clock',
+                date: 'far fa-calendar',
+                up: 'fas fa-arrow-up',
+                down: 'fas fa-arrow-down',
+                previous: 'fas fa-chevron-left',
+                next: 'fas fa-chevron-right',
+                today: 'far fa-calendar-check-o',
+                clear: 'far fa-trash',
+                close: 'far fa-times'
+            }
+        });
+
         $(function () {
             $('#datetimepicker1').datetimepicker();
         });
-    </script>
+
+ </script>
 }
