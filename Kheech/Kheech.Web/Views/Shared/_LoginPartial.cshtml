@@ -6,11 +6,11 @@
         @Html.AntiForgeryToken()
 
         <ul class="nav row navbar-right">
-            <li class="nav-item col-sm-2">
-                @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link active" })
+            <li class="nav-item col-sm-4">
+                @Html.ActionLink("Hello " + User.Identity.GetUserName().Split('@')[0] + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link active" })
             </li>
-            <li class="nav-item col-sm-2"><a href="@Url.RouteUrl("InviteAFriend")">Invite A Friend</a></li> 
-            <li class="nav-item col-sm-2"><a href="javascript:document.getElementById('logoutForm').submit()" class="nav-link">Log off</a></li>
+            <li class="nav-item col-sm-4"><a href="@Url.RouteUrl("InviteAFriend")" class="nav-link">Invite A Friend</a></li> 
+            <li class="nav-item col-sm-4"><a href="javascript:document.getElementById('logoutForm').submit()" class="nav-link">Log off</a></li>
         </ul>
     }
 }
