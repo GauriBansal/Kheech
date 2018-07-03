@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity;
 using System.Data.Entity;
 using Kheech.Web.Clients;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace Kheech.Web.Controllers
 {
@@ -118,14 +119,16 @@ namespace Kheech.Web.Controllers
         [Route("Create", Name = "InviteAFriend")]
         public async Task<ActionResult> Create()
         {
+            var sendGridClient = new SendGridEmailClient(ConfigurationManager.AppSettings["SendGridApiKey"]);
+            await sendGridClient.SendEmailAsync("reach2gauri@gmail.com", "invitation", "hello world");
             return View();
         }
         
         [HttpPost]
         [Route("Create", Name = "InviteAFriendPost")]
-        public async Task<ActionResult> CreateAsync(Invitation model)
+        public async Task<ActionResult> Create(Invitation model)
         {
-            var sendGridClient = new SendGridEmailClient("SendGridApiKey");
+            var sendGridClient = new SendGridEmailClient(ConfigurationManager.AppSettings["SendGridApiKey"]);
             await sendGridClient.SendEmailAsync("reach2gauri@gmail.com", "invitation", "hello world");
 
             return RedirectToRoute("FriendsHome");
