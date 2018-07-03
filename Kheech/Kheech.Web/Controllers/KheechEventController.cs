@@ -178,19 +178,24 @@ namespace Kheech.Web.Controllers
             kheechEvent.IsGroupEvent = false;
             kheechEvent.InsertDate = DateTime.UtcNow;
 
-            var location = await _context.Locations.FirstOrDefaultAsync(l => l.Name == model.WhereToMeet);
+            var googleLocation = model.WhereToMeet.Split(',').ToList();
+            var locationToMeet = googleLocation[0];
+            var Counter = googleLocation.Count;
+
+            var location = await _context.Locations.FirstOrDefaultAsync(l => l.Name == locationToMeet);
             if (location == null)
             {
                 location = new Location 
                 {   
-                    Name = model.WhereToMeet,
-                    Country = "USA",
-                    City = "Little Rock",
-                    State = "AR",
+                    Name = locationToMeet,
+                    address1 = googleLocation[Counter-4],
+                    Country = googleLocation[Counter-1],
+                    City = googleLocation[Counter-3],
+                    State = googleLocation[Counter-2],
                     InsertDate = DateTime.UtcNow
                 };
                 _context.Locations.Add(location);
-                //_context.SaveChanges();
+                //_context.SaveChanges();,
             }
             
             kheechEvent.LocationId = location.Id;

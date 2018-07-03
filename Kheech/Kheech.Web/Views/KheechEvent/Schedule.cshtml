@@ -31,13 +31,13 @@
             else
             {
                 @Html.DropDownListFor(m => m.WhoToMeet,
-                                    new SelectList(Model.Friends, "Id", "Name"), new { @class = "col-sm-12 form-control" })
+                                         new SelectList(Model.Friends, "Id", "Name"), new { @class = "col-sm-12 form-control" })
             }
         </div>
         <div class="form-group">
             @Html.LabelFor(m => m.WhereToMeet, new { @class = "col-sm-12 control-label" })
             <div class="col-sm-12">
-                @Html.TextBoxFor(m => m.WhereToMeet, new { @class = "form-control" })
+                @Html.TextBoxFor(m => m.WhereToMeet, new { @class = "form-control", @id = "place-autocomplete"})
             </div>
         </div>
         <div class="form-group">
@@ -68,5 +68,13 @@
             $('#datetimepicker1').datetimepicker();
         });
 
- </script>
+    </script>
+    <script>
+        function activatePlacesSearch() {
+            var input = document.getElementById('place-autocomplete');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+        }
+    </script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCX3zgHmS6zIL1xZzTY7ox-BEPAssPnkbg&libraries=places&callback=activatePlacesSearch"></script>
+
 }
