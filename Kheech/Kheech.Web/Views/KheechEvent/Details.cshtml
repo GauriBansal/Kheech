@@ -99,6 +99,7 @@
 
 
 @section scripts{
+    @Scripts.Render("~/bundles/vendor")
     <script>
         $(".delete-comment").click(function () {
             var id = $(this).data("comment-id");
@@ -119,6 +120,4 @@
         });
 
     </script>
-
-
 }
