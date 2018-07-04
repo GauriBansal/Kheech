@@ -22,12 +22,34 @@
                 }
             </ul>
         </div>
-        <form class="form-group table-bordered col-4" method="post" action="@Url.RouteUrl("InviteAFriendPost")">
-            @Html.AntiForgeryToken()
-            <input type="email" class="form-control mt-3 col-sm-12" id="friendEmail" name="friendEmail" placeholder="name@example.com">
-            <button class="offset-sm-6 col-sm-6" type="submit">Add a friend</button>
-        </form>
+
+        <div class="col-4">
+            <input type="email" class="form-control mt-3 col-sm-12" id="Email" name="Email" placeholder="name@example.com">
+            <button class="offset-sm-6 col-sm-6" id="inviteEmail" type="submit">Add a friend</button>
+        </div>
     </div>
 </div>
+@section scripts
+{
+    @Scripts.Render("~/bundles/vendor")
+    <script>
+        $("#inviteEmail").click(function () {
+            $.ajax({
+                method: 'post',
+                url: '@Url.RouteUrl("InviteAFriendAjax")',
+                data: {
+                    Email: $('#Email').val()
+                },
+                success: function (data) {
+                    toastr.success(data.message);
+                console.log(data);
+                },
+                error: function () {
+                console.warn('Unable to send invite');
+                }
+            });
+        });
+    </script>
+}
 
 

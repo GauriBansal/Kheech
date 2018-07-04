@@ -119,38 +119,59 @@ namespace Kheech.Web.Controllers
         [Route("Create", Name = "InviteAFriend")]
         public async Task<ActionResult> Create()
         {
-            var sendGridClient = new SendGridEmailClient(ConfigurationManager.AppSettings["SendGridApiKey"]);
-            await sendGridClient.SendEmailAsync("reach2gauri@gmail.com", "invitation", "hello world");
             return View();
         }
         
         [HttpPost]
         [Route("Create", Name = "InviteAFriendPost")]
-        public async Task<ActionResult> Create(Invitation model)
+        public async Task<ActionResult> Create(InviteFriend model)
         {
-            var sendGridClient = new SendGridEmailClient(ConfigurationManager.AppSettings["SendGridApiKey"]);
-            await sendGridClient.SendEmailAsync("reach2gauri@gmail.com", "invitation", "hello world");
+            var currentUserId = User.Identity.GetUserId();
+            var invite = new InviteFriend
+            {
+                ApplicationUserId = currentUserId,
+                Email = model.Email,
+                FriendshipStatusId = 1,
+                InsertDate = DateTime.UtcNow
+            };
 
-            return RedirectToRoute("FriendsHome");
-            //using (MailMessage mm = new MailMessage(model.Email, model.To))
-            //{
-            //    mm.Subject = model.Subject;
-            //    mm.Body = model.Body;
-            //    mm.IsBodyHtml = false;
-            //    using (SmtpClient smtp = new SmtpClient())
-            //    {
-            //        smtp.Host = "smtp.gmail.com";
-            //        smtp.EnableSsl = true;
-            //        NetworkCredential NetworkCred = new NetworkCredential(model.Email, model.Password);
-            //        smtp.UseDefaultCredentials = true;
-            //        smtp.Credentials = NetworkCred;
-            //        smtp.Port = 587;
-            //        smtp.Send(mm);
-            //        ViewBag.Message = "Email sent.";
-            //    }
-            //}
-            //return View();
+            _context.InviteFriends.Add(invite);
+            await _context.SaveChangesAsync();
+
+            var subject = "Invitation to Kheech - Breaking Bread";
+            var message = $"you are invited to join the best app to achedule a meeting with friends. Please click the link below: {ConfigurationManager.AppSettings["SiteUrlBase"]}";
+
+            var sendGridClient = new SendGridEmailClient(ConfigurationManager.AppSettings["SendGridApiKey"]);
+            await sendGridClient.SendEmailAsync(model.Email, subject, message);
+
+            TempData["InviteMessage"] = "Your invite has been sent. Do you wanna invite more?";
+            return View();
         }
 
+        [HttpPost]
+        [Route("InviteFriend", Name = "InviteAFriendAjax")]
+        public async Task<JsonResult> InviteFriend(InviteFriend model)
+        {
+            var currentUserId = User.Identity.GetUserId();
+            var invite = new InviteFriend
+            {
+                ApplicationUserId = currentUserId,
+                Email = model.Email,
+                FriendshipStatusId = 1,
+                InsertDate = DateTime.UtcNow
+            };
+
+            _context.InviteFriends.Add(invite);
+            await _context.SaveChangesAsync();
+
+            var subject = "Invitation to Kheech - Breaking Bread";
+            var message = $"you are invited to join the best app to achedule a meeting with friends. Please click the link below: {ConfigurationManager.AppSettings["SiteUrlBase"]}";
+
+            var sendGridClient = new SendGridEmailClient(ConfigurationManager.AppSettings["SendGridApiKey"]);
+            await sendGridClient.SendEmailAsync(model.Email, subject, message);
+
+            TempData["InviteMessage"] = "Your invite has been sent.";
+            return Json(new { result = true, message = TempData["InviteMessage"] });
+        }
     }
 }

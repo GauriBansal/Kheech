@@ -215,6 +215,19 @@
     <Compile Include="Clients\SendGridEmailClient.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\FriendController.cs" />
+    <Compile Include="Migrations\201807032347480_AddedInviteClass.cs" />
+    <Compile Include="Migrations\201807032347480_AddedInviteClass.Designer.cs">
+      <DependentUpon>201807032347480_AddedInviteClass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807032352231_AddedInviteClass1.cs" />
+    <Compile Include="Migrations\201807032352231_AddedInviteClass1.Designer.cs">
+      <DependentUpon>201807032352231_AddedInviteClass1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807040022474_AddedInviteFriend.cs" />
+    <Compile Include="Migrations\201807040022474_AddedInviteFriend.Designer.cs">
+      <DependentUpon>201807040022474_AddedInviteFriend.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\InviteFriend.cs" />
     <Compile Include="ViewModels\FriendsIndexViewModel.cs" />
     <Compile Include="ViewModels\FriendsDetailViewModel.cs" />
     <Compile Include="Controllers\GroupsController.cs" />
@@ -456,6 +469,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806270415308_addedCreatorIdInMomentsandComments1.resx">
       <DependentUpon>201806270415308_addedCreatorIdInMomentsandComments1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807032347480_AddedInviteClass.resx">
+      <DependentUpon>201807032347480_AddedInviteClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807032352231_AddedInviteClass1.resx">
+      <DependentUpon>201807032352231_AddedInviteClass1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807040022474_AddedInviteFriend.resx">
+      <DependentUpon>201807040022474_AddedInviteFriend.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

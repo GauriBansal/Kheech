@@ -48,6 +48,7 @@ namespace Kheech.Web.Models
         public DbSet<Location> Locations { get; set; }
         public DbSet<Moment> Moments { get; set; }
         public DbSet<KheechComment> KheechComments { get; set; }
+        public DbSet<InviteFriend> InviteFriends { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
