@@ -228,6 +228,8 @@
       <DependentUpon>201807040022474_AddedInviteFriend.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\InviteFriend.cs" />
+    <Compile Include="Services\EFHomeService.cs" />
+    <Compile Include="Services\Interfaces\IHomeServices.cs" />
     <Compile Include="ViewModels\FriendsIndexViewModel.cs" />
     <Compile Include="ViewModels\FriendsDetailViewModel.cs" />
     <Compile Include="Controllers\GroupsController.cs" />

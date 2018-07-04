@@ -31,27 +31,27 @@ namespace Kheech.Web.Controllers
             var currentUserId = User.Identity.GetUserId();
             var currentUserName = User.Identity.GetUserName();
 
-            var pendingFriend = await _context.InviteFriends.Include(f => f.ApplicationUser)
+            var pendingFriends = await _context.InviteFriends.Include(f => f.ApplicationUser)
                                                             .Include(f => f.FriendshipStatus)
                                                             .Where(f => f.Email == currentUserName)
                                                             .ToListAsync();
-            var pendingFriendships = new List<Friendship>();
             var pendingFriendship = new Friendship();
 
-            if (pendingFriend.Count != 0)
+            if (pendingFriends.Count != 0)
             {
-                foreach (var friend in pendingFriend)
+                foreach (var friend in pendingFriends)
                 {
                     if (friend.FriendshipStatus.status == "Pending")
                     {
                         pendingFriendship.InitiatorId = friend.ApplicationUserId;
                         pendingFriendship.RecipientId = currentUserId;
                         pendingFriendship.FriendshipStatusId = 2;
-                        pendingFriendships.Add(pendingFriendship);
+                        pendingFriendship.InsertDate = DateTime.UtcNow;
+                        _context.Friendships.Add(pendingFriendship);
+                        _context.InviteFriends.Remove(friend);
+                        await _context.SaveChangesAsync();
                     }
-                    
                 }
-                await _context.SaveChangesAsync();
             }
 
             var kheechIndexViewModel = new KheechIndexViewModel();

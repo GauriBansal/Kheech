@@ -36,7 +36,7 @@ namespace Kheech.Web.Controllers
                                         .Include(f => f.Initiator)
                                         .Include(f => f.Recipient)
                                         .Include(f => f.FriendshipStatus)
-                                        .Where(f => (f.InitiatorId == currentUserId || f.RecipientId == currentUserId) && f.FriendshipStatusId == 1).Distinct().ToListAsync();
+                                        .Where(f => (f.InitiatorId == currentUserId || f.RecipientId == currentUserId) && f.FriendshipStatusId == 2).Distinct().ToListAsync();
 
             var friendsIndexViewModel = new FriendsIndexViewModel
             {
@@ -81,7 +81,7 @@ namespace Kheech.Web.Controllers
                                              .Include(f => f.Recipient)
                                              .FirstOrDefaultAsync(f => ((f.InitiatorId == currentUserId && f.RecipientId == friendId) ||
                                                                    (f.InitiatorId == friendId && f.RecipientId == currentUserId)) &&
-                                                                   (f.FriendshipStatusId == 1));            
+                                                                   (f.FriendshipStatusId == 2));            
             if (friend == null)
             {
                 return HttpNotFound();
@@ -127,6 +127,18 @@ namespace Kheech.Web.Controllers
         public async Task<ActionResult> Create(InviteFriend model)
         {
             var currentUserId = User.Identity.GetUserId();
+            var invitedFriendId = await _context.Users.Where(u => u.Email == model.Email).Select(u => u.Id).FirstOrDefaultAsync();
+
+            var isAlreadyFriend = await _context.Friendships.Include(f => f.Recipient)
+                                                .Include(f => f.Initiator)
+                                                .FirstOrDefaultAsync(f => (f.InitiatorId == currentUserId && f.RecipientId == invitedFriendId) ||
+                                                            (f.InitiatorId == invitedFriendId && f.RecipientId == currentUserId));
+            if (isAlreadyFriend != null)
+            {
+                TempData["InviteMessage"] = $"You are already friends with {model.Email}";
+                return View();
+            }
+
             var invite = new InviteFriend
             {
                 ApplicationUserId = currentUserId,
@@ -153,6 +165,18 @@ namespace Kheech.Web.Controllers
         public async Task<JsonResult> InviteFriend(InviteFriend model)
         {
             var currentUserId = User.Identity.GetUserId();
+            var invitedFriendId = await _context.Users.Where(u => u.Email == model.Email).Select(u => u.Id).FirstOrDefaultAsync();
+
+            var isAlreadyFriend = await _context.Friendships.Include(f => f.Recipient)
+                                                .Include(f => f.Initiator)
+                                                .FirstOrDefaultAsync(f => (f.InitiatorId == currentUserId && f.RecipientId == invitedFriendId) ||
+                                                            (f.InitiatorId == invitedFriendId && f.RecipientId == currentUserId));
+            if (isAlreadyFriend != null)
+            {
+                TempData["InviteMessage"] = $"You are already friends with {model.Email}";
+                return Json(new { message = TempData["InviteMessage"] });
+            }
+
             var invite = new InviteFriend
             {
                 ApplicationUserId = currentUserId,
