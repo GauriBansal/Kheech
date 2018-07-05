@@ -4,7 +4,7 @@
     ViewBag.Title = "Index";
 }
 
-<div class="container">
+<div class="container Kheech-Home-Container p-5 rounded">
     <div class="jumbotron">
         @if (Model.ActiveKheechEvents.Count() == 0)
         {
@@ -25,10 +25,12 @@
             </ul>
         }
     </div>
-    <div class="row">
-        <div class="card col-sm-4 kheech-schedule">
+    <div class="row m-0">
+        <div class="card col-sm-4 kheech-schedule p-1">
             <div class="card-body">
-                <h5 class="card-title"><a href="@Url.RouteUrl("ScheduleMeeting")">Start Scheduling</a></h5><hr />
+                <h5 class="card-title">
+                    <a href="@Url.RouteUrl("ScheduleMeeting")">Schedule Kheech</a>
+                </h5><hr />
                 <h6 class="card-subtitle mb-2 text-muted">Recent Kheeches</h6>
                 <p>
                     @foreach (var kheech in Model.RecentSchedules)
@@ -40,9 +42,9 @@
                 </p>
             </div>
         </div>
-        <div class="card col-sm-4 kheech-friend">
+        <div class="card col-sm-4 kheech-friend p-1">
             <div class="card-body">
-                <h5 class="card-title"><a href="@Url.RouteUrl("FriendsHome")">See your connection with friends</a></h5><hr />
+                <h5 class="card-title"><a href="@Url.RouteUrl("FriendsHome")">Friends Connection</a></h5><hr />
                 <h6 class="card-subtitle mb-2 text-muted">Favourite friends</h6>
                 <p>
                     @foreach (var friend in Model.RecentFriends)
@@ -54,9 +56,9 @@
                 </p>
             </div>
         </div>
-            <div class="card col-sm-4 kheech-moments">
+            <div class="card col-sm-4 kheech-moments p-1">
             <div class="card-body">
-                <h5 class="card-title"><a href="@Url.RouteUrl("MomentsHome")">Let's enjoy some Kheech's Moments</a></h5><hr />
+                <h5 class="card-title"><a href="@Url.RouteUrl("MomentsHome")">Enjoy some Moments</a></h5><hr />
                 <h6 class="card-subtitle mb-2 text-muted">Recent memories</h6>
                 <p>
                     @foreach (var moment in Model.RecentMoments)

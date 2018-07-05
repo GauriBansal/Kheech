@@ -12,23 +12,19 @@
     {
         @Html.AntiForgeryToken()
 
-        <ul class="nav row navbar-right">
-            <li class="nav-item col-sm-4">
+        <ul class="nav row navbar-right font-weight-bold font-italic login-nav">
+            <li class="nav-item col-4 text-right">
                 @Html.ActionLink("Hello " + nameToDisplay + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link active" })
             </li>
-            <li class="nav-item col-sm-4"><a href="@Url.RouteUrl("InviteAFriend")" class="nav-link"><i class="fa fa-plus"></i> Invite A Friend</a></li> 
-            <li class="nav-item col-sm-4"><a href="javascript:document.getElementById('logoutForm').submit()" class="nav-link">Log off</a></li>
+            <li class="nav-item col-4 text-center"><a href="@Url.RouteUrl("InviteAFriend")" class="nav-link"><i class="fa fa-plus"></i> Invite Friend</a></li> 
+            <li class="nav-item col-4 text-left"><a href="javascript:document.getElementById('logoutForm').submit()" class="nav-link">Log off</a></li>
         </ul>
     }
 }
 else
 {
-    <ul class="nav navbar-right row">
-        <div class="col-sm-2 offset-7">
-            <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        </div>
-        <div class="col-sm-2">
-            <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-        </div>
+    <ul class="nav navbar-right row p-2">
+        <li class="col-3 offset-6 text-right">@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li class="col-3 text-left">@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
     </ul>
 }

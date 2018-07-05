@@ -4,6 +4,7 @@
     font-family: 'Lato', sans-serif;
     font-family: 'Roboto', sans-serif;
     font-family: 'Hind', sans-serif;
+    background: radial-gradient(at left top, #E71D36, #2EC4B6, #FF9F1C);
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -13,6 +14,7 @@
     font-family: 'Lato', sans-serif;
     font-family: 'Roboto', sans-serif;
     font-family: 'Hind', sans-serif;
+    color: #011627;
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
@@ -22,6 +24,12 @@
     white-space: normal;
 }
 
+a {
+    font-family: 'Lato', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Hind', sans-serif;
+    color: #011627;
+}
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
@@ -37,6 +45,43 @@ textarea {
 
 .navigation-style {
     background-color: #FDFFFC;
+}
+
+.login-nav li a{
+    color: #E71D36;
+}
+
+.breadcrumb {
+    background-color: rgba(224, 255, 255, 0.4);
+}
+
+.jumbotron {
+    background-color: rgba(224, 255, 255, 0.4);
+}
+
+.card {
+    background-color: rgba(224, 255, 255, 0);
+    border: none;
+}
+
+.card a {
+    color: #007552;
+}
+
+.kheech-schedule {
+    margin-right: 4px;
+    max-width: 32%;
+}
+
+.kheech-friend {
+    margin-left: 4px;
+    margin-right: 4px;
+    max-width: 32%;
+}
+
+.kheech-moments {
+    margin-left: 4px;
+    max-width: 32%;
 }
 
 #start-page {
@@ -70,12 +115,6 @@ textarea {
     padding-top: 20px;
 }
 
-.kheech-schedule {
-    width: 300px;
-    height: 300px;
-    /*background-image: url("https://hips.hearstapps.com/cos.h-cdn.co/assets/cm/14/25/53a0783383e88_-_cos-01-meeting-friends-xl.jpg");*/
-}
-
 .kheech-comments {
     margin: 5px 5px 5px 5px;
     border: 1px solid #2EC4B6;
@@ -85,31 +124,6 @@ textarea {
 
 }
 
-.avatar-circle {
-    width: 10%;
-    height: 100%;
-    background-color: #2EC4B6;
-    text-align: center;
-    border-radius: 50%;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-}
-
-.initials {
-  position: relative;
-  top: 10%; /* 25% of parent */
-  font-size: xx-large; /* 50% of parent */
-  line-height: 50px; /* 50% of parent */
-  color: #E71D36;
-  font-family: "Courier New", monospace;
-  font-weight: bold;
-}
-
-.avatar-comment {
-    position: absolute;
-    color: #E71D36;
-}
-
 .followimage {
     width: 50px !important;
     height: 50px !important;
@@ -117,4 +131,9 @@ textarea {
 
 .footer-text {
     font-size: 12px;
+}
+
+.schedule-form {
+    background-color: rgba(224, 255, 255, 0.4);
+    max-width: 500px;
 }
