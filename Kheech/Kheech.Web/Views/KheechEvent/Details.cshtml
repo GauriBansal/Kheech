@@ -20,10 +20,7 @@
                 {
                     <div class="row">
                         <a class="col-sm-6 text-left" href="@Url.RouteUrl("KheechEdit", new { id = Model.Id })">Edit</a>
-                        @if (Model.EndDate < DateTime.UtcNow)
-                        {
-                            <a class="col-6 text-right" href="@Url.RouteUrl("MomentsCreate", new { kheechId = Model.Id })">Create a moment</a>
-                        }
+                        <a class="col-6 text-right" href="@Url.RouteUrl("MomentsCreate", new { kheechId = Model.Id })">Create a moment</a>
                     </div>
                     <div class="row">
                         <h5 class="col-sm-12 text-center"><em><u>@Model.EventName.Humanize() at @Model.Location.Name.Humanize()</u></em></h5>
