@@ -10,6 +10,9 @@ using System.Data.Entity;
 using System.Net;
 using Microsoft.Ajax.Utilities;
 using System.Threading.Tasks;
+using Humanizer;
+using Kheech.Web.Clients;
+using System.Configuration;
 
 namespace Kheech.Web.Controllers
 {
@@ -36,14 +39,14 @@ namespace Kheech.Web.Controllers
                                     .Where(f => f.Email == currentUserName)
                                     .ToListAsync();
 
-            if(pendingFriends.Count != 0)
+            if (pendingFriends.Count != 0)
             {
                 ViewBag.Notification = pendingFriends.Count;
             }
 
             var currentDay = DateTime.UtcNow.Day;
             var kheechIndexViewModel = new KheechIndexViewModel();
-            
+
             kheechIndexViewModel.TodayKheechEvents = await _context.KheechEvents.Include(k => k.ApplicationUser)
                                                    .Include(k => k.Location)
                                                    .Include(k => k.Group)
@@ -55,12 +58,12 @@ namespace Kheech.Web.Controllers
                                                    .Include(k => k.Location)
                                                    .Include(k => k.Group)
                                                    .Include(k => k.KheechUsers)
-                                                   .Where(m => (m.ApplicationUserId == currentUserId) && 
+                                                   .Where(m => (m.ApplicationUserId == currentUserId) &&
                                                                (m.EndDate > DateTime.UtcNow) &&
                                                                (m.EndDate.Day != currentDay))
                                                    .OrderByDescending(m => m.EndDate)
                                                    .Distinct().Take(5).ToListAsync();
-   
+
             if (kheechIndexViewModel.ActiveKheechEvents.Count() == 0)
             {
                 ViewBag.Message = "Hey, it looks like you have nothing on, for today. Would you like to schedule?";
@@ -86,7 +89,7 @@ namespace Kheech.Web.Controllers
                                                     .OrderByDescending(k => k.EndDate)
                                                     .Take(3)
                                                     .ToListAsync();
-            
+
             kheechIndexViewModel.RecentMoments = await _context.Moments.Include(m => m.KheechEvent.Location)
                                                                  .Where(m => m.ApplicationUserId == currentUserId)
                                                                  .OrderByDescending(m => m.InsertDate)
@@ -97,20 +100,20 @@ namespace Kheech.Web.Controllers
                                                    .Include(k => k.KheechEvent.Location)
                                                    .Where(m => m.KheechEvent.ApplicationUserId == currentUserId)
                                                    .DistinctBy(k => k.ApplicationUserId).ToList();
-             
+
             return View(kheechIndexViewModel);
 
         }
 
-       // GET: KheechEvents/Details/5
-       [Route("details/{id}", Name = "KheechDetails")]
+        // GET: KheechEvents/Details/5
+        [Route("details/{id}", Name = "KheechDetails")]
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             KheechEvent kheechEvent = await _context.KheechEvents.Include(k => k.ApplicationUser)
                                                            .Include(k => k.KheechComments)
                                                            .Include(k => k.KheechUsers)
@@ -125,6 +128,11 @@ namespace Kheech.Web.Controllers
 
             var currentUserId = User.Identity.GetUserId();
             bool isRelatedKheech = false;
+
+            if (kheechEvent.ApplicationUserId == currentUserId)
+            {
+                isRelatedKheech = true;
+            }
 
             foreach (var user in kheechEvent.KheechUsers)
             {
@@ -159,16 +167,16 @@ namespace Kheech.Web.Controllers
             }
             return View(kheechEvent);
         }
-        
+
         [Route("schedule", Name = "ScheduleMeeting")]
         public async Task<ActionResult> Schedule()
         {
             var currentUserId = User.Identity.GetUserId();
 
             var scheduleViewModel = new ScheduleViewModel();
-            
+
             //scheduleViewModel.Friends = Enumerable.Empty<Friendship>();
-            
+
             var friends = await _context.Friendships
                         .Include(f => f.Initiator)
                         .Include(f => f.Recipient)
@@ -222,19 +230,19 @@ namespace Kheech.Web.Controllers
             var location = await _context.Locations.FirstOrDefaultAsync(l => l.Name == locationToMeet);
             if (location == null)
             {
-                location = new Location 
-                {   
+                location = new Location
+                {
                     Name = locationToMeet,
-                    address1 = googleLocation[Counter-4],
-                    Country = googleLocation[Counter-1],
-                    City = googleLocation[Counter-3],
-                    State = googleLocation[Counter-2],
+                    address1 = googleLocation[Counter - 4],
+                    Country = googleLocation[Counter - 1],
+                    City = googleLocation[Counter - 3],
+                    State = googleLocation[Counter - 2],
                     InsertDate = DateTime.UtcNow
                 };
                 _context.Locations.Add(location);
                 //_context.SaveChanges();,
             }
-            
+
             kheechEvent.LocationId = location.Id;
 
             _context.KheechEvents.Add(kheechEvent);
@@ -251,7 +259,7 @@ namespace Kheech.Web.Controllers
             await _context.SaveChangesAsync();
 
             TempData["ScheduleMessage"] = "Congratulations, you have successfully added a Kheech. Keep going!";
-            return RedirectToRoute("HomePage");
+            return RedirectToRoute("SendKheechNotification", new { id = kheechEvent.Id, returnFrom = "Schedule"});
         }
 
         // GET: KheechEvents/Edit/5
@@ -267,7 +275,7 @@ namespace Kheech.Web.Controllers
 
             var kheechEditViewModels = new KheechEditViewModels();
 
-            kheechEditViewModels.KheechEvent =await _context.KheechEvents.Include(k => k.ApplicationUser)
+            kheechEditViewModels.KheechEvent = await _context.KheechEvents.Include(k => k.ApplicationUser)
                                                            .Include(k => k.KheechComments)
                                                            .Include(k => k.KheechUsers)
                                                            .Include(k => k.Location)
@@ -363,7 +371,7 @@ namespace Kheech.Web.Controllers
                 kheechEventOld.EventName = kheechEditViewModels.KheechEvent.EventName;
                 _context.Entry(kheechEventOld).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                return RedirectToRoute("KheechDetails", new { id = kheechEventOld.Id});
+                return RedirectToRoute("SendKheechNotification", new { id = kheechEventOld.Id, returnFrom = "Edit" });
             }
             //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", kheechEvent.ApplicationUserId);
             ViewBag.GroupId = new SelectList(_context.Groups, "Id", "Name", kheechEditViewModels.KheechEvent.GroupId);
@@ -425,6 +433,39 @@ namespace Kheech.Web.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToRoute("KheechDetails", new { id = id });
+        }
+        
+        [Route("SendKheechNotification", Name = "SendKheechNotification")]
+        public async Task<ActionResult> SendKheechNotification(int id, string returnFrom)
+        {
+            var kheechEvent = await _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                         .Include(k => k.Location)
+                                                         .FirstOrDefaultAsync(k => k.Id == id);
+
+            var kheechUsers = await _context.KheechUsers.Include(k => k.ApplicationUser)
+                                                        .Include(k => k.KheechEvent)
+                                                        .Where(k => k.KheechEventId == id)
+                                                        .ToListAsync();
+
+            var subject = "Your Friends have invited you to a kheech Event";
+            var message = $"{kheechEvent.ApplicationUser.FirstName.Humanize()} {kheechEvent.ApplicationUser.LastName.Humanize()} would like you to join her and friends over " +
+                          $"{kheechEvent.EventName.Humanize()} at {kheechEvent.Location.Name.Humanize()} on {kheechEvent.StartDate.ToOrdinalWords()}. " +
+                          $"Logon to the app for more details and accept the event invite.";
+            var sendGridClient = new SendGridEmailClient(ConfigurationManager.AppSettings["SendGridApiKey"]);
+
+            foreach (var kuser in kheechUsers)
+            {
+                await sendGridClient.SendEmailAsync(kuser.ApplicationUser.Email, subject, message);
+            }
+
+            if (returnFrom == "Schedule")
+            {
+                return RedirectToRoute("HomePage");
+            }
+            else
+            {
+                return RedirectToRoute("KheechDetails", new { id = id });
+            }
         }
     }
 }

@@ -28,10 +28,12 @@
                         <ul class="list-unstyled col-sm-12">
                             @foreach (var kheechUser in Model.KheechUsers)
                             {
-                                <li class="offset-1">
-                                    @Html.CheckBoxFor(m => kheechUser.IsAccepted, new { @disabled = "disabled", @class="form-check-input" })
+                            <li class="offset-1">
+                                @Html.CheckBoxFor(m => kheechUser.IsAccepted, new { @disabled = "disabled", @class = "form-check-input" })
+                                <a href="@Url.RouteUrl("FriendsDetail", new { friendid = @kheechUser.ApplicationUserId})">
                                     @kheechUser.ApplicationUser.FirstName.Humanize() @kheechUser.ApplicationUser.LastName.Humanize()
-                                </li>
+                                </a>
+                            </li>
                             }
                         </ul>
                     </div>
