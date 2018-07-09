@@ -34,5 +34,8 @@ namespace Kheech.Web.ViewModels
         public string Id { get; set; }
 
         public string Name { get; set; }
+
+        public string FriendshipLength { get; set; }
+
     }
 }

@@ -57,13 +57,14 @@ namespace Kheech.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Moment moment = await _context.Moments.Include(m => m.KheechEvent.Location)
+                                            .Include(m => m.ApplicationUser)
                                             .FirstOrDefaultAsync(m => m.Id == id);
             if (moment == null)
             {
                 return HttpNotFound();
             }
             
-            moment.KheechEvent.Location = await _context.Locations.FirstOrDefaultAsync(l => l.Id == moment.KheechEvent.LocationId);
+            //moment.KheechEvent.Location = await _context.Locations.FirstOrDefaultAsync(l => l.Id == moment.KheechEvent.LocationId);
          
             return View(moment);
         }
@@ -103,13 +104,13 @@ namespace Kheech.Web.Controllers
             string extension = Path.GetExtension(momentupload.File.FileName);
             fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
 
-            var path = Server.MapPath("~/uploads/");
+            var path = Server.MapPath("/uploads/");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            momentupload.ImagePath = "~/uploads/" + fileName;
+            momentupload.ImagePath = "/uploads/" + fileName;
             momentupload.File.SaveAs(Path.Combine(path, fileName));
 
             var momentToBeCreated = new Moment

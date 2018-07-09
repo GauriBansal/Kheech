@@ -13,6 +13,7 @@ using System.Data.Entity;
 using Kheech.Web.Clients;
 using System.Threading.Tasks;
 using System.Configuration;
+using Humanizer;
 
 namespace Kheech.Web.Controllers
 {
@@ -25,13 +26,13 @@ namespace Kheech.Web.Controllers
         {
             _context = new ApplicationDbContext();
         }
-        
+
         // GET: Friend
         [Route("", Name = "FriendsHome")]
         public async Task<ActionResult> Index()
         {
             var currentUserId = User.Identity.GetUserId();
-            
+
             var friends = await _context.Friendships
                                         .Include(f => f.Initiator)
                                         .Include(f => f.Recipient)
@@ -43,15 +44,23 @@ namespace Kheech.Web.Controllers
                 FriendsCount = friends.Count,
                 FriendViewModels = new List<FriendViewModel>()
             };
-            
-             foreach (var item in friends)
+
+            foreach (var item in friends)
             {
+                var friendshipLength = await _context.Friendships.Where(f => f.Id == item.Id)
+                                                                 .Select(f => f.InsertDate)
+                                                                 .FirstOrDefaultAsync();
+                TimeSpan difference = (DateTime.UtcNow - friendshipLength);
                 if (item.RecipientId == currentUserId)
                 {
-                var friendViewModel1 = new FriendViewModel
+                    var friendViewModel1 = new FriendViewModel
                     {
                         Id = item.InitiatorId,
-                        Name = item.Initiator.FirstName + " " + item.Initiator.LastName
+                        Name = item.Initiator.FirstName.Humanize() + " " + item.Initiator.LastName.Humanize(),
+                        FriendshipLength = string.Format(
+                                                         "{0} days, {1} hours",
+                                                         difference.Days,
+                                                         difference.Hours)
                     };
                     friendsIndexViewModel.FriendViewModels.Add(friendViewModel1);
                 }
@@ -60,11 +69,15 @@ namespace Kheech.Web.Controllers
                     var friendViewModel = new FriendViewModel
                     {
                         Id = item.RecipientId,
-                        Name = item.Recipient.FirstName + " " + item.Recipient.LastName
+                        Name = item.Recipient.FirstName.Humanize() + " " + item.Recipient.LastName.Humanize(),
+                        FriendshipLength = string.Format(
+                                                         "{0} days, {1} hours",
+                                                         difference.Days,
+                                                         difference.Hours)
                     };
                     friendsIndexViewModel.FriendViewModels.Add(friendViewModel);
                 }
-            }        
+            }
             return View(friendsIndexViewModel);
         }
 
@@ -76,30 +89,30 @@ namespace Kheech.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             var friend = await _context.Friendships.Include(f => f.Initiator)
                                              .Include(f => f.Recipient)
                                              .FirstOrDefaultAsync(f => ((f.InitiatorId == currentUserId && f.RecipientId == friendId) ||
                                                                    (f.InitiatorId == friendId && f.RecipientId == currentUserId)) &&
-                                                                   (f.FriendshipStatusId == 2));            
+                                                                   (f.FriendshipStatusId == 2));
             if (friend == null)
             {
                 return HttpNotFound();
             }
-            
+
             var friendinformation = await _context.Users.FirstOrDefaultAsync(u => u.Id == friendId);
             var friendActivity = await _context.KheechUsers.Include(k => k.ApplicationUser)
                                                       .Include(k => k.KheechEvent.Location)
                                                       .Include(k => k.KheechEvent.Group)
                                                       .Include(k => k.KheechEvent.ApplicationUser)
-                                                      .Where(k => k.ApplicationUserId == friendId && k.KheechEvent.ApplicationUserId != currentUserId)
+                                                      .Where(k => (k.ApplicationUserId == friendId))
                                                       .ToListAsync();
-         
+
             var commonActivity = await _context.KheechUsers.Include(k => k.ApplicationUser)
                                          .Include(k => k.KheechEvent.Location)
                                          .Include(k => k.KheechEvent.Group)
                                          .Include(k => k.KheechEvent.ApplicationUser)
-                                         .Where(k => k.ApplicationUserId == friendId && k.IsAccepted == true && k.KheechEvent.ApplicationUserId == currentUserId)
+                                         .Where(k => ((k.ApplicationUserId == friendId) && (k.KheechEvent.ApplicationUserId == currentUserId)))
                                          .ToListAsync();
 
             var friendsDetailViewModel = new FriendsDetailViewModel
@@ -107,21 +120,21 @@ namespace Kheech.Web.Controllers
                 FriendInformation = new FriendViewModel
                 {
                     Id = friendId,
-                    Name = friendinformation.FirstName + " " + friendinformation.LastName
+                    Name = friendinformation.FirstName.Humanize() + " " + friendinformation.LastName.Humanize()
                 },
                 FriendActivity = friendActivity,
                 CommonActivity = commonActivity
-             };
-            
+            };
+
             return View(friendsDetailViewModel);
         }
-        
+
         [Route("Create", Name = "InviteAFriend")]
         public async Task<ActionResult> Create()
         {
             return View();
         }
-        
+
         [HttpPost]
         [Route("Create", Name = "InviteAFriendPost")]
         public async Task<ActionResult> Create(InviteFriend model)
@@ -196,6 +209,67 @@ namespace Kheech.Web.Controllers
 
             TempData["InviteMessage"] = "Your invite has been sent.";
             return Json(new { result = true, message = TempData["InviteMessage"] });
+        }
+
+        [Route("PendingFriendRequests", Name = "PendingFriendRequests")]
+        public async Task<ActionResult> PendingFriendRequests()
+        {
+            var currentUserId = User.Identity.GetUserId();
+            var currentUserName = User.Identity.GetUserName();
+
+            var pendingFriends = await _context.InviteFriends.Include(f => f.ApplicationUser)
+                        .Include(f => f.FriendshipStatus)
+                        .Where(f => f.Email == currentUserName)
+                        .ToListAsync();
+
+            if (pendingFriends.Count != 0)
+            {
+                return View(pendingFriends);
+                //foreach (var friend in pendingFriends)
+                //{
+                //    if (friend.FriendshipStatus.status == "Pending")
+                //    {
+                //    }
+                //}
+            }
+            return View(pendingFriends);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("PendingFriendRequests", Name = "PendingFriendRequestsPost")]
+        public async Task<ActionResult> PendingFriendRequests(int pendingFriendId, bool isAccepted)
+        {
+            var currentUserId = User.Identity.GetUserId();
+            var currentUserName = User.Identity.GetUserName();
+
+            var pendingFriend = await _context.InviteFriends.Include(f => f.FriendshipStatus).FirstOrDefaultAsync(i => i.Id == pendingFriendId);
+            if (pendingFriend == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (isAccepted == true)
+            {
+                var pendingFriendship = new Friendship
+                {
+                    InitiatorId = pendingFriend.ApplicationUserId,
+                    RecipientId = currentUserId,
+                    FriendshipStatusId = 2,
+                    InsertDate = DateTime.UtcNow
+                };
+
+                _context.Friendships.Add(pendingFriendship);
+                _context.InviteFriends.Remove(pendingFriend);
+            }
+            else
+            {
+                _context.InviteFriends.Remove(pendingFriend);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToRoute("HomePage");
         }
     }
 }

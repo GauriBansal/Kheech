@@ -32,44 +32,44 @@ namespace Kheech.Web.Controllers
             var currentUserName = User.Identity.GetUserName();
 
             var pendingFriends = await _context.InviteFriends.Include(f => f.ApplicationUser)
-                                                            .Include(f => f.FriendshipStatus)
-                                                            .Where(f => f.Email == currentUserName)
-                                                            .ToListAsync();
-            var pendingFriendship = new Friendship();
+                                    .Include(f => f.FriendshipStatus)
+                                    .Where(f => f.Email == currentUserName)
+                                    .ToListAsync();
 
-            if (pendingFriends.Count != 0)
+            if(pendingFriends.Count != 0)
             {
-                foreach (var friend in pendingFriends)
-                {
-                    if (friend.FriendshipStatus.status == "Pending")
-                    {
-                        pendingFriendship.InitiatorId = friend.ApplicationUserId;
-                        pendingFriendship.RecipientId = currentUserId;
-                        pendingFriendship.FriendshipStatusId = 2;
-                        pendingFriendship.InsertDate = DateTime.UtcNow;
-                        _context.Friendships.Add(pendingFriendship);
-                        _context.InviteFriends.Remove(friend);
-                        await _context.SaveChangesAsync();
-                    }
-                }
+                ViewBag.Notification = pendingFriends.Count;
             }
 
+            var currentDay = DateTime.UtcNow.Day;
             var kheechIndexViewModel = new KheechIndexViewModel();
             
+            kheechIndexViewModel.TodayKheechEvents = await _context.KheechEvents.Include(k => k.ApplicationUser)
+                                                   .Include(k => k.Location)
+                                                   .Include(k => k.Group)
+                                                   .Include(k => k.KheechUsers)
+                                                   .Where(m => (m.ApplicationUserId == currentUserId) && (m.EndDate.Day == currentDay))
+                                                   .Distinct().Take(5).ToListAsync();
+
             kheechIndexViewModel.ActiveKheechEvents = await _context.KheechEvents.Include(k => k.ApplicationUser)
                                                    .Include(k => k.Location)
                                                    .Include(k => k.Group)
-                                                   .Where(m => (m.ApplicationUserId == currentUserId) && (m.EndDate > DateTime.UtcNow))
+                                                   .Include(k => k.KheechUsers)
+                                                   .Where(m => (m.ApplicationUserId == currentUserId) && 
+                                                               (m.EndDate > DateTime.UtcNow) &&
+                                                               (m.EndDate.Day != currentDay))
+                                                   .OrderByDescending(m => m.EndDate)
                                                    .Distinct().Take(5).ToListAsync();
    
             if (kheechIndexViewModel.ActiveKheechEvents.Count() == 0)
             {
-                ViewBag.Message = "You do not have any Kheech at the moment. Would you like to create?";
+                ViewBag.Message = "Hey, it looks like you have nothing on, for today. Would you like to schedule?";
             }
 
             if ((kheechIndexViewModel.ActiveKheechEvents.Count() > 0) && (kheechIndexViewModel.ActiveKheechEvents.Count() < 5))
             {
                 var kheechUsers = await _context.KheechUsers.Include(k => k.KheechEvent.Location)
+                                                      .Include(k => k.ApplicationUser)
                                                       .Where(k => (k.ApplicationUserId == currentUserId) && (k.KheechEvent.EndDate > DateTime.UtcNow))
                                                       .Distinct().Take(5).ToListAsync();
                 foreach (var kuser in kheechUsers)
@@ -93,11 +93,11 @@ namespace Kheech.Web.Controllers
                                                                  .Take(3)
                                                                  .ToListAsync();
 
-            kheechIndexViewModel.RecentFriends = await _context.KheechUsers.Include(k => k.ApplicationUser)
+            kheechIndexViewModel.RecentFriends = _context.KheechUsers.Include(k => k.ApplicationUser)
                                                    .Include(k => k.KheechEvent.Location)
                                                    .Where(m => m.KheechEvent.ApplicationUserId == currentUserId)
-                                                   .Distinct().Take(3).ToListAsync();
-
+                                                   .DistinctBy(k => k.ApplicationUserId).ToList();
+             
             return View(kheechIndexViewModel);
 
         }
@@ -123,8 +123,15 @@ namespace Kheech.Web.Controllers
                 return HttpNotFound();
             }
 
+            var currentUserId = User.Identity.GetUserId();
+            bool isRelatedKheech = false;
+
             foreach (var user in kheechEvent.KheechUsers)
             {
+                if (user.ApplicationUserId == currentUserId)
+                {
+                    isRelatedKheech = true;
+                }
                 var kheechUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.ApplicationUserId);
                 if (kheechUser == null)
                 {
@@ -132,6 +139,12 @@ namespace Kheech.Web.Controllers
                 }
 
                 user.ApplicationUser = kheechUser;
+            }
+
+            if (!isRelatedKheech)
+            {
+                TempData["NotRelated"] = "This kheech does not belongs to you. Hence, you cannot see the details";
+                return RedirectToRoute("HomePage");
             }
 
             foreach (var comment in kheechEvent.KheechComments)
@@ -413,6 +426,5 @@ namespace Kheech.Web.Controllers
 
             return RedirectToRoute("KheechDetails", new { id = id });
         }
-
     }
 }

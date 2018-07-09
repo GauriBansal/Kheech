@@ -8,6 +8,8 @@ namespace Kheech.Web.ViewModels
 {
     public class KheechIndexViewModel
     {
+        public List<KheechEvent> TodayKheechEvents { get; set; }
+
         public List<KheechEvent> ActiveKheechEvents { get; set; }
 
         public List<KheechEvent> RecentSchedules { get; set; }

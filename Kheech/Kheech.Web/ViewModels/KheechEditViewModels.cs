@@ -22,6 +22,7 @@ namespace Kheech.Web.ViewModels
         [Display(Name = "Who do you want to invite?")]
         public string WhoToMeet { get; set; }
 
+        [Display(Name = "Location for event")]
         public string WhereToMeet { get; set; }
 
     }

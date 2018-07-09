@@ -12,25 +12,25 @@
     </ol>
 </nav>
 
-<div class="container">
+<div class="container pl-0 pr-0">
     <div class="row">
-        <div class="col-sm-8 table-bordered">
-            <div class="container">
+        <div class="col-12 col-sm-8">
+            <div class="jumbotron pt-4">
                 @if (User.Identity.GetUserId() == @Model.ApplicationUserId)
                 {
                     <div class="row">
-                        <a class="col-sm-6 text-left" href="@Url.RouteUrl("KheechEdit", new { id = Model.Id })">Edit</a>
-                        <a class="col-6 text-right" href="@Url.RouteUrl("MomentsCreate", new { kheechId = Model.Id })">Create a moment</a>
+                        <a class="col-6 text-left" href="@Url.RouteUrl("KheechEdit", new { id = Model.Id })"><i class="fa fa-edit"></i></a>
+                        <a class="col-6 text-right" href="@Url.RouteUrl("MomentsCreate", new { kheechId = Model.Id })"><i class="fa fa-upload"></i></a>
                     </div>
                     <div class="row">
-                        <h5 class="col-sm-12 text-center"><em><u>@Model.EventName.Humanize() at @Model.Location.Name.Humanize()</u></em></h5>
+                        <h5 class="col-12 text-center page-heading"><em><u>@Model.EventName.Humanize() at @Model.Location.Name.Humanize()</u></em></h5>
+                        <p class="col-12 mt-3">These friends are invited to your Kheech to meet on @Model.StartDate.ToString("dddd, dd MMMM").</p>
                         <ul class="list-unstyled col-sm-12">
-                            These friends accepted your Kheech to meet on @Model.StartDate.ToString("dddd, dd MMMM").
                             @foreach (var kheechUser in Model.KheechUsers)
                             {
                                 <li class="offset-1">
-                                    @Html.CheckBoxFor(m => kheechUser.IsAccepted, new { @disabled = "disabled" })
-                                    @kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName
+                                    @Html.CheckBoxFor(m => kheechUser.IsAccepted, new { @disabled = "disabled", @class="form-check-input" })
+                                    @kheechUser.ApplicationUser.FirstName.Humanize() @kheechUser.ApplicationUser.LastName.Humanize()
                                 </li>
                             }
                         </ul>
@@ -38,62 +38,87 @@
                 }
                 else
                 {
-                    <div class="row p-5">
-                        <div class="col-sm-6">
-                            <h3><em>@Model.ApplicationUser.FirstName.Humanize() @Model.ApplicationUser.LastName.Humanize()</em></h3>
+                    <div class="row p-3">
+                        <div class="col-6">
+                            <small>Invited by</small>
+                            <h3 class="page-heading"><em>@Model.ApplicationUser.FirstName.Humanize() @Model.ApplicationUser.LastName.Humanize()</em></h3>
                         </div>
-                        <div class="col-sm-6 text-right">
-                            <h5>@Model.EventName.Humanize() at @Model.Location.Name.Humanize() </h5>
-                            <h6> @Model.StartDate.ToString("dddd, dd MMMM") </h6>
+                        <div class="col-6 text-right">
+                            <small class="text-left">On</small>
+                            <h5> <em>@Model.StartDate.ToString("dddd, dd MMMM") </em></h5>
                         </div>
                     </div>
-                    <div class="row pl-5 pr-5 pb-5">
-                        @foreach (var kheechUser in Model.KheechUsers)
-                        {
-                            <div class="col-sm-12">
-                                @Html.CheckBoxFor(m => kheechUser.IsAccepted, new { @disabled = "disabled" })
-                                @kheechUser.ApplicationUser.FirstName @kheechUser.ApplicationUser.LastName
-                            </div>
-                        }
+                    <form class="row p-3" method="post" action="@Url.RouteUrl("AcceptedKheechPost", new { id = @Model.Id })">
+                        @Html.AntiForgeryToken()
+                        <label class="col-12 text-center"> Do you wish to attend?</label>
+                        <button class="col-1 offset-4 btn btn-success btn-sm" id="isAccepted" name="isAccepted" value="true"><i class="fa fa-check"></i></button>
+                        <button class="col-1 offset-2 btn btn-success btn-sm" name="isAccepted" value="false"><i class="fa fa-times"></i></button>
+                    </form>
+                    <hr />
+                    <div class="row p-3">
+                        <div class="col-12">
+                            <p>
+                                @Model.EventName.Humanize() at @Model.Location.Name.Humanize() on 
+                                @Model.StartDate.ToString("dddd, dd MMMM") from @Model.StartDate.ToString("h:mm tt") to @Model.EndDate.ToString("h:mm tt"). 
+                            </p>
+                        </div>
                     </div>
-                    if (Model.EndDate > DateTime.UtcNow)
-                    {
-                        <form class="row pb-3" method="post" action="@Url.RouteUrl("AcceptedKheechPost", new { id = Model.Id })">
-                            @Html.AntiForgeryToken()
-                            <button class="col-sm-2 offset-3 btn" id="isAccepted" name="isAccepted" value="true">Yes</button>
-                            <button class="col-sm-2 offset-2 btn" name="isAccepted" value="false">No</button>
-                        </form>
-                    }
+                    <div class="row pl-3 pr-3 pb-3">
+                        <div class="col-12">
+                            <p>These people are invited too.</p>
+                            @foreach (var kheechUser in Model.KheechUsers)
+                            {
+                                <div class="col-12">
+                                    @Html.CheckBoxFor(m => kheechUser.IsAccepted, new { @disabled = "disabled" })
+                                    @kheechUser.ApplicationUser.FirstName.Humanize() @kheechUser.ApplicationUser.LastName.Humanize()
+                                    @if (kheechUser.IsAccepted == true)
+                                    {
+                                        <sup class="badge badge-primary">accepted</sup>
+                                    }
+                                    else
+                                    {
+                                        <sup class="badge badge-primary">pending</sup>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
                 }
             </div>
         </div>
-        <div class="col-sm-4 table-bordered">
-            <p> <small>Here is what going on: </small></p>
-            @foreach (var comment in Model.KheechComments)
-            {
-                <div class="row">
-                    <div class="col-sm-2">
-                        <span>@comment.ApplicationUser.FirstName.First()@comment.ApplicationUser.LastName.First(): </span>
+        <div class="col-12 col-sm-4">
+            <div class="jumbotron pt-4">
+                <p> <small><i class="fa fa-comments"> </i>  Here is what going on</small></p>
+                @foreach (var comment in Model.KheechComments)
+                {
+                    <div class="row border rounded mb-2">
+                        <div class="col-sm-2">
+                            <span class="comments-intials"><strong>@comment.ApplicationUser.FirstName.First()@comment.ApplicationUser.LastName.First(): </strong></span>
+                        </div>
+                        <p class="col-sm-8 text-left pr-0">
+                            <small id="comment-discussion"> @comment.Discussion </small>
+                        </p>
+                        @if (comment.CreatorId == User.Identity.GetUserId())
+                        {
+                            <a class="col-sm-1 delete-comment" href="#" data-comment-id="@comment.Id"><i class="fa fa-trash"></i></a>
+                        }
                     </div>
-                    <p class="col-sm-7">
-                        <small id="comment-discussion"> @comment.Discussion </small>
-                    </p>
-                    @if (comment.CreatorId == User.Identity.GetUserId())
-                    {
-                        <a class="col-sm-1 delete-comment" href="#" data-comment-id="@comment.Id"> Delete</a>
-                        @*<a class="col-sm-1 delete-comment" href="@Url.RouteUrl("DeleteDiscussion", new { id = comment.Id})"> Delete</a>*@
-                    }
+                }
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <form method="post" action="@Url.RouteUrl("AddDiscussion", new { id = Model.Id})">
+                            @Html.AntiForgeryToken()
+                            <div class="form-group">
+                                <textarea id="newMessage" name="newMessage" class="form-control"></textarea>
+                                <button class="btn btn-success btn-sm offset-8" type="submit">comment</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            }
-            <form method="post" action="@Url.RouteUrl("AddDiscussion", new { id = Model.Id})">
-                @Html.AntiForgeryToken()
-                <textarea id="newMessage" name="newMessage"></textarea>
-                <button type="submit">Add</button>
-            </form>
+            </div>
         </div>
     </div>
 </div>
-
 
 @section scripts{
     @Scripts.Render("~/bundles/vendor")
@@ -115,6 +140,5 @@
                 }
             });
         });
-
     </script>
 }

@@ -9,7 +9,7 @@
     </ol>
 </nav>
 
-<form action="@Url.RouteUrl("ScheduleMeetingPost", new { id = 1})" method="post" class="form-control schedule-form">
+<form action="@Url.RouteUrl("ScheduleMeetingPost", new { id = 1})" method="post" class="form-control form-container">
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
     <fieldset>

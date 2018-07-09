@@ -13,18 +13,27 @@
     </ol>
 </nav>
 
-<div class="container">
-    <div class="row card text-center">
-        <h4 class="card-title">@Model.KheechEvent.EventName.Humanize() at @Model.KheechEvent.Location.Name.Humanize() on @Model.KheechEvent.StartDate.ToString("dddd, dd MMMM yyyy")</h4>
-        <img class="card-img img-responsive" src="@Url.Content(Model.Capture)" alt="Memory" />
-        <div class="card-body">
-            <p class="card-text">@Model.Description</p> <br>
-            <span class="text-center">
-                @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-                <a href="@Url.RouteUrl("FileDownload", new { id = Model.Id})">Download</a> |
-                @Html.ActionLink("Back to List", "Index") 
-                
-            </span>
+<div class="jumbotron pt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <h4 class="card-title pb-3 page-heading text-center">
+                    <a href="@Url.RouteUrl("KheechDetails", new { id = Model.KheechEventId})">
+                        @Model.KheechEvent.EventName.Humanize() at @Model.KheechEvent.Location.Name.Humanize() on @Model.KheechEvent.StartDate.ToString("dddd, dd MMMM yyyy")
+                    </a>
+                </h4>
+                <img class="card-img img-fluid img-thumbnail" src="@Url.Content(Model.Capture)" alt="Memory" />
+                <div class="card-body">
+                    <p class="card-text text-center">@Model.Description - added by @Model.ApplicationUser.FirstName.Humanize() @Model.ApplicationUser.LastName.Humanize()</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+            <a href="@Url.RouteUrl("FileDownload", new { id = Model.Id})">Download</a> |
+            @Html.ActionLink("Back to List", "Index")
         </div>
     </div>
 </div>

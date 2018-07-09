@@ -4,25 +4,106 @@
     ViewBag.Title = "Index";
 }
 
-<div class="container Kheech-Home-Container p-5 rounded">
-    <div class="jumbotron">
+@if (@TempData["NotRelated"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        @TempData["NotRelated"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+<div class="container Kheech-Home-Container rounded">
+@if (@ViewBag.Notification != null)
+{
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        You have @ViewBag.Notification pending friend requests. 
+        <a href="@Url.RouteUrl("PendingFriendRequests")">Click here to see.</a>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+    <div class="jumbotron pt-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="dropdown show">
+                    <a class="btn btn-secondary btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        New
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="@Url.RouteUrl("ScheduleMeeting")">Event</a>
+                        <a class="dropdown-item" href="@Url.RouteUrl("InviteAFriend")">Friend</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         @if (Model.ActiveKheechEvents.Count() == 0)
         {
             <p>@ViewBag.Message</p>
         }
         else
         {
-            <ul class="row">
-                You have a friend's meet to enjoy.
-                @foreach (var kheech in Model.ActiveKheechEvents)
-                {
-                <li class="offset-sm-1 col-sm-10">
-                    <a href="@Url.RouteUrl("KheechDetails", new { id = kheech.Id})">
-                        @kheech.EventName.Humanize() at @kheech.Location.Name.Humanize() - @kheech.StartDate.Humanize()
-                    </a>
-                </li>
-                }
-            </ul>
+            <div class="row">
+                <div class="col-4">
+                    <p class="upcoming-text"><em>Upcoming Today (@DateTime.UtcNow.ToOrdinalWords())</em></p>
+                    @if (Model.TodayKheechEvents.Count == 0)
+                    {
+                        <p class="text-muted text-center pt-5">
+                            <small>
+                                Hi ! <br />
+                                It looks like you have <br />
+                                nothing on for today
+                            </small>
+                        </p>
+                    }
+                    else
+                    {
+                        <ul class="list-group transparent-list list-unstyled">
+                            @foreach (var kevent in Model.TodayKheechEvents)
+                            {
+                                <li class="list-group-item row">
+                                    <img src="~/uploads/avatar.png" class="col-12 col-md-4 avatar-image" />
+                                    <small class="col-12 col-md-4 p-0">
+                                        <a href="@Url.RouteUrl("KheechDetails", new { id = kevent.Id })">
+                                            <strong>@kevent.StartDate.ToString("h:mm tt") - @kevent.EndDate.ToString("h:mm tt") </strong><br />
+                                            @kevent.EventName.Humanize() at @kevent.Location.Name.Humanize()
+                                        </a>
+                                    </small>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+                <div class="col-8">
+                    <p class="upcoming-text"><em>Upcoming days Kheeches</em></p>
+                    <div class="row">
+                        @foreach (var kheech in Model.ActiveKheechEvents)
+                        {
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <a href="@Url.RouteUrl("KheechDetails", new { id = kheech.Id })">
+                                    <div class="card mt-3 card-bordered">
+                                        <h6 class="card-header">
+                                            @kheech.StartDate.ToString("dddd"), @kheech.StartDate.ToOrdinalWords()
+                                        </h6>
+                                        <div class="card-body">
+                                            <h6 class="card-title mb-0"><small><em><strong>@kheech.EventName.Humanize() at @kheech.Location.Name.Humanize() </strong></em></small></h6>
+                                            <p class="offset-1 card-text">
+                                                <small>
+                                                    @foreach (var kuser in kheech.KheechUsers)
+                                                    {
+                                                        @kuser.ApplicationUser.FirstName.Humanize() @kuser.ApplicationUser.LastName.Humanize() <br />
+                                                    }
+                                                </small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         }
     </div>
     <div class="row m-0">
@@ -35,9 +116,9 @@
                 <p>
                     @foreach (var kheech in Model.RecentSchedules)
                     {
-                    <a href="@Url.RouteUrl("KheechDetails", new { id = kheech.Id})">
-                        <small>@kheech.EventName.Humanize() at @kheech.Location.Name.Humanize()</small>
-                    </a><br />
+                        <a href="@Url.RouteUrl("KheechDetails", new { id = kheech.Id})">
+                            <small>@kheech.EventName.Humanize() at @kheech.Location.Name.Humanize()</small>
+                        </a><br />
                     }
                 </p>
             </div>
@@ -49,30 +130,31 @@
                 <p>
                     @foreach (var friend in Model.RecentFriends)
                     {
-                    <a href="@Url.RouteUrl("FriendsDetail", new { friendid = friend.ApplicationUserId})">
-                        <small>@friend.ApplicationUser.FirstName.Humanize() @friend.ApplicationUser.LastName.Humanize()</small>
-                    </a><br />
+                        <a href="@Url.RouteUrl("FriendsDetail", new { friendid = friend.ApplicationUserId})">
+                            <small>@friend.ApplicationUser.FirstName.Humanize() @friend.ApplicationUser.LastName.Humanize()</small>
+                        </a><br />
                     }
                 </p>
             </div>
         </div>
-            <div class="card col-sm-4 kheech-moments p-1">
+        <div class="card col-sm-4 kheech-moments p-1">
             <div class="card-body">
                 <h5 class="card-title"><a href="@Url.RouteUrl("MomentsHome")">Enjoy some Moments</a></h5><hr />
                 <h6 class="card-subtitle mb-2 text-muted">Recent memories</h6>
                 <p>
                     @foreach (var moment in Model.RecentMoments)
                     {
-                    <a href="@Url.RouteUrl("MomentsDetail", new { id = moment.Id})">
-                        <small>@moment.KheechEvent.EventName.Humanize() at 
-                               @moment.KheechEvent.Location.Name.Humanize() on 
-                               @moment.KheechEvent.StartDate.ToString("dddd, dd MMMM")
-                        </small>
-                    </a><br />
+                        <a href="@Url.RouteUrl("MomentsDetail", new { id = moment.Id})">
+                            <small>
+                                @moment.KheechEvent.EventName.Humanize() at
+                                @moment.KheechEvent.Location.Name.Humanize() on
+                                @moment.KheechEvent.StartDate.ToString("dddd, dd MMMM")
+                            </small>
+                        </a><br />
                     }
                 </p>
             </div>
-                
-            </div>
+
         </div>
+    </div>
 </div>

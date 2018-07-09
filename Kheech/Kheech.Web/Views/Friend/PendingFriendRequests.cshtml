@@ -1,0 +1,40 @@
+﻿@using Humanizer
+@model IEnumerable<Kheech.Web.Models.InviteFriend>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.RouteUrl("HomePage")">Home</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Pending Friend Requests</li>
+    </ol>
+</nav>
+
+<div class="jumbotron pt-4">
+    <h5 class="page-heading">Here are your pending friend requests</h5><hr />
+    <div class="row">
+        @foreach (var prequest in Model)
+        {
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card friend-request-card">
+                    <div class="card-header text-center">
+                        <strong><em>@prequest.ApplicationUser.FirstName.Humanize() @prequest.ApplicationUser.LastName.Humanize()</em></strong>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text pb-0">
+                            wants to connect with you over Kheech. Do you?
+                        </p>
+                    </div>
+                    <form class="mb-1" method="post" action="@Url.RouteUrl("PendingFriendRequestsPost", new { pendingFriendId = @prequest.Id })">
+                        @Html.AntiForgeryToken()
+                        <button class="col-2 offset-2 btn btn-success btn-sm" id="isAccepted" name="isAccepted" value="true"><i class="fa fa-check"></i></button>
+                        <button class="col-2 offset-2 btn btn-success btn-sm" name="isAccepted" value="false"><i class="fa fa-times"></i></button>
+                    </form>
+                    <div class="card-footer">
+                        <small class="text-muted">Sent @prequest.InsertDate.Humanize()</small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

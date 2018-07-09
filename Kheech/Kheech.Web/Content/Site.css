@@ -59,6 +59,25 @@ textarea {
     background-color: rgba(224, 255, 255, 0.4);
 }
 
+.transparent-list li {
+    background-color: rgba(224, 255, 255, 0);
+    border-left: none;
+    border-top: none;
+    border-right: none;
+}
+
+.friend-list li {
+    background-color: rgba(224, 255, 255, 0);
+}
+
+.avatar-image {
+    float: left;
+}
+
+.upcoming-text, .page-heading, .comments-intials {
+    color: #007552;
+}
+
 .card {
     background-color: rgba(224, 255, 255, 0);
     border: none;
@@ -66,6 +85,15 @@ textarea {
 
 .card a {
     color: #007552;
+}
+
+.card-bordered {
+    border: .5px solid grey;
+    height: 200px;
+}
+
+.friend-request-card {
+    border: .5px solid grey;
 }
 
 .kheech-schedule {
@@ -133,7 +161,15 @@ textarea {
     font-size: 12px;
 }
 
-.schedule-form {
+.form-container {
     background-color: rgba(224, 255, 255, 0.4);
     max-width: 500px;
+}
+
+.momnet-index-cards {
+    box-shadow: 0px 0px 3px 3px grey;
+}
+
+.moment-index-image {
+    height: 150px;
 }

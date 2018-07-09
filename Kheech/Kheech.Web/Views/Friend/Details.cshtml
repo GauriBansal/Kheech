@@ -8,40 +8,61 @@
         <li class="breadcrumb-item">
             <a href="@Url.RouteUrl("FriendsHome")">Friends</a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.FriendInformation.Name details</li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.FriendInformation.Name</li>
     </ol>
 </nav>
 
-<div class="container">
+<div class="container pl-0 pr-0">
     <div class="row">
         <div class="col-sm-8">
-            <h3> @Model.FriendInformation.Name's activities </h3>
-            <ul class="list-group list-group-flush list-unstyled">
-                @foreach (var kactivity in Model.FriendActivity)
+            <div class="jumbotron pt-4">
+                <h3 class="page-heading"> @Model.FriendInformation.Name's activities </h3><hr />
+                <div class="row">
+                    @foreach (var kactivity in Model.FriendActivity)
+                    {
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <a href="@Url.RouteUrl("KheechDetails", new { id = kactivity.KheechEventId})">
+                            <div class="card mt-3 card-bordered">
+                                <h6 class="card-header">
+                                    @kactivity.KheechEvent.StartDate.ToOrdinalWords()
+                                </h6>
+                                <div class="card-body">
+                                    <p class="card-text text-muted">
+                                        <small>
+                                            @kactivity.KheechEvent.EventName.Humanize() at
+                                            @kactivity.KheechEvent.Location.Name.Humanize() with
+                                            <strong><em>@kactivity.KheechEvent.ApplicationUser.FirstName @kactivity.KheechEvent.ApplicationUser.LastName</em></strong>
+                                        </small>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <small></small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="jumbotron pt-4">
+            <h4 class="page-heading"> You and @Model.FriendInformation.Name </h4> <hr />
+            <ul class="list-group transparent-list list-unstyled">
+                @foreach (var kactivity in Model.CommonActivity)
                 {
-                <li class="list-group-item">
-                    <a href="@Url.RouteUrl("KheechDetails", new { id = kactivity.KheechEventId})">
-                        @kactivity.KheechEvent.EventName.Humanize() at
-                        @kactivity.KheechEvent.Location.Name.Humanize() with
-                        @kactivity.KheechEvent.ApplicationUser.FirstName @kactivity.KheechEvent.ApplicationUser.LastName on
-                        @kactivity.KheechEvent.StartDate.Humanize()
-                    </a>
+                <li class="list-group-item pr-0 pl-0 row">
+                    <img src="~/uploads/avatar.png" class="col-12 col-md-4 avatar-image" />
+                    <small class="col-12 col-md-4 p-0">
+                        <a href="@Url.RouteUrl("KheechDetails", new { id = kactivity.KheechEventId})">
+                            @kactivity.KheechEvent.StartDate.ToOrdinalWords()<br />
+                            @kactivity.KheechEvent.EventName.Humanize() at @kactivity.KheechEvent.Location.Name.Humanize()
+                        </a>
+                    </small>
                 </li>
                 }
             </ul>
-        </div>
-        <div class="col-sm-4">
-            <h4> You and @Model.FriendInformation.Name.Split(' ')[0] </h4> <hr />
-            <p>
-                @foreach (var kactivity in Model.CommonActivity)
-                {
-                    <a href="@Url.RouteUrl("KheechDetails", new { id = kactivity.KheechEventId})">
-                        @kactivity.KheechEvent.EventName.Humanize() at 
-                        @kactivity.KheechEvent.Location.Name.Humanize() on 
-                        @kactivity.KheechEvent.StartDate.Humanize() 
-                    </a>
-                }
-            </p>
+            </div>
         </div>
     </div>
 </div>

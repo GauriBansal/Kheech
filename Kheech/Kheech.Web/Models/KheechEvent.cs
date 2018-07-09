@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -15,15 +16,18 @@ namespace Kheech.Web.Models
         public string ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
 
+        [Display(Name = "Name of Kheech")]
         public string EventName { get; set; }
 
         public int LocationId { get; set; }
         public virtual Location Location { get; set; }
 
+        [Display(Name = "Event start time")]
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }
 
+        [Display(Name = "Group to be invited")]
         public int? GroupId { get; set; }
         public virtual Group Group { get; set; }
 

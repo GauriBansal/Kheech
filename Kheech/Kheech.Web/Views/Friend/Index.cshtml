@@ -1,4 +1,5 @@
-﻿@model Kheech.Web.ViewModels.FriendsIndexViewModel
+﻿@using Humanizer
+@model Kheech.Web.ViewModels.FriendsIndexViewModel
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -8,24 +9,36 @@
     </ol>
 </nav>
 
-<div class="container">
+<div class="container pl-0 pr-0">
     <div class="row">
-        <div class="col-8 table-bordered">
-            <h4 class="m-3">Get to know about your friends<sup><small>@Model.FriendsCount friends</small></sup></h4>
-
-            <ul class="list-group list-unstyled list-group-flush col-sm-12">
-                @foreach (var friend in Model.FriendViewModels)
-                {
-                    <li class="list-group-item">
-                        <a href="@Url.RouteUrl("FriendsDetail", new { friendId = friend.Id})">@friend.Name</a>
-                    </li>
-                }
-            </ul>
+        <div class="col-8">
+            <div class="jumbotron pt-4">
+                <h4 class="pt-3 page-heading">Get to know about your friends <sup><small><span class="badge badge-pill badge-primary">@Model.FriendsCount friends</span></small></sup></h4>
+                <hr />
+                <ul class="list-unstyled list-inline friend-list row">
+                    @foreach (var friend in Model.FriendViewModels)
+                    {
+                    <div class="col-12 col-md-6 mb-3">
+                        <li class="list-inline-item list-group-item pl-0 ml-0 mr-0 pr-0">
+                            <a class="col-12" href="@Url.RouteUrl("FriendsDetail", new { friendId = friend.Id})">
+                                <img src="~/uploads/avatar.png" class="avatar-image" />
+                                <span class="text-right">@friend.Name </span><br />
+                                <small class="text-muted col-12">Friends for @friend.FriendshipLength </small>
+                            </a>
+                        </li>
+                    </div>
+                    }
+                </ul>
+            </div>
         </div>
-
         <div class="col-4">
-            <input type="email" class="form-control mt-3 col-sm-12" id="Email" name="Email" placeholder="name@example.com">
-            <button class="offset-sm-6 col-sm-6" id="inviteEmail" type="submit">Add a friend</button>
+            <div class="jumbotron pt-4">
+                <h5 class="p-0 page-heading">Invite more friends</h5>
+                <div class="form-group">
+                    <input type="email" class="form-control mt-3 col-sm-12" id="Email" name="Email" placeholder="name@example.com">
+                    <button class="offset-9 col-3 btn btn-success btn-sm" id="inviteEmail" type="submit">Add</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
