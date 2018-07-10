@@ -23,7 +23,7 @@ namespace Kheech.Web.ViewModels
         public DateTime WhenToMeet { get; set; }
 
         [Display(Name = "Who do you want to meet?")]
-        public string WhoToMeet { get; set; }
+        public string[] WhoToMeet { get; set; }
 
         [Display(Name = "Where do you want to meet?")]
         public string WhereToMeet { get; set; }

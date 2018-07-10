@@ -246,16 +246,18 @@ namespace Kheech.Web.Controllers
             kheechEvent.LocationId = location.Id;
 
             _context.KheechEvents.Add(kheechEvent);
-            //_context.SaveChanges();
-
-            var kheechUser = new KheechUser
+           
+            foreach (var kuser in model.WhoToMeet)
             {
-                KheechEventId = kheechEvent.Id,
-                ApplicationUserId = model.WhoToMeet,
-                IsAccepted = false
-            };
+                var kheechUser = new KheechUser
+                {
+                    KheechEventId = kheechEvent.Id,
+                    ApplicationUserId = kuser,
+                    IsAccepted = false
+                };
 
-            _context.KheechUsers.Add(kheechUser);
+                _context.KheechUsers.Add(kheechUser);
+            }
             await _context.SaveChangesAsync();
 
             TempData["ScheduleMessage"] = "Congratulations, you have successfully added a Kheech. Keep going!";
@@ -343,18 +345,21 @@ namespace Kheech.Web.Controllers
                     isKheechChanged = true;
                 }
 
-                var existingKheechUser = await _context.KheechUsers.FirstOrDefaultAsync(k => k.KheechEventId == id && k.ApplicationUserId == kheechEditViewModels.WhoToMeet);
-
-                if (existingKheechUser == null)
+                foreach (var kuser in kheechEditViewModels.WhoToMeet)
                 {
-                    var kheechUser = new KheechUser
-                    {
-                        KheechEventId = kheechEditViewModels.KheechEvent.Id,
-                        ApplicationUserId = kheechEditViewModels.WhoToMeet,
-                        IsAccepted = false
-                    };
+                    var existingKheechUser = await _context.KheechUsers.FirstOrDefaultAsync(k => k.KheechEventId == id && k.ApplicationUserId == kuser);
 
-                    _context.KheechUsers.Add(kheechUser);
+                    if (existingKheechUser == null)
+                    {
+                        var kheechUser = new KheechUser
+                        {
+                            KheechEventId = kheechEditViewModels.KheechEvent.Id,
+                            ApplicationUserId = kuser,
+                            IsAccepted = false
+                        };
+
+                        _context.KheechUsers.Add(kheechUser);
+                    }
                 }
 
                 if (isKheechChanged)

@@ -52,7 +52,7 @@
                     }
                     else
                     {
-                        @Html.DropDownListFor(m => m.WhoToMeet, new SelectList(Model.Friends, "Id", "Name"), new { @class = "form-control" })
+                        @Html.DropDownListFor(m => m.WhoToMeet, new MultiSelectList(Model.Friends, "Id", "Name"), new { @class = "form-control", multiple = "multiple" })
                     }
                 </div>
             </div>
