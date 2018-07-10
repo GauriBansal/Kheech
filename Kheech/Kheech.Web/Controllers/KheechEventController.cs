@@ -117,6 +117,7 @@ namespace Kheech.Web.Controllers
             KheechEvent kheechEvent = await _context.KheechEvents.Include(k => k.ApplicationUser)
                                                            .Include(k => k.KheechComments)
                                                            .Include(k => k.KheechUsers)
+                                                           .Include(k => k.KheechMoments)
                                                            .Include(k => k.Location)
                                                            .Include(k => k.Group)
                                                            .FirstOrDefaultAsync(k => k.Id == id);

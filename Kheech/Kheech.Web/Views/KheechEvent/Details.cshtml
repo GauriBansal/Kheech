@@ -89,6 +89,17 @@
                         </div>
                     </div>
                 }
+                <br />
+                <div class="row">
+                    @foreach (var kimage in Model.KheechMoments)
+                    {
+                        <div class="col-4 col-md-2">
+                            <a href="@Url.RouteUrl("MomentsDetail", new { id = kimage.Id })">
+                                <img class="img-thumbnail thumbnail-image" src="@kimage.Capture" alt="@kimage.Description" />
+                            </a>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
         <div class="col-12 col-sm-4">

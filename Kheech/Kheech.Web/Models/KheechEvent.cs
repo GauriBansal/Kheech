@@ -37,6 +37,8 @@ namespace Kheech.Web.Models
         
         public virtual ICollection<KheechComment> KheechComments {get; set;}
 
+        public virtual ICollection<Moment> KheechMoments { get; set; }
+
         public DateTime InsertDate { get; set; }
     }
 }
