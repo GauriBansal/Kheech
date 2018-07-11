@@ -75,12 +75,12 @@ namespace Kheech.Web.Controllers
                     if (kuser.KheechEvent.EndDate.Day == currentDay)
                     {
                         kheechIndexViewModel.TodayKheechEvents.Add(kuser.KheechEvent);
-                        kheechIndexViewModel.TodayKheechEvents.Distinct();
+                        kheechIndexViewModel.TodayKheechEvents.DistinctBy(k => k.Id);
                     }
                     else
                     {
                         kheechIndexViewModel.ActiveKheechEvents.Add(kuser.KheechEvent);
-                        kheechIndexViewModel.ActiveKheechEvents.Distinct();
+                        kheechIndexViewModel.ActiveKheechEvents.DistinctBy(k => k.Id);
                     }
                 }
             }
@@ -108,7 +108,7 @@ namespace Kheech.Web.Controllers
                 foreach (var kuser in recentKheechUsers)
                 {
                     kheechIndexViewModel.RecentSchedules.Add(kuser.KheechEvent);
-                    kheechIndexViewModel.RecentSchedules.Distinct();
+                    kheechIndexViewModel.RecentSchedules.DistinctBy(k => k.Id);
                 }
             }
 

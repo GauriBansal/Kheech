@@ -140,6 +140,14 @@ namespace Kheech.Web.Controllers
         public async Task<ActionResult> Create(InviteFriend model)
         {
             var currentUserId = User.Identity.GetUserId();
+            var currentUserName = User.Identity.GetUserName();
+
+            if (currentUserName == model.Email)
+            {
+                TempData["InviteMessage"] = $"This is you {model.Email} and already a member of Kheech.";
+                return View();
+            }
+
             var invitedFriendId = await _context.Users.Where(u => u.Email == model.Email).Select(u => u.Id).FirstOrDefaultAsync();
 
             var isAlreadyFriend = await _context.Friendships.Include(f => f.Recipient)
@@ -178,6 +186,14 @@ namespace Kheech.Web.Controllers
         public async Task<JsonResult> InviteFriend(InviteFriend model)
         {
             var currentUserId = User.Identity.GetUserId();
+            var currentUserName = User.Identity.GetUserName();
+
+            if (currentUserName == model.Email)
+            {
+                TempData["InviteMessage"] = $"This is you {model.Email} and already a member of Kheech.";
+                return Json(new { message = TempData["InviteMessage"] });
+            }
+
             var invitedFriendId = await _context.Users.Where(u => u.Email == model.Email).Select(u => u.Id).FirstOrDefaultAsync();
 
             var isAlreadyFriend = await _context.Friendships.Include(f => f.Recipient)
