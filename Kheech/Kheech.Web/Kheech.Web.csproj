@@ -215,17 +215,9 @@
     <Compile Include="Clients\SendGridEmailClient.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\FriendController.cs" />
-    <Compile Include="Migrations\201807032347480_AddedInviteClass.cs" />
-    <Compile Include="Migrations\201807032347480_AddedInviteClass.Designer.cs">
-      <DependentUpon>201807032347480_AddedInviteClass.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201807032352231_AddedInviteClass1.cs" />
-    <Compile Include="Migrations\201807032352231_AddedInviteClass1.Designer.cs">
-      <DependentUpon>201807032352231_AddedInviteClass1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201807040022474_AddedInviteFriend.cs" />
-    <Compile Include="Migrations\201807040022474_AddedInviteFriend.Designer.cs">
-      <DependentUpon>201807040022474_AddedInviteFriend.cs</DependentUpon>
+    <Compile Include="Migrations\201807110238048_finaltesting.cs" />
+    <Compile Include="Migrations\201807110238048_finaltesting.Designer.cs">
+      <DependentUpon>201807110238048_finaltesting.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\InviteFriend.cs" />
     <Compile Include="Services\EFHomeService.cs" />
@@ -239,38 +231,6 @@
     <Compile Include="Controllers\MomentsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806150130453_InitialSetUp.cs" />
-    <Compile Include="Migrations\201806150130453_InitialSetUp.Designer.cs">
-      <DependentUpon>201806150130453_InitialSetUp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806181553047_RemovingM2MRelationships.cs" />
-    <Compile Include="Migrations\201806181553047_RemovingM2MRelationships.Designer.cs">
-      <DependentUpon>201806181553047_RemovingM2MRelationships.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806181554392_AddingM2MExplicitRelationship.cs" />
-    <Compile Include="Migrations\201806181554392_AddingM2MExplicitRelationship.Designer.cs">
-      <DependentUpon>201806181554392_AddingM2MExplicitRelationship.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806210050203_changeddatabase.cs" />
-    <Compile Include="Migrations\201806210050203_changeddatabase.Designer.cs">
-      <DependentUpon>201806210050203_changeddatabase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806241836479_AddedInsertDateInAllModels.cs" />
-    <Compile Include="Migrations\201806241836479_AddedInsertDateInAllModels.Designer.cs">
-      <DependentUpon>201806241836479_AddedInsertDateInAllModels.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806250339332_nullableGroupId.cs" />
-    <Compile Include="Migrations\201806250339332_nullableGroupId.Designer.cs">
-      <DependentUpon>201806250339332_nullableGroupId.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806270358387_addedCreatorIdInMomentsandComments.cs" />
-    <Compile Include="Migrations\201806270358387_addedCreatorIdInMomentsandComments.Designer.cs">
-      <DependentUpon>201806270358387_addedCreatorIdInMomentsandComments.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806270415308_addedCreatorIdInMomentsandComments1.cs" />
-    <Compile Include="Migrations\201806270415308_addedCreatorIdInMomentsandComments1.Designer.cs">
-      <DependentUpon>201806270415308_addedCreatorIdInMomentsandComments1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -449,38 +409,8 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201806150130453_InitialSetUp.resx">
-      <DependentUpon>201806150130453_InitialSetUp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806181553047_RemovingM2MRelationships.resx">
-      <DependentUpon>201806181553047_RemovingM2MRelationships.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806181554392_AddingM2MExplicitRelationship.resx">
-      <DependentUpon>201806181554392_AddingM2MExplicitRelationship.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806210050203_changeddatabase.resx">
-      <DependentUpon>201806210050203_changeddatabase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806241836479_AddedInsertDateInAllModels.resx">
-      <DependentUpon>201806241836479_AddedInsertDateInAllModels.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806250339332_nullableGroupId.resx">
-      <DependentUpon>201806250339332_nullableGroupId.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806270358387_addedCreatorIdInMomentsandComments.resx">
-      <DependentUpon>201806270358387_addedCreatorIdInMomentsandComments.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806270415308_addedCreatorIdInMomentsandComments1.resx">
-      <DependentUpon>201806270415308_addedCreatorIdInMomentsandComments1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807032347480_AddedInviteClass.resx">
-      <DependentUpon>201807032347480_AddedInviteClass.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807032352231_AddedInviteClass1.resx">
-      <DependentUpon>201807032352231_AddedInviteClass1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807040022474_AddedInviteFriend.resx">
-      <DependentUpon>201807040022474_AddedInviteFriend.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807110238048_finaltesting.resx">
+      <DependentUpon>201807110238048_finaltesting.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

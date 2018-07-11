@@ -53,12 +53,15 @@
                             <h5> <em>@Model.StartDate.ToString("dddd, dd MMMM") </em></h5>
                         </div>
                     </div>
+                    if (@Model.EndDate >= DateTime.UtcNow)
+                    {
                     <form class="row p-3" method="post" action="@Url.RouteUrl("AcceptedKheechPost", new { id = @Model.Id })">
                         @Html.AntiForgeryToken()
                         <label class="col-12 text-center"> Do you wish to attend?</label>
                         <button class="col-1 offset-4 btn btn-success btn-sm" id="isAccepted" name="isAccepted" value="true"><i class="fa fa-check"></i></button>
                         <button class="col-1 offset-2 btn btn-success btn-sm" name="isAccepted" value="false"><i class="fa fa-times"></i></button>
                     </form>
+                    }
                     <hr />
                     <div class="row p-3">
                         <div class="col-12">

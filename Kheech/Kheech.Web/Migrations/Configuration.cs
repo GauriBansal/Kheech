@@ -25,35 +25,58 @@ namespace Kheech.Web.Migrations
             var userStore = new UserStore<ApplicationUser>(context);
             var userManager = new UserManager<ApplicationUser>(userStore);
 
-            var phil = context.Users.FirstOrDefault(u => u.Email == "phil.scholtes@gmail.com");
-            if (phil == null)
+            var friendshipStatus1 = new FriendshipStatus
             {
-                phil = new ApplicationUser
-                {
-                    FirstName = "Phil",
-                    LastName = "Scholtes",
-                    UserName = "phil.scholtes@gmail.com",
-                    Email = "phil.scholtes@gmail.com"
-                };
+                status = "Pending"
+            };
 
-                var result = userManager.Create(phil, "Admin123!");
-            }
+            context.FriendshipStatuses.Add(friendshipStatus1);
+            context.SaveChanges();
 
-            var chris = context.Users.FirstOrDefault(u => u.Email == "chris@gmail.com");
-            if (chris == null)
+            var friendshipStatus2 = new FriendshipStatus
             {
-                chris = new ApplicationUser
-                {
-                    FirstName = "Chris",
-                    LastName = "Scholtes",
-                    UserName = "chris@gmail.com",
-                    Email = "chris@gmail.com"
-                };
+                status = "Accepted"
+            };
 
-                var result = userManager.Create(chris, "Admin123!");
-            }
+            context.FriendshipStatuses.Add(friendshipStatus2);
+            context.SaveChanges();
 
-            //phil.FriendshipsStarted.Add(new Friendship()
+            var friendshipStatus3 = new FriendshipStatus
+            {
+                status = "Rejected"
+            };
+
+            context.FriendshipStatuses.Add(friendshipStatus3);
+            context.SaveChanges();
+            //var phil = context.Users.FirstOrDefault(u => u.Email == "phil.scholtes@gmail.com");
+            //if (phil == null)
+            //{
+            //    phil = new ApplicationUser
+            //    {
+            //        FirstName = "Phil",
+            //        LastName = "Scholtes",
+            //        UserName = "phil.scholtes@gmail.com",
+            //        Email = "phil.scholtes@gmail.com"
+            //    };
+
+            //    var result = userManager.Create(phil, "Admin123!");
+            //}
+
+            //var chris = context.Users.FirstOrDefault(u => u.Email == "chris@gmail.com");
+            //if (chris == null)
+            //{
+            //    chris = new ApplicationUser
+            //    {
+            //        FirstName = "Chris",
+            //        LastName = "Scholtes",
+            //        UserName = "chris@gmail.com",
+            //        Email = "chris@gmail.com"
+            //    };
+
+            //    var result = userManager.Create(chris, "Admin123!");
+            //}
+
+            ////phil.FriendshipsStarted.Add(new Friendship()
             //{
             //    //FriendshipStatus = FriendshipStatuses.
             //});

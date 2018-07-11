@@ -64,12 +64,7 @@ namespace Kheech.Web.Controllers
                                                    .OrderByDescending(m => m.EndDate)
                                                    .Distinct().Take(5).ToListAsync();
 
-            if (kheechIndexViewModel.ActiveKheechEvents.Count() == 0)
-            {
-                ViewBag.Message = "Hey, it looks like you have nothing on, for today. Would you like to schedule?";
-            }
-
-            if ((kheechIndexViewModel.ActiveKheechEvents.Count() > 0) && (kheechIndexViewModel.ActiveKheechEvents.Count() < 5))
+            if ((kheechIndexViewModel.ActiveKheechEvents.Count() >= 0) && (kheechIndexViewModel.ActiveKheechEvents.Count() < 5))
             {
                 var kheechUsers = await _context.KheechUsers.Include(k => k.KheechEvent.Location)
                                                       .Include(k => k.ApplicationUser)
@@ -77,9 +72,22 @@ namespace Kheech.Web.Controllers
                                                       .Distinct().Take(5).ToListAsync();
                 foreach (var kuser in kheechUsers)
                 {
-                    kheechIndexViewModel.ActiveKheechEvents.Add(kuser.KheechEvent);
-                    kheechIndexViewModel.ActiveKheechEvents.Distinct();
+                    if (kuser.KheechEvent.EndDate.Day == currentDay)
+                    {
+                        kheechIndexViewModel.TodayKheechEvents.Add(kuser.KheechEvent);
+                        kheechIndexViewModel.TodayKheechEvents.Distinct();
+                    }
+                    else
+                    {
+                        kheechIndexViewModel.ActiveKheechEvents.Add(kuser.KheechEvent);
+                        kheechIndexViewModel.ActiveKheechEvents.Distinct();
+                    }
                 }
+            }
+
+            if ((kheechIndexViewModel.ActiveKheechEvents.Count() == 0) && (kheechIndexViewModel.TodayKheechEvents.Count() == 0))
+            {
+                ViewBag.Message = "Hey, it looks like you have nothing on, for today. Would you like to schedule?";
             }
 
             kheechIndexViewModel.RecentSchedules = await _context.KheechEvents.Include(k => k.ApplicationUser)
@@ -89,6 +97,20 @@ namespace Kheech.Web.Controllers
                                                     .OrderByDescending(k => k.EndDate)
                                                     .Take(3)
                                                     .ToListAsync();
+
+            if (kheechIndexViewModel.RecentSchedules.Count < 3)
+            {
+                var recentKheechUsers = await _context.KheechUsers.Include(k => k.KheechEvent.Location)
+                                      .Include(k => k.ApplicationUser)
+                                      .Where(k => (k.ApplicationUserId == currentUserId) && (k.KheechEvent.EndDate < DateTime.UtcNow))
+                                      .Distinct().Take(3).ToListAsync();
+
+                foreach (var kuser in recentKheechUsers)
+                {
+                    kheechIndexViewModel.RecentSchedules.Add(kuser.KheechEvent);
+                    kheechIndexViewModel.RecentSchedules.Distinct();
+                }
+            }
 
             kheechIndexViewModel.RecentMoments = await _context.Moments.Include(m => m.KheechEvent.Location)
                                                                  .Where(m => m.ApplicationUserId == currentUserId)
@@ -342,7 +364,28 @@ namespace Kheech.Web.Controllers
                     kheechEventOld.StartDate = kheechEditViewModels.KheechEvent.StartDate;
                     kheechEventOld.EndDate = kheechEditViewModels.KheechEvent.StartDate.AddHours(2);
                     kheechEventOld.InsertDate = DateTime.UtcNow;
-                    kheechEventOld.LocationId = await _context.Locations.Where(l => l.Name == kheechEditViewModels.WhereToMeet).Select(l => l.Id).FirstOrDefaultAsync();
+
+                    var googleLocation = kheechEditViewModels.WhereToMeet.Split(',').ToList();
+                    var locationToMeet = googleLocation[0];
+                    var Counter = googleLocation.Count;
+
+                    var location = await _context.Locations.FirstOrDefaultAsync(l => l.Name == locationToMeet);
+                    if (location == null)
+                    {
+                        location = new Location
+                        {
+                            Name = locationToMeet,
+                            address1 = googleLocation[Counter - 4],
+                            Country = googleLocation[Counter - 1],
+                            City = googleLocation[Counter - 3],
+                            State = googleLocation[Counter - 2],
+                            InsertDate = DateTime.UtcNow
+                        };
+                        _context.Locations.Add(location);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    kheechEventOld.LocationId = location.Id;
                     isKheechChanged = true;
                 }
 

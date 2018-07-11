@@ -264,6 +264,15 @@ namespace Kheech.Web.Controllers
             }
             else
             {
+                var pendingFriendship1 = new Friendship
+                {
+                    InitiatorId = pendingFriend.ApplicationUserId,
+                    RecipientId = currentUserId,
+                    FriendshipStatusId = 3,
+                    InsertDate = DateTime.UtcNow
+                };
+
+                _context.Friendships.Add(pendingFriendship1);
                 _context.InviteFriends.Remove(pendingFriend);
             }
 

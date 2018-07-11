@@ -16,6 +16,7 @@
     @Html.HiddenFor(model => model.KheechEvent.Id)
     @Html.HiddenFor(model => model.KheechEvent.ApplicationUserId)
     @Html.HiddenFor(model => model.KheechEvent.LocationId)
+
     <div class="form-horizontal form-container form-control">
         <fieldset>
             <legend>Kheech's Edit</legend><hr />
@@ -28,9 +29,9 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.WhereToMeet, htmlAttributes: new { @class = "control-label col-12"})
+                @Html.LabelFor(model => model.WhereToMeet, htmlAttributes: new { @class = "control-label col-12" })
                 <div class="col-12">
-                    @Html.EditorFor(model => model.WhereToMeet, new { htmlAttributes = new { @class = "form-control"} })
+                    @Html.EditorFor(model => model.WhereToMeet, new { htmlAttributes = new { @class = "form-control", @id = "place-autocomplete" } })
                     @Html.ValidationMessageFor(model => model.WhereToMeet, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -82,6 +83,16 @@
     </div>
 }
 
-@section Scripts {
+@section scripts
+{
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function activatePlacesSearch() {
+            var input = document.getElementById('place-autocomplete');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+        }
+    </script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCX3zgHmS6zIL1xZzTY7ox-BEPAssPnkbg&libraries=places&callback=activatePlacesSearch"></script>
+
 }
+

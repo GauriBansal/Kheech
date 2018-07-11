@@ -39,7 +39,7 @@
                 </div>
             </div>
         </div>
-        @if (Model.ActiveKheechEvents.Count() == 0)
+        @if ((Model.ActiveKheechEvents.Count() == 0) && (Model.TodayKheechEvents.Count() == 0))
         {
             <p>@ViewBag.Message</p>
         }
@@ -78,6 +78,18 @@
                 </div>
                 <div class="col-8">
                     <p class="upcoming-text"><em>Upcoming days Kheeches</em></p>
+                    @if (Model.ActiveKheechEvents.Count == 0)
+                    {
+                        <p class="text-muted text-center pt-5">
+                            <small>
+                                Hi ! <br />
+                                It looks like you have <br />
+                                nothing on for coming days.
+                            </small>
+                        </p>
+                    }
+                    else
+                    {                    
                     <div class="row">
                         @foreach (var kheech in Model.ActiveKheechEvents)
                         {
@@ -111,6 +123,7 @@
                             </div>
                             }
                     </div>
+                    }
                 </div>
             </div>
         }
